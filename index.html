@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MyPet — A little tag. A big way home.</title>
+  
+  <!-- Inter font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  
+  <!-- MyPet Stylesheet -->
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐾</text></svg>">
+</head>
+<body>
+
+  <!-- Minimal Top Navigation -->
+  <header class="site-header no-print">
+    <div class="nav-container">
+      <a href="#landing" class="brand-logo">
+        <span class="brand-paw-badge">🐾</span>
+        <span>MyPet</span>
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="#how-it-works" class="nav-link">How It Works</a></li>
+        <li><a href="#features" class="nav-link">Features</a></li>
+        <li><a href="#safety" class="nav-link">Safety</a></li>
+        <li><a href="#about" class="nav-link">About</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <!-- Interactive Mode Switcher for seamless demonstration -->
+        <button id="demoRoleSwitcher" class="demo-role-pill" title="Toggle between Owner and Finder experience">
+          <span>🐱 Sarah (Owner)</span> · Test Finder Scan
+        </button>
+        <a href="#dashboard" class="btn btn-secondary btn-sm" id="navDashboardLink">Dashboard</a>
+        <a href="#add-pet" class="btn btn-primary btn-sm">Create a Pet Tag</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- ====================================================================
+         VIEW 1: MARKETING LANDING PAGE
+         ==================================================================== -->
+    <div id="landingView" class="view-panel active">
+      <!-- 3-Column Storybook Hero -->
+      <section class="hero-section">
+        <div class="main-wrapper">
+          <div class="hero-grid">
+            
+            <!-- Left Column: Happy Cat with QR Collar & Doodles -->
+            <div class="hero-col-left">
+              <div class="illustration-wrap">
+                <div id="heroLeftIllustration"></div>
+                <div class="hero-bubble-tag">
+                  <span>🐱</span>
+                  <span>Luna · Tag Active</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Center Column: High Impact Typography & Direct CTAs -->
+            <div class="hero-col-center">
+              <span class="eyebrow">PET IDENTITY, MADE SIMPLE</span>
+              <h1 class="hero-heading">Give your pet a way home.</h1>
+              <p class="hero-subtext">
+                Create a digital identity for your cat or dog, attach their unique QR tag, and make it easy for someone to contact you if they ever get lost.
+              </p>
+              <div class="hero-actions">
+                <a href="#add-pet" class="btn btn-primary btn-lg">Create a Pet Tag</a>
+                <a href="#how-it-works" class="btn btn-secondary btn-lg">See How It Works</a>
+              </div>
+              <div class="hero-footnote">
+                No app required for the person who finds your pet.
+              </div>
+            </div>
+
+            <!-- Right Column: Happy Dog with QR Collar & Doodles -->
+            <div class="hero-col-right">
+              <div class="illustration-wrap">
+                <div id="heroRightIllustration"></div>
+                <div class="hero-bubble-tag">
+                  <span>🐶</span>
+                  <span>Milo · Reunited</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- How It Works: 3 Storybook Cards -->
+      <section id="how-it-works" class="how-it-works-section">
+        <div class="main-wrapper">
+          <div class="section-header-center">
+            <span class="eyebrow">THE RECOVERY FLOW</span>
+            <h2 class="section-heading">Three steps. One safer way home.</h2>
+            <p class="section-subtext">Designed to be effortlessly simple for you, and instantly accessible to whoever finds your pet.</p>
+          </div>
+
+          <div class="steps-grid">
+            <!-- 01 — Create -->
+            <div class="step-card step-blue">
+              <span class="step-badge">01 — CREATE</span>
+              <div class="step-art-container" id="stepArt1"></div>
+              <h3 class="step-title">Create your pet</h3>
+              <p class="step-desc">Add your pet's name, photo, details, and the best way to contact you. You control exactly what is shared.</p>
+            </div>
+
+            <!-- 02 — Tag -->
+            <div class="step-card step-orange">
+              <span class="step-badge">02 — TAG</span>
+              <div class="step-art-container" id="stepArt2"></div>
+              <h3 class="step-title">Get their QR tag</h3>
+              <p class="step-desc">Every pet gets a unique QR code that connects directly to their profile. Print or attach to any collar.</p>
+            </div>
+
+            <!-- 03 — Reunite -->
+            <div class="step-card step-green">
+              <span class="step-badge">03 — REUNITE</span>
+              <div class="step-art-container" id="stepArt3"></div>
+              <h3 class="step-title">Find their way home</h3>
+              <p class="step-desc">When someone scans the tag, they can quickly see the pet's profile and contact their owner with zero app required.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Interactive Collar Simulator & Test Scan -->
+      <section id="features" class="demo-collar-section">
+        <div class="main-wrapper">
+          <div class="demo-collar-card">
+            <div>
+              <span class="eyebrow">TRY IT RIGHT NOW</span>
+              <h2 class="section-heading" style="margin-bottom: 16px;">Scan Luna's tag to see how it works.</h2>
+              <p style="font-size: 16.5px; color: var(--body); margin-bottom: 24px; line-height: 1.6;">
+                Point your phone's camera at this tag or click the preview card. The finder is instantly taken to Luna's profile — without downloading an app or creating an account.
+              </p>
+              <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+                <a href="#p/luna-7x29" class="btn btn-primary">Open Luna's Public Profile →</a>
+                <button class="btn btn-secondary" onclick="window.location.hash='#dashboard'">Open Owner Dashboard</button>
+              </div>
+            </div>
+
+            <div class="collar-preview-box">
+              <div class="tag-interactive-preview" onclick="window.location.hash='#p/luna-7x29'" title="Click to test finder screen">
+                <div style="font-family: var(--font-display); font-weight: 800; font-size: 14px; margin-bottom: 12px;">🐾 MyPet</div>
+                <div id="landingCollarQr" style="display: flex; justify-content: center;"></div>
+                <div style="font-family: var(--font-display); font-size: 18px; font-weight: 800; margin-top: 10px;">LUNA</div>
+                <div style="font-size: 11.5px; color: var(--muted); font-weight: 600;">Scan me to reach my family</div>
+              </div>
+              <span class="tag-scan-hint">📷 Click or scan with your phone camera</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Safety & Privacy Section -->
+      <section id="safety" class="safety-section">
+        <div class="main-wrapper">
+          <div class="section-header-center">
+            <span class="eyebrow">TRUST & PRIVACY</span>
+            <h2 class="section-heading">Built with privacy and pet safety first.</h2>
+          </div>
+
+          <div class="safety-grid">
+            <div class="safety-item">
+              <span class="safety-icon">🔒</span>
+              <h3 class="safety-title">You control your information</h3>
+              <p class="safety-desc">Choose to show or hide your phone number and email. Finders can send secure messages without exposing your personal address.</p>
+            </div>
+
+            <div class="safety-item">
+              <span class="safety-icon">⚡</span>
+              <h3 class="safety-title">Zero friction for finders</h3>
+              <p class="safety-desc">Finders don't need to install an app, sign up, or fill out endless forms. A single scan reveals the pet's identity and one-tap call button.</p>
+            </div>
+
+            <div class="safety-item">
+              <span class="safety-icon">📍</span>
+              <h3 class="safety-title">Lost Mode alerts</h3>
+              <p class="safety-desc">If your pet wanders off, turn on Lost Mode with one tap. Public profiles switch to high-visibility alert mode with last-seen locations.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Storybook Footer -->
+      <footer id="about" style="border-top: 1px solid var(--border); padding: 60px 0 40px; text-align: center;">
+        <div class="main-wrapper">
+          <div style="font-family: var(--font-display); font-size: 24px; font-weight: 800; color: var(--ink); margin-bottom: 8px;">
+            🐾 MyPet
+          </div>
+          <p style="font-size: 16px; color: var(--heading); font-weight: 600; margin-bottom: 24px;">
+            A little tag. A big way home.
+          </p>
+          <div style="display: flex; justify-content: center; gap: 20px; font-size: 14px; color: var(--muted); margin-bottom: 24px;">
+            <a href="#landing" style="color: inherit; text-decoration: none;">Home</a>
+            <a href="#how-it-works" style="color: inherit; text-decoration: none;">How It Works</a>
+            <a href="#dashboard" style="color: inherit; text-decoration: none;">Dashboard</a>
+            <a href="#add-pet" style="color: inherit; text-decoration: none;">Create a Pet Tag</a>
+          </div>
+          <p style="font-size: 13px; color: var(--muted);">© 2026 MyPet Technologies. Crafted with warm cream paper aesthetic for pet families everywhere.</p>
+        </div>
+      </footer>
+    </div>
+
+
+    <!-- ====================================================================
+         VIEW 2: OWNER DASHBOARD
+         ==================================================================== -->
+    <div id="dashboardView" class="view-panel">
+      <div class="main-wrapper">
+        <div class="dashboard-header-bar">
+          <div class="dashboard-title-group">
+            <h1>Your pets</h1>
+            <p>Keep your pets' identities and tags in one place.</p>
+          </div>
+          <a href="#add-pet" class="btn btn-primary">+ Add Pet</a>
+        </div>
+
+        <!-- Pets List Grid -->
+        <div class="pets-grid" id="dashboardPetsGrid">
+          <!-- Dynamic storybook pet cards injected here -->
+        </div>
+
+        <!-- Activity & Recovery Feed -->
+        <div class="activity-feed-section">
+          <div class="activity-feed-header">
+            <div>
+              <h3 style="font-size: 20px; color: var(--ink);">Tag Scans & Activity</h3>
+              <p style="font-size: 14px; color: var(--muted);">Live record of tag scans and community finder reports</p>
+            </div>
+            <span class="status-badge active">LIVE SYNC</span>
+          </div>
+          <ul class="activity-list" id="dashboardActivityList">
+            <!-- Injected dynamically -->
+          </ul>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- ====================================================================
+         VIEW 3: ADD PET MULTI-STEP FLOW (5 STEPS)
+         ==================================================================== -->
+    <div id="addPetView" class="view-panel">
+      <div class="main-wrapper">
+        <div class="wizard-container">
+          
+          <!-- Step Progress Dots -->
+          <div class="wizard-progress">
+            <div class="wizard-progress-bar">
+              <div class="wizard-progress-fill" id="wizardProgressFill" style="width: 0%;"></div>
+            </div>
+            <div class="progress-dot active" data-step="1">1</div>
+            <div class="progress-dot" data-step="2">2</div>
+            <div class="progress-dot" data-step="3">3</div>
+            <div class="progress-dot" data-step="4">4</div>
+            <div class="progress-dot" data-step="5">5</div>
+          </div>
+
+          <!-- Step 1: Pet Name -->
+          <div class="wizard-step active" data-step="1">
+            <h2 class="wizard-heading">What's your pet's name?</h2>
+            <p class="wizard-subtext">Every great pet tag starts with their favorite name.</p>
+            <div class="form-group">
+              <label class="form-label" for="newPetName">Pet's Name</label>
+              <input type="text" id="newPetName" class="form-input" placeholder="e.g. Luna" value="Luna" autofocus />
+            </div>
+          </div>
+
+          <!-- Step 2: Species Selection -->
+          <div class="wizard-step" data-step="2">
+            <h2 class="wizard-heading">What kind of pet is <span class="dynamic-pet-name">Luna</span>?</h2>
+            <p class="wizard-subtext">Pick the category that best matches your companion.</p>
+            <div class="species-cards-grid">
+              <div class="species-card-option selected" data-species="cat">
+                <span class="species-icon">🐱</span>
+                <span class="species-name">Cat</span>
+              </div>
+              <div class="species-card-option" data-species="dog">
+                <span class="species-icon">🐶</span>
+                <span class="species-name">Dog</span>
+              </div>
+              <div class="species-card-option" data-species="rabbit">
+                <span class="species-icon">🐰</span>
+                <span class="species-name">Rabbit</span>
+              </div>
+              <div class="species-card-option" data-species="other">
+                <span class="species-icon">🐹</span>
+                <span class="species-name">Other</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 3: Attributes -->
+          <div class="wizard-step" data-step="3">
+            <h2 class="wizard-heading">Tell us a little about <span class="dynamic-pet-name">them</span></h2>
+            <p class="wizard-subtext">These details help a finder quickly confirm they have the right pet.</p>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+              <div class="form-group">
+                <label class="form-label" for="newPetBreed">Breed</label>
+                <input type="text" id="newPetBreed" class="form-input" placeholder="e.g. Domestic Shorthair" value="Domestic Shorthair" />
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="newPetSex">Sex</label>
+                <select id="newPetSex" class="form-select">
+                  <option value="Female">Female</option>
+                  <option value="Male">Male</option>
+                </select>
+              </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+              <div class="form-group">
+                <label class="form-label" for="newPetAge">Age</label>
+                <input type="text" id="newPetAge" class="form-input" placeholder="e.g. 3 years old" value="3 years old" />
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="newPetColor">Color & Coat</label>
+                <input type="text" id="newPetColor" class="form-input" placeholder="e.g. Gray and white" value="Gray and white" />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="newPetFeatures">Distinguishing features</label>
+              <textarea id="newPetFeatures" class="form-textarea" rows="2" placeholder="e.g. Friendly, green eyes, wearing a pink collar">Friendly, green eyes, wearing a pink collar</textarea>
+            </div>
+          </div>
+
+          <!-- Step 4: Photo Selection / Upload -->
+          <div class="wizard-step" data-step="4">
+            <h2 class="wizard-heading">Add a photo</h2>
+            <p class="wizard-subtext">A clear photo makes <span class="dynamic-pet-name">Luna</span> easier to recognize.</p>
+
+            <div class="avatar-upload-zone" onclick="document.getElementById('petPhotoUpload').click()">
+              <div id="uploadPreviewArea">
+                <div style="font-size: 40px; margin-bottom: 8px;">📷</div>
+                <strong style="color: var(--ink); font-size: 15px; display: block;">Upload your pet's photo</strong>
+                <span style="font-size: 13px; color: var(--muted);">Click to choose from your phone or computer</span>
+              </div>
+              <input type="file" id="petPhotoUpload" accept="image/*" style="display: none;" />
+            </div>
+
+            <div class="avatar-presets-label">Or choose an illustrated storybook avatar:</div>
+            <div class="avatar-presets-grid">
+              <button type="button" class="avatar-preset-btn selected" data-avatar="luna" title="Calico / White Cat">
+                <span style="font-size: 26px;">🐱</span>
+              </button>
+              <button type="button" class="avatar-preset-btn" data-avatar="milo" title="Golden Dog">
+                <span style="font-size: 26px;">🐶</span>
+              </button>
+              <button type="button" class="avatar-preset-btn" data-avatar="catDefault" title="Orange Tabby">
+                <span style="font-size: 26px;">🐈</span>
+              </button>
+              <button type="button" class="avatar-preset-btn" data-avatar="dogDefault" title="Beagle / Mixed">
+                <span style="font-size: 26px;">🐕</span>
+              </button>
+              <button type="button" class="avatar-preset-btn" data-avatar="rabbitDefault" title="Rabbit">
+                <span style="font-size: 26px;">🐰</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Step 5: Contact Preferences & Privacy -->
+          <div class="wizard-step" data-step="5">
+            <h2 class="wizard-heading">How should someone contact you?</h2>
+            <p class="wizard-subtext">You decide what information a finder sees when they scan the tag.</p>
+
+            <div class="form-group">
+              <label class="form-label" for="newPetPhone">Phone Number</label>
+              <input type="tel" id="newPetPhone" class="form-input" value="(555) 234-5678" placeholder="(555) 000-0000" />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="newPetEmail">Email Address</label>
+              <input type="email" id="newPetEmail" class="form-input" value="sarah@example.com" placeholder="name@example.com" />
+            </div>
+
+            <div class="privacy-toggle-card">
+              <div class="privacy-toggle-info">
+                <strong>Show phone number on public profile</strong>
+                <span>Allows finders to call you directly with one tap</span>
+              </div>
+              <input type="checkbox" id="newPetShowPhone" class="switch-input" checked />
+            </div>
+
+            <div class="privacy-toggle-card">
+              <div class="privacy-toggle-info">
+                <strong>Show email on public profile</strong>
+                <span>Allows finders to email you directly</span>
+              </div>
+              <input type="checkbox" id="newPetShowEmail" class="switch-input" />
+            </div>
+
+            <div class="privacy-toggle-card">
+              <div class="privacy-toggle-info">
+                <strong>Enable secure SMS / messaging relay</strong>
+                <span>Finders can message you through MyPet without seeing your number</span>
+              </div>
+              <input type="checkbox" id="newPetAllowRelay" class="switch-input" checked />
+            </div>
+          </div>
+
+          <!-- Wizard Footer Controls -->
+          <div class="wizard-footer">
+            <button type="button" class="btn btn-secondary" id="wizardBackBtn" onclick="App.wizardPrev()" style="visibility: hidden;">
+              ← Back
+            </button>
+            <button type="button" class="btn btn-primary" id="wizardNextBtn" onclick="App.wizardNext()">
+              Continue →
+            </button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+
+    <!-- ====================================================================
+         VIEW 4: QR TAG GENERATION SCREEN
+         ==================================================================== -->
+    <div id="qrTagView" class="view-panel printable-tag-area">
+      <div class="main-wrapper">
+        <div class="qr-tag-view-container">
+          <span class="eyebrow">TAG CREATED & ACTIVE</span>
+          <h1 id="qrPetTitle" class="hero-heading" style="font-size: 42px;">Luna's tag is ready.</h1>
+          <p style="font-size: 17px; color: var(--body); margin-top: 8px;">Scan this code to find your pet's public profile.</p>
+
+          <!-- Physical Tag Representation -->
+          <div id="qrDisplayMedallion">
+            <!-- Dynamic Physical Tag Graphic injected by JS -->
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="qr-actions-row no-print">
+            <button class="btn btn-primary" id="btnDownloadQr">⬇️ Download QR</button>
+            <button class="btn btn-secondary" id="btnPrintTag">🖨️ Print Tag</button>
+            <button class="btn btn-secondary" id="btnShareProfile">🔗 Share Profile</button>
+            <a href="#" class="btn btn-outline" id="btnTestFinderView">👁️ Test Finder View</a>
+          </div>
+
+          <div class="qr-hint-callout no-print">
+            <strong>Collar Tip:</strong> Keep the QR code visible and securely attached to your pet's collar. You can test scanning it at any time with your phone camera.
+          </div>
+
+          <!-- Hidden input for share link copying -->
+          <input type="hidden" id="qrShareInput" />
+        </div>
+      </div>
+    </div>
+
+
+    <!-- ====================================================================
+         VIEW 5: PUBLIC SCANNED-PET PROFILE (MOBILE-FIRST RECOVERY SCREEN)
+         ==================================================================== -->
+    <div id="publicProfileView" class="view-panel">
+      <div class="public-profile-viewport">
+        <div class="public-profile-card" id="publicProfileCard">
+          <!-- Dynamically populated public profile -->
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+
+  <!-- ====================================================================
+       MODAL 1: "I FOUND THIS PET" RECOVERY WORKFLOW
+       ==================================================================== -->
+  <div id="foundPetModal" class="modal-backdrop">
+    <div class="modal-dialog">
+      <button class="modal-close-btn" onclick="App.closeModal('foundPetModal')">✕</button>
+      
+      <div style="text-align: center; margin-bottom: 20px;">
+        <span style="font-size: 36px;">🐾</span>
+        <h2 style="font-size: 24px; color: var(--ink); margin-top: 8px;">You found <span id="foundModalPetName">Luna</span>!</h2>
+        <p style="font-size: 14.5px; color: var(--body); margin-top: 4px;">Is <span id="foundModalPetName">Luna</span> safe with you?</p>
+      </div>
+
+      <form onsubmit="App.submitFoundReport(event)">
+        <input type="hidden" id="foundPetIdInput" />
+
+        <div class="form-group">
+          <label class="form-label">Your Name</label>
+          <input type="text" id="finderNameInput" class="form-input" placeholder="e.g. Alex" required />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Your Phone Number</label>
+          <input type="tel" id="finderPhoneInput" class="form-input" placeholder="e.g. (555) 987-6543" required />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" style="display: flex; justify-content: space-between; align-items: center;">
+            <span>Current Location</span>
+            <button type="button" class="btn btn-secondary btn-sm" style="padding: 2px 8px; font-size: 11px;" onclick="App.useCurrentLocation()">
+              📍 Use Current GPS
+            </button>
+          </label>
+          <input type="text" id="finderLocationInput" class="form-input" placeholder="e.g. Corner of Elm & 5th Ave" required />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Note for the Owner</label>
+          <textarea id="finderMessageInput" class="form-textarea" rows="3" placeholder="e.g. Found her resting under our porch. She has water and is resting safely.">Found her safe near the park. Ready for pickup!</textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-lg" style="width: 100%;">
+          Send to Owner 🐾
+        </button>
+      </form>
+    </div>
+  </div>
+
+
+  <!-- ====================================================================
+       MODAL 2: LOST PET MODE TOGGLE
+       ==================================================================== -->
+  <div id="lostModeModal" class="modal-backdrop">
+    <div class="modal-dialog">
+      <button class="modal-close-btn" onclick="App.closeModal('lostModeModal')">✕</button>
+      
+      <div style="margin-bottom: 20px;">
+        <span class="eyebrow" style="color: var(--red);">EMERGENCY RECOVERY</span>
+        <h2 style="font-size: 24px; color: var(--ink);">Mark <span id="lostModalPetName">Luna</span> as Lost</h2>
+        <p style="font-size: 14.5px; color: var(--body); margin-top: 4px;">This updates the public QR profile to show missing alerts and last-seen instructions.</p>
+      </div>
+
+      <form onsubmit="App.saveLostMode(event)">
+        <input type="hidden" id="lostPetIdInput" />
+
+        <div class="form-group">
+          <label class="form-label">Last seen location</label>
+          <input type="text" id="lostLocationInput" class="form-input" placeholder="e.g. Oakland Ave & 4th St" required />
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+          <div class="form-group">
+            <label class="form-label">Last seen date</label>
+            <input type="text" id="lostDateInput" class="form-input" placeholder="Today" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Last seen time</label>
+            <input type="text" id="lostTimeInput" class="form-input" placeholder="6:30 PM" required />
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-danger btn-lg" style="width: 100%; margin-top: 10px;">
+          Activate Lost Mode 🔴
+        </button>
+      </form>
+    </div>
+  </div>
+
+
+  <!-- ====================================================================
+       MODAL 3: EDIT PET PROFILE
+       ==================================================================== -->
+  <div id="editPetModal" class="modal-backdrop">
+    <div class="modal-dialog">
+      <button class="modal-close-btn" onclick="App.closeModal('editPetModal')">✕</button>
+      
+      <h2 style="font-size: 22px; color: var(--ink); margin-bottom: 16px;">Edit Pet Profile</h2>
+
+      <form onsubmit="App.savePetEdits(event)">
+        <input type="hidden" id="editPetId" />
+
+        <div class="form-group">
+          <label class="form-label">Name</label>
+          <input type="text" id="editPetName" class="form-input" required />
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+          <div class="form-group">
+            <label class="form-label">Breed</label>
+            <input type="text" id="editPetBreed" class="form-input" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Age</label>
+            <input type="text" id="editPetAge" class="form-input" required />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Features</label>
+          <input type="text" id="editPetFeatures" class="form-input" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Medical Notes</label>
+          <input type="text" id="editPetMedical" class="form-input" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Owner Contact Phone</label>
+          <input type="tel" id="editOwnerPhone" class="form-input" required />
+        </div>
+
+        <div class="privacy-toggle-card">
+          <div class="privacy-toggle-info">
+            <strong>Public Phone Visibility</strong>
+            <span>Display phone number on QR scan</span>
+          </div>
+          <input type="checkbox" id="editShowPhone" class="switch-input" />
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 14px;">
+          Save Changes
+        </button>
+      </form>
+    </div>
+  </div>
+
+
+  <!-- ====================================================================
+       MODAL 4: 1-CLICK LOST PET POSTER & SOCIAL FLYER GENERATOR
+       ==================================================================== -->
+  <div id="lostPosterModal" class="modal-backdrop">
+    <div class="modal-dialog poster-modal-dialog">
+      <button class="modal-close-btn no-print" onclick="App.closeModal('lostPosterModal')">✕</button>
+
+      <div class="no-print" style="margin-bottom: 16px;">
+        <span class="eyebrow" style="color: var(--red);">NEIGHBORHOOD & SOCIAL FLYERS</span>
+        <h2 style="font-size: 24px; color: var(--ink);">Lost Pet Poster & Flyer Generator</h2>
+        <p style="font-size: 14px; color: var(--body); margin-top: 2px;">
+          Instant printable flyer with tear-off phone tabs and social media graphics.
+        </p>
+      </div>
+
+      <div class="poster-builder-layout">
+        <!-- Controls Column -->
+        <div class="poster-controls-col no-print">
+          <div class="form-group">
+            <label class="form-label">Poster Headline</label>
+            <input type="text" id="posterHeadlineInput" class="form-input" value="MISSING CAT" oninput="MyPetPoster.updateOption('headline', this.value)" />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Reward Notice</label>
+            <input type="text" id="posterRewardInput" class="form-input" value="$250 REWARD" placeholder="e.g. $250 REWARD or Leave empty" oninput="MyPetPoster.updateOption('reward', this.value)" />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Primary Contact Phone</label>
+            <input type="tel" id="posterPhoneInput" class="form-input" value="(555) 234-5678" oninput="MyPetPoster.updateOption('contactPhone', this.value)" />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Secondary / Backup Phone (Optional)</label>
+            <input type="tel" id="posterPhone2Input" class="form-input" placeholder="(555) 987-6543" oninput="MyPetPoster.updateOption('secondaryPhone', this.value)" />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Last Seen Location & Time</label>
+            <input type="text" id="posterLastSeenInput" class="form-input" value="Oakland Ave & 4th St" oninput="MyPetPoster.updateOption('lastSeen', this.value)" />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Key Traits & Temperament</label>
+            <textarea id="posterNotesInput" class="form-textarea" rows="3" oninput="MyPetPoster.updateOption('notes', this.value)">Very friendly, green eyes, wearing pink collar. May be timid around dogs. Please do not chase.</textarea>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 20px;">
+            <button class="btn btn-primary" onclick="MyPetPoster.printPoster()">
+              🖨️ Print Street Poster (8.5×11")
+            </button>
+            <button class="btn btn-secondary" onclick="MyPetPoster.downloadFlyerAsPng()">
+              ⬇️ Download Graphic (PNG)
+            </button>
+            <button class="btn btn-outline" onclick="MyPetPoster.copySocialCaption()">
+              📋 Copy Social Media Caption
+            </button>
+          </div>
+        </div>
+
+        <!-- Live Preview Column -->
+        <div class="poster-preview-col">
+          <div class="format-switcher-tabs no-print">
+            <button class="format-tab-btn active" id="tabStreet" onclick="App.switchPosterTab('street')">
+              🪧 Street Poster (8.5×11")
+            </button>
+            <button class="format-tab-btn" id="tabSquare" onclick="App.switchPosterTab('square')">
+              📱 Social Square (1:1)
+            </button>
+            <button class="format-tab-btn" id="tabStory" onclick="App.switchPosterTab('story')">
+              📖 Story (9:16)
+            </button>
+          </div>
+
+          <!-- Dynamic Output Target -->
+          <div id="posterPreviewTarget" style="width: 100%; display: flex; justify-content: center;">
+            <!-- Rendered by MyPetPoster -->
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- Toast Notification Container -->
+  <div id="toastNotice" class="toast-notice"></div>
+
+  <!-- Scripts -->
+  <script src="js/qr.js"></script>
+  <script src="js/illustrations.js"></script>
+  <script src="js/poster.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
