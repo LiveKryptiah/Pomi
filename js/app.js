@@ -138,8 +138,7 @@
       return null;
     },
     isLoggedIn: function() {
-      const auth = localStorage.getItem('mypet_auth');
-      return auth === null ? true : auth === 'true';
+      return localStorage.getItem('mypet_auth') === 'true';
     },
     setLoggedIn: function(status) {
       localStorage.setItem('mypet_auth', status ? 'true' : 'false');
@@ -172,7 +171,10 @@
         Store.savePets(DEFAULT_PETS);
       }
       if (!localStorage.getItem('mypet_activities')) {
-        Store.savePets(DEFAULT_PETS);
+        localStorage.setItem('mypet_activities', JSON.stringify(DEFAULT_ACTIVITIES));
+      }
+      if (localStorage.getItem('mypet_auth') === null) {
+        Store.setLoggedIn(true);
       }
 
       // Inject SVGs into hero and how-it-works
@@ -234,44 +236,47 @@
       document.querySelectorAll('.view-panel').forEach(el => el.classList.remove('active'));
 
       if (!hash || hash === 'landing') {
-        document.body.classList.remove('dashboard-mode');
         App.showView('landingView');
         window.scrollTo({ top: 0, behavior: 'smooth' });
       } else if (hash === 'login') {
-        document.body.classList.remove('dashboard-mode');
         App.showView('loginView');
         window.scrollTo({ top: 0, behavior: 'smooth' });
       } else if (hash === 'create-tag') {
-        document.body.classList.remove('dashboard-mode');
+        // When creating a pet tag: show login form if not logged in; after login route to dashboard
         if (!Store.isLoggedIn()) {
           App.showView('loginView');
         } else {
-          window.location.hash = '#add-pet';
+          App.showView('dashboardView');
+          App.renderDashboard();
         }
         window.scrollTo({ top: 0, behavior: 'smooth' });
       } else if (hash === 'dashboard') {
-        document.body.classList.add('dashboard-mode');
-        App.showView('dashboardView');
-        App.renderDashboard();
+        if (!Store.isLoggedIn()) {
+          App.showView('loginView');
+        } else {
+          App.showView('dashboardView');
+          App.renderDashboard();
+        }
+        window.scrollTo({ top: 0, behavior: 'smooth' });
       } else if (hash === 'add-pet') {
-        document.body.classList.remove('dashboard-mode');
-        App.showView('addPetView');
-        App.resetAddPetWizard();
+        if (!Store.isLoggedIn()) {
+          App.showView('loginView');
+        } else {
+          App.showView('addPetView');
+          App.resetAddPetWizard();
+        }
         window.scrollTo({ top: 0, behavior: 'smooth' });
       } else if (hash.startsWith('pets/') && hash.endsWith('/qr')) {
-        document.body.classList.remove('dashboard-mode');
         const petId = hash.split('/')[1];
         App.showView('qrTagView');
         App.renderQrTagView(petId);
         window.scrollTo({ top: 0, behavior: 'smooth' });
       } else if (hash.startsWith('p/')) {
-        document.body.classList.remove('dashboard-mode');
         const petCode = hash.split('/')[1];
         App.showView('publicProfileView');
         App.renderPublicProfile(petCode);
         window.scrollTo({ top: 0, behavior: 'smooth' });
       } else {
-        document.body.classList.remove('dashboard-mode');
         App.showView('landingView');
       }
 
@@ -286,27 +291,133 @@
 
     updateNav: function() {
       const hash = App.currentRoute;
-      const demoRoleBtn = document.getElementById('demoRoleSwitcher');
-      if (demoRoleBtn) {
-        if (hash.startsWith('p/')) {
-          demoRoleBtn.innerHTML = `<span>${window.AppIcons.get('user')} Finder View</span> · Switch to Owner`;
-          demoRoleBtn.onclick = () => window.location.hash = '#dashboard';
+      const isLoggedIn = Store.isLoggedIn();
+      const pets = Store.getPets();
+      const petCount = pets ? pets.length : 0;
+
+      // Check if the current route is in the owner dashboard area
+      const isDashboardArea = (
+        hash === 'dashboard' ||
+        hash === 'add-pet' ||
+        (hash.startsWith('pets/') && hash.endsWith('/qr'))
+      );
+
+      const navLinksPublic = document.getElementById('navLinksPublic');
+      const navLinksDashboard = document.getElementById('navLinksDashboard');
+      const navActionsPublic = document.getElementById('navActionsPublic');
+      const navActionsDashboard = document.getElementById('navActionsDashboard');
+      const brandLogo = document.getElementById('headerBrandLogo');
+
+      // Update brand logo destination
+      if (brandLogo) {
+        brandLogo.href = (isLoggedIn && isDashboardArea) ? '#dashboard' : '#landing';
+      }
+
+      // 1. Navigation links: in dashboard views show dashboard nav items, else public marketing anchors
+      if (isLoggedIn && isDashboardArea) {
+        if (navLinksPublic) navLinksPublic.style.display = 'none';
+        if (navLinksDashboard) navLinksDashboard.style.display = 'flex';
+      } else {
+        if (navLinksPublic) navLinksPublic.style.display = 'flex';
+        if (navLinksDashboard) navLinksDashboard.style.display = 'none';
+      }
+
+      // 2. Active highlight on dashboard links
+      const navLinkDashboard = document.getElementById('navLinkDashboard');
+      const navLinkAddPet = document.getElementById('navLinkAddPet');
+      if (navLinkDashboard) {
+        if (hash === 'dashboard') {
+          navLinkDashboard.classList.add('active');
         } else {
-          demoRoleBtn.innerHTML = `<span>${window.AppIcons.get('cat')} Sarah (Owner)</span> · Test Finder Scan`;
-          demoRoleBtn.onclick = () => window.location.hash = '#p/luna-7x29';
+          navLinkDashboard.classList.remove('active');
+        }
+      }
+      if (navLinkAddPet) {
+        if (hash === 'add-pet') {
+          navLinkAddPet.classList.add('active');
+        } else {
+          navLinkAddPet.classList.remove('active');
         }
       }
 
-      const isLoggedIn = Store.isLoggedIn();
-      const navDashboardLink = document.getElementById('navDashboardLink');
-      if (navDashboardLink) {
-        navDashboardLink.style.display = isLoggedIn ? 'inline-flex' : 'none';
+      // 3. Navigation actions: show user profile trigger & add button when logged in
+      if (isLoggedIn) {
+        if (navActionsPublic) navActionsPublic.style.display = 'none';
+        if (navActionsDashboard) navActionsDashboard.style.display = 'flex';
+
+        // Update live pet counts & status in dropdown and badges
+        const navPetCountBadge = document.getElementById('navPetCountBadge');
+        if (navPetCountBadge) navPetCountBadge.textContent = petCount;
+
+        const dropdownBadgeCount = document.getElementById('dropdownBadgeCount');
+        if (dropdownBadgeCount) dropdownBadgeCount.textContent = petCount;
+
+        const dropdownPetsStatus = document.getElementById('dropdownPetsStatus');
+        if (dropdownPetsStatus) {
+          dropdownPetsStatus.textContent = `${petCount} Pet${petCount === 1 ? '' : 's'} Protected`;
+        }
+      } else {
+        if (navActionsPublic) navActionsPublic.style.display = 'flex';
+        if (navActionsDashboard) navActionsDashboard.style.display = 'none';
       }
 
-      const navAuthBtn = document.getElementById('navAuthBtn');
-      if (navAuthBtn) {
-        navAuthBtn.innerText = isLoggedIn ? 'Log Out' : 'Sign In';
-        navAuthBtn.title = isLoggedIn ? 'Sign out of owner account' : 'Sign in to owner account';
+      // Keep user dropdown closed on route transition
+      App.closeUserDropdown();
+
+      // Demo role switcher button (if present)
+      const demoRoleBtn = document.getElementById('demoRoleSwitcher');
+      if (demoRoleBtn) {
+        if (hash.startsWith('p/')) {
+          demoRoleBtn.innerHTML = `<span>${window.AppIcons ? window.AppIcons.get('user') : ''} Finder View</span> · Switch to Owner`;
+          demoRoleBtn.onclick = () => window.location.hash = '#dashboard';
+        } else {
+          demoRoleBtn.innerHTML = `<span>${window.AppIcons ? window.AppIcons.get('cat') : ''} Sarah (Owner)</span> · Test Finder Scan`;
+          demoRoleBtn.onclick = () => window.location.hash = '#p/luna-7x29';
+        }
+      }
+    },
+
+    toggleUserDropdown: function(e) {
+      if (e) {
+        e.stopPropagation();
+        e.preventDefault();
+      }
+      const dropdown = document.getElementById('userNavDropdown');
+      const trigger = document.getElementById('userProfileTrigger');
+      if (dropdown) {
+        const isOpen = dropdown.classList.toggle('open');
+        if (trigger) {
+          trigger.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+        }
+      }
+    },
+
+    closeUserDropdown: function() {
+      const dropdown = document.getElementById('userNavDropdown');
+      const trigger = document.getElementById('userProfileTrigger');
+      if (dropdown && dropdown.classList.contains('open')) {
+        dropdown.classList.remove('open');
+        if (trigger) {
+          trigger.setAttribute('aria-expanded', 'false');
+        }
+      }
+    },
+
+    scrollToActivity: function(e) {
+      if (e && e.preventDefault) e.preventDefault();
+      App.closeUserDropdown();
+      const doScroll = () => {
+        const feed = document.querySelector('.activity-feed-section') || document.getElementById('dashboardActivityList');
+        if (feed) {
+          feed.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      };
+
+      if (App.currentRoute !== 'dashboard') {
+        window.location.hash = '#dashboard';
+        setTimeout(doScroll, 160);
+      } else {
+        doScroll();
       }
     },
 
@@ -367,25 +478,6 @@
       const pets = Store.getPets();
       const grid = document.getElementById('dashboardPetsGrid');
       if (!grid) return;
-
-      // Update sidebar and topbar stats/badges
-      const petCountEl = document.getElementById('sidebarPetCountBadge');
-      if (petCountEl) petCountEl.textContent = pets.length;
-
-      const topbarPetCount = document.getElementById('topbarPetCount');
-      if (topbarPetCount) topbarPetCount.textContent = pets.length;
-
-      const topbarActiveCount = document.getElementById('topbarActiveCount');
-      if (topbarActiveCount) {
-        const activeCount = pets.filter(p => !p.isLost).length;
-        topbarActiveCount.textContent = activeCount;
-      }
-
-      const scanBadge = document.getElementById('sidebarScanBadge');
-      if (scanBadge) {
-        const activities = Store.getActivities();
-        scanBadge.textContent = activities.length;
-      }
 
       grid.innerHTML = pets.map(pet => {
         const avatarMarkup = App.getPetAvatarMarkup(pet);
@@ -476,65 +568,6 @@
           </li>
         `;
       }).join('');
-    },
-
-    toggleDashboardSidebar: function() {
-      const sidebar = document.getElementById('dashboardSidebar');
-      if (sidebar) {
-        sidebar.classList.toggle('mobile-open');
-      }
-    },
-
-    handleLogout: function() {
-      Store.setLoggedIn(false);
-      showToast('You have been signed out.');
-      document.body.classList.remove('dashboard-mode');
-      App.updateNav();
-      window.location.hash = '#landing';
-    },
-
-    openPetQrFromSidebar: function() {
-      const pets = Store.getPets();
-      if (pets && pets.length > 0) {
-        window.location.hash = `#pets/${pets[0].id}/qr`;
-      } else {
-        showToast('No pets found. Create a pet first!');
-      }
-    },
-
-    openLostPosterFromSidebar: function() {
-      const pets = Store.getPets();
-      if (pets && pets.length > 0) {
-        App.openLostPosterModal(pets[0].id);
-      } else {
-        showToast('No pets found. Create a pet first!');
-      }
-    },
-
-    switchDashboardSection: function(section) {
-      // Highlight sidebar active item
-      const navItems = document.querySelectorAll('.dashboard-sidebar .sidebar-nav-item');
-      navItems.forEach(item => item.classList.remove('active'));
-
-      if (section === 'pets') {
-        const petsNav = document.querySelector('.dashboard-sidebar a[href="#dashboard"]');
-        if (petsNav) petsNav.classList.add('active');
-        const grid = document.getElementById('dashboardPetsGrid');
-        if (grid) {
-          grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-      } else if (section === 'activity') {
-        const activityItem = document.getElementById('dashboardActivitySection');
-        if (activityItem) {
-          activityItem.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-      }
-
-      // Close mobile sidebar if open
-      const sidebar = document.getElementById('dashboardSidebar');
-      if (sidebar && sidebar.classList.contains('mobile-open')) {
-        sidebar.classList.remove('mobile-open');
-      }
     },
 
     // =========================================================================
@@ -1105,6 +1138,7 @@
 
       pets.push(newPet);
       Store.savePets(pets);
+      App.updateNav();
 
       showToast(`Created QR tag for ${newPet.name}!`);
       // Route immediately to the newly generated QR Tag page
@@ -1117,6 +1151,26 @@
         modal.addEventListener('click', (e) => {
           if (e.target === modal) modal.classList.remove('active');
         });
+      });
+
+      // Close user dropdown when clicking anywhere outside
+      document.addEventListener('click', (e) => {
+        const userDropdown = document.getElementById('userNavDropdown');
+        if (userDropdown && userDropdown.classList.contains('open')) {
+          if (!userDropdown.contains(e.target)) {
+            App.closeUserDropdown();
+          }
+        }
+      });
+
+      // Close dropdown or modals on Escape key
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          App.closeUserDropdown();
+          document.querySelectorAll('.modal-backdrop.active').forEach(modal => {
+            modal.classList.remove('active');
+          });
+        }
       });
     }
   };
