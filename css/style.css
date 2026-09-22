@@ -522,7 +522,7 @@ h1, h2, h3, h4, .font-display {
   justify-content: center;
   gap: 16px;
   flex-wrap: wrap;
-  margin-bottom: 48px;
+  margin-bottom: 24px;
 }
 
 /* Hero Gradient Banner:
