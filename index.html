@@ -11,7 +11,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Plus+Jakarta+Sans:wght@500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
   
   <!-- Geniestudio Stylesheet -->
-  <link rel="stylesheet" href="css/style.css?v=47">
+  <link rel="stylesheet" href="css/style.css?v=48">
   <link rel="icon" type="image/png" href="images/logo.png">
   <script src="js/icons.js"></script>
 </head>
@@ -1036,30 +1036,34 @@
         </div>
       </aside>
 
-      <!-- Main Dashboard Content Area -->
+      <!-- Main Dashboard Content Area (Clean Canvas - No Top Navigation) -->
       <div class="dashboard-main-content">
-        <!-- Topbar inside Dashboard -->
-        <header class="dashboard-topbar">
-          <button type="button" class="mobile-sidebar-toggle" onclick="App.toggleDashboardSidebar()" aria-label="Toggle Sidebar">
-            <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-          </button>
-
-          <div class="dashboard-topbar-title">
-            <h2>Your pets</h2>
-            <p>Keep your companions' identities, tags, and scan records in one place.</p>
-          </div>
-
-          <div class="dashboard-topbar-actions">
-            <div class="dashboard-stats-strip">
-              <span class="stat-pill"><strong id="topbarPetCount">2</strong> Pets</span>
-              <span class="stat-pill stat-safe"><span class="stat-dot"></span> <strong id="topbarActiveCount">2</strong> Active Tags</span>
-            </div>
-            <a href="#add-pet" class="btn btn-primary btn-sm">+ Add Pet</a>
-          </div>
-        </header>
-
         <!-- Scrollable Dashboard Content -->
         <div class="dashboard-body-scroll">
+          <!-- Mobile Sidebar Drawer Trigger (only visible on mobile) -->
+          <div class="dashboard-mobile-bar">
+            <button type="button" class="mobile-sidebar-toggle" onclick="App.toggleDashboardSidebar()" aria-label="Toggle Sidebar">
+              <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+              <span>Sidebar Menu</span>
+            </button>
+          </div>
+
+          <!-- Clean In-Page Content Header (No Top Navigation Bar) -->
+          <div class="dashboard-content-header">
+            <div class="dashboard-content-title">
+              <h1>Your pets</h1>
+              <p>Keep your companions' identities, tags, and scan records in one place.</p>
+            </div>
+
+            <div class="dashboard-content-actions">
+              <div class="dashboard-stats-strip">
+                <span class="stat-pill"><strong id="topbarPetCount">2</strong> Pets</span>
+                <span class="stat-pill stat-safe"><span class="stat-dot"></span> <strong id="topbarActiveCount">2</strong> Active Tags</span>
+              </div>
+              <a href="#add-pet" class="btn btn-primary">+ Add Pet</a>
+            </div>
+          </div>
+
           <!-- Pets List Grid -->
           <div class="pets-grid" id="dashboardPetsGrid">
             <!-- Dynamic pet cards injected here by App.renderDashboard() -->
