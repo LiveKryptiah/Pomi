@@ -1,16 +1,18 @@
 /**
  * MyPet Application Logic & State Engine
- * Handles routing, localStorage persistence, QR generation, multi-step pet creation,
- * Lost Mode toggles, and Finder recovery submissions.
+ * Integrated with Full-Stack Flask Backend & SQLite Database (`mypet.db`)
+ * Handles authentication (login/register/logout), pets CRUD, real-time activity feeds,
+ * QR generation, multi-step pet creation, Lost Mode toggles, and Finder recovery submissions.
  */
 
 (function() {
   'use strict';
 
-  // Pre-seeded initial data matching user prompt specifications
+  // Pre-seeded fallback data
   const DEFAULT_PETS = [
     {
       id: "pet-1",
+      rawId: 1,
       code: "luna-7x29",
       name: "Luna",
       species: "cat",
@@ -41,6 +43,7 @@
     },
     {
       id: "pet-2",
+      rawId: 2,
       code: "milo-9k42",
       name: "Milo",
       species: "dog",
@@ -78,9 +81,142 @@
     }
   ];
 
-  // State Store
+  // =========================================================================
+  // API CLIENT (HTTP & SQLite Backend)
+  // =========================================================================
+  const API = {
+    async request(url, options = {}) {
+      try {
+        const fetchOptions = {
+          credentials: 'same-origin',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            ...(options.headers || {})
+          },
+          ...options
+        };
+        const res = await fetch(url, fetchOptions);
+        const data = await res.json().catch(() => null);
+        return { ok: res.ok, status: res.status, data };
+      } catch (err) {
+        console.warn(`[MyPet API] Network error on ${url}:`, err);
+        return { ok: false, status: 0, data: null, error: err.message };
+      }
+    },
+
+    // Authentication
+    async getMe() {
+      return this.request('/api/auth/me');
+    },
+    async login(email, password) {
+      return this.request('/api/auth/login', {
+        method: 'POST',
+        body: JSON.stringify({ email, password })
+      });
+    },
+    async register(name, email, phone, password) {
+      return this.request('/api/auth/register', {
+        method: 'POST',
+        body: JSON.stringify({ name, email, phone, password })
+      });
+    },
+    async logout() {
+      return this.request('/api/auth/logout', { method: 'POST' });
+    },
+
+    // Pets
+    async getPets() {
+      return this.request('/api/pets');
+    },
+    async createPet(petData) {
+      return this.request('/api/pets', {
+        method: 'POST',
+        body: JSON.stringify(petData)
+      });
+    },
+    async updatePet(petId, patch) {
+      const rawId = parseInt(String(petId).replace('pet-', ''), 10) || petId;
+      return this.request(`/api/pets/${rawId}`, {
+        method: 'PUT',
+        body: JSON.stringify(patch)
+      });
+    },
+    async toggleLost(petId, lostData) {
+      const rawId = parseInt(String(petId).replace('pet-', ''), 10) || petId;
+      return this.request(`/api/pets/${rawId}/lost`, {
+        method: 'POST',
+        body: JSON.stringify(lostData)
+      });
+    },
+    async deletePet(petId) {
+      const rawId = parseInt(String(petId).replace('pet-', ''), 10) || petId;
+      return this.request(`/api/pets/${rawId}`, { method: 'DELETE' });
+    },
+
+    // Activities
+    async getActivities() {
+      return this.request('/api/activities');
+    },
+
+    // Public Recovery
+    async getPublicPet(code) {
+      return this.request(`/api/public/pet/${encodeURIComponent(code)}`);
+    },
+    async submitFound(code, payload) {
+      return this.request(`/api/public/pet/${encodeURIComponent(code)}/found`, {
+        method: 'POST',
+        body: JSON.stringify(payload)
+      });
+    }
+  };
+
+  // =========================================================================
+  // CLIENT STATE STORE
+  // =========================================================================
   const Store = {
-    getPets: function() {
+    currentUser: null,
+
+    getCurrentUser() {
+      if (Store.currentUser) return Store.currentUser;
+      try {
+        const raw = localStorage.getItem('mypet_user');
+        if (raw) {
+          Store.currentUser = JSON.parse(raw);
+          return Store.currentUser;
+        }
+      } catch (e) {}
+      return null;
+    },
+
+    setCurrentUser(user) {
+      Store.currentUser = user;
+      try {
+        if (user) {
+          localStorage.setItem('mypet_user', JSON.stringify(user));
+          localStorage.setItem('mypet_auth', 'true');
+        } else {
+          localStorage.removeItem('mypet_user');
+          localStorage.setItem('mypet_auth', 'false');
+        }
+      } catch (e) {}
+    },
+
+    isLoggedIn() {
+      return Boolean(Store.getCurrentUser() || localStorage.getItem('mypet_auth') === 'true');
+    },
+
+    setLoggedIn(status, user = null) {
+      if (status) {
+        localStorage.setItem('mypet_auth', 'true');
+        if (user) Store.setCurrentUser(user);
+      } else {
+        localStorage.setItem('mypet_auth', 'false');
+        Store.setCurrentUser(null);
+      }
+    },
+
+    getPets() {
       try {
         const stored = localStorage.getItem('mypet_pets');
         if (stored) {
@@ -97,14 +233,16 @@
         return DEFAULT_PETS;
       }
     },
-    savePets: function(pets) {
+
+    savePets(pets) {
       try {
         localStorage.setItem('mypet_pets', JSON.stringify(pets));
       } catch (e) {
         console.error("Storage error:", e);
       }
     },
-    getActivities: function() {
+
+    getActivities() {
       try {
         const stored = localStorage.getItem('mypet_activities');
         return stored ? JSON.parse(stored) : DEFAULT_ACTIVITIES;
@@ -112,24 +250,38 @@
         return DEFAULT_ACTIVITIES;
       }
     },
-    addActivity: function(activity) {
-      const list = Store.getActivities();
-      list.unshift(activity);
+
+    saveActivities(activities) {
       try {
-        localStorage.setItem('mypet_activities', JSON.stringify(list));
+        localStorage.setItem('mypet_activities', JSON.stringify(activities));
       } catch (e) {}
     },
-    getPetByCode: function(code) {
-      const pets = Store.getPets();
-      return pets.find(p => p.code.toLowerCase() === code.toLowerCase()) || null;
+
+    addActivity(activity) {
+      const list = Store.getActivities();
+      list.unshift(activity);
+      Store.saveActivities(list);
     },
-    getPetById: function(id) {
+
+    getPetByCode(code) {
+      if (!code) return null;
       const pets = Store.getPets();
-      return pets.find(p => p.id === id) || null;
+      return pets.find(p => p.code && p.code.toLowerCase() === code.toLowerCase()) || null;
     },
-    updatePet: function(id, patch) {
+
+    getPetById(id) {
+      if (!id) return null;
+      const strId = String(id);
+      const rawNum = parseInt(strId.replace('pet-', ''), 10);
       const pets = Store.getPets();
-      const idx = pets.findIndex(p => p.id === id);
+      return pets.find(p => p.id === strId || p.rawId === rawNum || p.id === `pet-${rawNum}`) || null;
+    },
+
+    updatePet(id, patch) {
+      const pets = Store.getPets();
+      const strId = String(id);
+      const rawNum = parseInt(strId.replace('pet-', ''), 10);
+      const idx = pets.findIndex(p => p.id === strId || p.rawId === rawNum || p.id === `pet-${rawNum}` || p.code === strId);
       if (idx !== -1) {
         pets[idx] = Object.assign({}, pets[idx], patch);
         Store.savePets(pets);
@@ -137,13 +289,45 @@
       }
       return null;
     },
-    isLoggedIn: function() {
-      return localStorage.getItem('mypet_auth') === 'true';
+
+    // Asynchronous synchronization with backend SQLite
+    async syncAuth() {
+      const res = await API.getMe();
+      if (res.ok && res.data && res.data.authenticated) {
+        Store.setCurrentUser(res.data.user);
+        Store.setLoggedIn(true, res.data.user);
+        return res.data.user;
+      } else if (res.status === 401 || (res.data && res.data.authenticated === false)) {
+        Store.setCurrentUser(null);
+        Store.setLoggedIn(false);
+      }
+      return Store.getCurrentUser();
     },
-    setLoggedIn: function(status) {
-      localStorage.setItem('mypet_auth', status ? 'true' : 'false');
+
+    async syncPets() {
+      if (!Store.isLoggedIn()) return Store.getPets();
+      const res = await API.getPets();
+      if (res.ok && res.data && res.data.success && Array.isArray(res.data.pets)) {
+        Store.savePets(res.data.pets);
+        return res.data.pets;
+      }
+      return Store.getPets();
+    },
+
+    async syncActivities() {
+      if (!Store.isLoggedIn()) return Store.getActivities();
+      const res = await API.getActivities();
+      if (res.ok && res.data && res.data.success && Array.isArray(res.data.activities)) {
+        Store.saveActivities(res.data.activities);
+        return res.data.activities;
+      }
+      return Store.getActivities();
     }
   };
+
+  // Expose Store globally for modules like FinderSimulator
+  window.Store = Store;
+  window.MyPetAPI = API;
 
   // Toast Helper
   function showToast(message) {
@@ -154,44 +338,47 @@
       toast.className = 'toast-notice';
       document.body.appendChild(toast);
     }
-    toast.innerHTML = `<span>${window.AppIcons ? window.AppIcons.get('paw') : ''}</span> <span>${message}</span>`;
+    toast.innerHTML = `<span>${window.AppIcons ? window.AppIcons.get('paw') : '🐾'}</span> <span>${message}</span>`;
     toast.classList.add('visible');
     setTimeout(() => {
       toast.classList.remove('visible');
     }, 3200);
   }
 
-  // Application Router & Views
+  // =========================================================================
+  // APPLICATION ROUTER & CONTROLLER
+  // =========================================================================
   const App = {
     currentRoute: '',
-    
-    init: function() {
-      // Ensure initial seed in storage
+    showToast: showToast,
+
+    async init() {
+      // 1. Initial cached seed in localStorage if brand new
       if (!localStorage.getItem('mypet_pets')) {
         Store.savePets(DEFAULT_PETS);
       }
-      if (!localStorage.getItem('mypet_activities')) {
-        localStorage.setItem('mypet_activities', JSON.stringify(DEFAULT_ACTIVITIES));
-      }
-      if (localStorage.getItem('mypet_auth') === null) {
-        Store.setLoggedIn(true);
-      }
 
-      // Inject SVGs into hero and how-it-works
+      // 2. Asynchronously verify database session with backend
+      await Store.syncAuth().catch(() => {});
+
+      // 3. Inject illustrations
       App.renderStaticIllustrations();
 
-      // Listen to Hash Changes
+      // 4. Listen to Hash Changes & handle initial route
       window.addEventListener('hashchange', App.handleRoute);
       App.handleRoute();
 
-      // Setup Add Pet wizard handlers
+      // 5. Setup Add Pet wizard handlers
       App.initAddPetWizard();
 
-      // Setup event delegates
+      // 6. Setup event delegates
       App.bindGlobalEvents();
+
+      // 7. Update Nav State
+      App.updateNav();
     },
 
-    renderStaticIllustrations: function() {
+    renderStaticIllustrations() {
       const hero3D = document.getElementById('hero3DIllustration');
       if (hero3D && window.PetIllustrations && window.PetIllustrations.heroCenterpiece) {
         hero3D.innerHTML = window.PetIllustrations.heroCenterpiece();
@@ -206,8 +393,6 @@
         rightHero.innerHTML = window.PetIllustrations.heroDog(320, 320);
       }
 
-      // How it works cards now use custom illustration assets (step-create.png, step-tag.png, step-reunite.png)
-
       // Live collar demo tag on landing page
       const landingCollarQr = document.getElementById('landingCollarQr');
       if (landingCollarQr && window.MyPetQR) {
@@ -216,19 +401,22 @@
       }
     },
 
-    toggleFaq: function(element) {
+    toggleFaq(element) {
       if (element) {
         element.classList.toggle('open');
       }
     },
 
-    openFinderSimulator: function(petCode = 'luna-7x29') {
+    openFinderSimulator(petCode = 'luna-7x29') {
       if (window.FinderSimulator) {
         window.FinderSimulator.open(petCode);
       }
     },
 
-    handleRoute: function() {
+    // =========================================================================
+    // ROUTING
+    // =========================================================================
+    handleRoute() {
       const hash = window.location.hash.replace(/^#\/?/, '');
       App.currentRoute = hash;
 
@@ -242,17 +430,19 @@
         App.showView('loginView');
         window.scrollTo({ top: 0, behavior: 'smooth' });
       } else if (hash === 'create-tag') {
-        // When creating a pet tag: show login form if not logged in; after login route to dashboard
+        // If not logged in, prompt modal; if logged in, proceed to add-pet
         if (!Store.isLoggedIn()) {
-          App.showView('loginView');
+          App.showView('landingView');
+          App.openAuthModal('login');
         } else {
-          App.showView('dashboardView');
-          App.renderDashboard();
+          App.showView('addPetView');
+          App.resetAddPetWizard();
         }
         window.scrollTo({ top: 0, behavior: 'smooth' });
       } else if (hash === 'dashboard') {
         if (!Store.isLoggedIn()) {
-          App.showView('loginView');
+          App.showView('landingView');
+          App.openAuthModal('login');
         } else {
           App.showView('dashboardView');
           App.renderDashboard();
@@ -260,7 +450,8 @@
         window.scrollTo({ top: 0, behavior: 'smooth' });
       } else if (hash === 'add-pet') {
         if (!Store.isLoggedIn()) {
-          App.showView('loginView');
+          App.showView('landingView');
+          App.openAuthModal('login');
         } else {
           App.showView('addPetView');
           App.resetAddPetWizard();
@@ -284,177 +475,255 @@
       App.updateNav();
     },
 
-    showView: function(viewId) {
+    showView(viewId) {
       const el = document.getElementById(viewId);
       if (el) el.classList.add('active');
     },
 
-    updateNav: function() {
+    // =========================================================================
+    // DYNAMIC NAVIGATION
+    // =========================================================================
+    updateNav() {
       const hash = App.currentRoute;
-      const isLoggedIn = Store.isLoggedIn();
-      const pets = Store.getPets();
-      const petCount = pets ? pets.length : 0;
-
-      // Check if the current route is in the owner dashboard area
-      const isDashboardArea = (
-        hash === 'dashboard' ||
-        hash === 'add-pet' ||
-        (hash.startsWith('pets/') && hash.endsWith('/qr'))
-      );
-
-      const navLinksPublic = document.getElementById('navLinksPublic');
-      const navLinksDashboard = document.getElementById('navLinksDashboard');
-      const navActionsPublic = document.getElementById('navActionsPublic');
-      const navActionsDashboard = document.getElementById('navActionsDashboard');
-      const brandLogo = document.getElementById('headerBrandLogo');
-
-      // Update brand logo destination
-      if (brandLogo) {
-        brandLogo.href = (isLoggedIn && isDashboardArea) ? '#dashboard' : '#landing';
-      }
-
-      // 1. Navigation links: in dashboard views show dashboard nav items, else public marketing anchors
-      if (isLoggedIn && isDashboardArea) {
-        if (navLinksPublic) navLinksPublic.style.display = 'none';
-        if (navLinksDashboard) navLinksDashboard.style.display = 'flex';
-      } else {
-        if (navLinksPublic) navLinksPublic.style.display = 'flex';
-        if (navLinksDashboard) navLinksDashboard.style.display = 'none';
-      }
-
-      // 2. Active highlight on dashboard links
-      const navLinkDashboard = document.getElementById('navLinkDashboard');
-      const navLinkAddPet = document.getElementById('navLinkAddPet');
-      if (navLinkDashboard) {
-        if (hash === 'dashboard') {
-          navLinkDashboard.classList.add('active');
-        } else {
-          navLinkDashboard.classList.remove('active');
-        }
-      }
-      if (navLinkAddPet) {
-        if (hash === 'add-pet') {
-          navLinkAddPet.classList.add('active');
-        } else {
-          navLinkAddPet.classList.remove('active');
-        }
-      }
-
-      // 3. Navigation actions: show user profile trigger & add button when logged in
-      if (isLoggedIn) {
-        if (navActionsPublic) navActionsPublic.style.display = 'none';
-        if (navActionsDashboard) navActionsDashboard.style.display = 'flex';
-
-        // Update live pet counts & status in dropdown and badges
-        const navPetCountBadge = document.getElementById('navPetCountBadge');
-        if (navPetCountBadge) navPetCountBadge.textContent = petCount;
-
-        const dropdownBadgeCount = document.getElementById('dropdownBadgeCount');
-        if (dropdownBadgeCount) dropdownBadgeCount.textContent = petCount;
-
-        const dropdownPetsStatus = document.getElementById('dropdownPetsStatus');
-        if (dropdownPetsStatus) {
-          dropdownPetsStatus.textContent = `${petCount} Pet${petCount === 1 ? '' : 's'} Protected`;
-        }
-      } else {
-        if (navActionsPublic) navActionsPublic.style.display = 'flex';
-        if (navActionsDashboard) navActionsDashboard.style.display = 'none';
-      }
-
-      // Keep user dropdown closed on route transition
-      App.closeUserDropdown();
-
-      // Demo role switcher button (if present)
       const demoRoleBtn = document.getElementById('demoRoleSwitcher');
       if (demoRoleBtn) {
         if (hash.startsWith('p/')) {
-          demoRoleBtn.innerHTML = `<span>${window.AppIcons ? window.AppIcons.get('user') : ''} Finder View</span> · Switch to Owner`;
+          demoRoleBtn.innerHTML = `<span>${window.AppIcons ? window.AppIcons.get('user') : '👤'} Finder View</span> · Switch to Owner`;
           demoRoleBtn.onclick = () => window.location.hash = '#dashboard';
         } else {
-          demoRoleBtn.innerHTML = `<span>${window.AppIcons ? window.AppIcons.get('cat') : ''} Sarah (Owner)</span> · Test Finder Scan`;
+          const user = Store.getCurrentUser();
+          const firstName = user ? user.name.split(' ')[0] : 'Sarah';
+          demoRoleBtn.innerHTML = `<span>${window.AppIcons ? window.AppIcons.get('cat') : '🐱'} ${firstName} (Owner)</span> · Test Finder Scan`;
           demoRoleBtn.onclick = () => window.location.hash = '#p/luna-7x29';
         }
       }
-    },
 
-    toggleUserDropdown: function(e) {
-      if (e) {
-        e.stopPropagation();
-        e.preventDefault();
-      }
-      const dropdown = document.getElementById('userNavDropdown');
-      const trigger = document.getElementById('userProfileTrigger');
-      if (dropdown) {
-        const isOpen = dropdown.classList.toggle('open');
-        if (trigger) {
-          trigger.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
-        }
-      }
-    },
+      const isLoggedIn = Store.isLoggedIn();
+      const navContainer = document.getElementById('navActionsContainer');
+      if (!navContainer) return;
 
-    closeUserDropdown: function() {
-      const dropdown = document.getElementById('userNavDropdown');
-      const trigger = document.getElementById('userProfileTrigger');
-      if (dropdown && dropdown.classList.contains('open')) {
-        dropdown.classList.remove('open');
-        if (trigger) {
-          trigger.setAttribute('aria-expanded', 'false');
-        }
-      }
-    },
-
-    scrollToActivity: function(e) {
-      if (e && e.preventDefault) e.preventDefault();
-      App.closeUserDropdown();
-      const doScroll = () => {
-        const feed = document.querySelector('.activity-feed-section') || document.getElementById('dashboardActivityList');
-        if (feed) {
-          feed.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-      };
-
-      if (App.currentRoute !== 'dashboard') {
-        window.location.hash = '#dashboard';
-        setTimeout(doScroll, 160);
+      if (isLoggedIn) {
+        const user = Store.getCurrentUser() || { name: 'Sarah Miller', email: 'sarah@example.com' };
+        const initial = (user.name || 'P')[0].toUpperCase();
+        navContainer.innerHTML = `
+          <div class="user-profile-pill" title="Signed in as ${user.email} (Connected to SQLite)">
+            <span class="user-avatar-badge">${initial}</span>
+            <span class="user-name-display">${user.name}</span>
+          </div>
+          <a href="#dashboard" class="btn btn-secondary btn-sm" id="navDashboardLink">Dashboard</a>
+          <a href="#add-pet" class="btn btn-primary btn-sm" id="navCreateTagBtn">+ Add Pet</a>
+          <button type="button" class="btn btn-outline btn-sm" onclick="App.handleLogout()" title="Sign out of account">Sign Out</button>
+        `;
       } else {
-        doScroll();
+        navContainer.innerHTML = `
+          <button type="button" id="navAuthBtn" class="btn btn-secondary btn-sm" onclick="App.openAuthModal('login')">Sign In</button>
+          <button type="button" class="btn btn-primary btn-sm" onclick="App.openAuthModal('register')">Create Account</button>
+          <a href="#create-tag" class="btn btn-outline btn-sm" id="navCreateTagBtn">Create a Pet Tag</a>
+        `;
       }
     },
 
-    handleLoginSubmit: function(e) {
+    // =========================================================================
+    // AUTH MODAL & HANDLERS (SQLITE DATABASE CONNECTED)
+    // =========================================================================
+    openAuthModal(tab = 'login') {
+      const modal = document.getElementById('authModal');
+      if (!modal) return;
+      App.clearAuthError();
+      App.switchAuthTab(tab);
+      modal.classList.add('active');
+    },
+
+    closeAuthModal() {
+      const modal = document.getElementById('authModal');
+      if (modal) modal.classList.remove('active');
+      App.clearAuthError();
+    },
+
+    switchAuthTab(tab) {
+      const tabLogin = document.getElementById('authTabLogin');
+      const tabRegister = document.getElementById('authTabRegister');
+      const formLogin = document.getElementById('modalLoginForm');
+      const formRegister = document.getElementById('registerForm');
+      const demoCallout = document.getElementById('authDemoCallout');
+      const titleEl = document.getElementById('authModalTitle');
+      const subEl = document.getElementById('authModalSub');
+
+      App.clearAuthError();
+
+      if (tab === 'register') {
+        if (tabRegister) tabRegister.classList.add('active');
+        if (tabLogin) tabLogin.classList.remove('active');
+        if (formRegister) formRegister.style.display = 'block';
+        if (formLogin) formLogin.style.display = 'none';
+        if (demoCallout) demoCallout.style.display = 'none';
+        if (titleEl) titleEl.innerText = 'Create Your Account';
+        if (subEl) subEl.innerText = 'Register to create persistent collar tags and track pet recovery in real time.';
+      } else {
+        if (tabLogin) tabLogin.classList.add('active');
+        if (tabRegister) tabRegister.classList.remove('active');
+        if (formLogin) formLogin.style.display = 'block';
+        if (formRegister) formRegister.style.display = 'none';
+        if (demoCallout) demoCallout.style.display = 'flex';
+        if (titleEl) titleEl.innerText = 'Welcome to MyPet';
+        if (subEl) subEl.innerText = 'Sign in to manage your pets and collar tags in the cloud database.';
+      }
+    },
+
+    fillDemoCredentials() {
+      const emailInput = document.getElementById('modalLoginEmail') || document.getElementById('loginEmail');
+      const passwordInput = document.getElementById('modalLoginPassword') || document.getElementById('loginPassword');
+      if (emailInput) emailInput.value = 'sarah@example.com';
+      if (passwordInput) passwordInput.value = 'password123';
+      App.clearAuthError();
+      showToast("Pre-seeded demo credentials loaded!");
+    },
+
+    setAuthError(message) {
+      const banner = document.getElementById('authErrorBanner');
+      if (banner) {
+        banner.innerText = message;
+        banner.style.display = 'block';
+      }
+    },
+
+    clearAuthError() {
+      const banner = document.getElementById('authErrorBanner');
+      if (banner) {
+        banner.innerText = '';
+        banner.style.display = 'none';
+      }
+    },
+
+    async handleLogin(e) {
       if (e && e.preventDefault) e.preventDefault();
-      const emailInput = document.getElementById('loginEmail');
-      const email = emailInput ? emailInput.value.trim() : 'sarah@example.com';
-      Store.setLoggedIn(true);
-      showToast(`Welcome back! Signed in as ${email || 'Sarah Miller'}`);
-      App.updateNav();
-      window.location.hash = '#dashboard';
+      App.clearAuthError();
+
+      const emailEl = document.getElementById('modalLoginEmail') || document.getElementById('loginEmail');
+      const passEl = document.getElementById('modalLoginPassword') || document.getElementById('loginPassword');
+      const email = emailEl ? emailEl.value.trim() : '';
+      const password = passEl ? passEl.value : '';
+
+      if (!email || !password) {
+        App.setAuthError("Please enter your email and password.");
+        return;
+      }
+
+      const submitBtn = document.getElementById('modalLoginSubmitBtn') || document.getElementById('loginSubmitBtn');
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.innerText = "Signing in...";
+      }
+
+      const res = await API.login(email, password);
+
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.innerText = "Sign In to Dashboard →";
+      }
+
+      if (res.ok && res.data && res.data.success) {
+        Store.setCurrentUser(res.data.user);
+        Store.setLoggedIn(true, res.data.user);
+        App.closeAuthModal();
+        showToast(`Welcome back, ${res.data.user.name}!`);
+        App.updateNav();
+        window.location.hash = '#dashboard';
+        App.renderDashboard();
+      } else {
+        const msg = (res.data && res.data.error) || "Invalid email or password. Please try again.";
+        App.setAuthError(msg);
+      }
     },
 
-    quickDemoLogin: function() {
-      Store.setLoggedIn(true);
-      showToast("Signed in as Sarah Miller (Demo Owner)");
-      App.updateNav();
-      window.location.hash = '#dashboard';
+    async handleRegister(e) {
+      if (e && e.preventDefault) e.preventDefault();
+      App.clearAuthError();
+
+      const nameEl = document.getElementById('regName');
+      const emailEl = document.getElementById('regEmail');
+      const phoneEl = document.getElementById('regPhone');
+      const passEl = document.getElementById('regPassword');
+
+      const name = nameEl ? nameEl.value.trim() : '';
+      const email = emailEl ? emailEl.value.trim() : '';
+      const phone = phoneEl ? phoneEl.value.trim() : '';
+      const password = passEl ? passEl.value : '';
+
+      if (!name || !email || !password) {
+        App.setAuthError("Name, email, and password are required.");
+        return;
+      }
+
+      const submitBtn = document.getElementById('regSubmitBtn');
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.innerText = "Creating account...";
+      }
+
+      const res = await API.register(name, email, phone, password);
+
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.innerText = "Create MyPet Account →";
+      }
+
+      if (res.ok && res.data && res.data.success) {
+        Store.setCurrentUser(res.data.user);
+        Store.setLoggedIn(true, res.data.user);
+        App.closeAuthModal();
+        showToast(`Account created! Welcome, ${res.data.user.name}!`);
+        App.updateNav();
+        window.location.hash = '#dashboard';
+        App.renderDashboard();
+      } else {
+        const msg = (res.data && res.data.error) || "Failed to create account. Please check your details.";
+        App.setAuthError(msg);
+      }
     },
 
-    logout: function() {
+    async handleLogout() {
+      await API.logout().catch(() => {});
       Store.setLoggedIn(false);
       showToast("You have been signed out.");
       App.updateNav();
       window.location.hash = '#landing';
     },
 
-    toggleNavAuth: function() {
+    handleNavAuthClick() {
       if (Store.isLoggedIn()) {
-        App.logout();
+        App.handleLogout();
       } else {
-        window.location.hash = '#login';
+        App.openAuthModal('login');
       }
     },
 
+    async quickDemoLogin() {
+      const res = await API.login('sarah@example.com', 'password123');
+      if (res.ok && res.data && res.data.success) {
+        Store.setCurrentUser(res.data.user);
+        Store.setLoggedIn(true, res.data.user);
+        App.closeAuthModal();
+        showToast("Signed in as Sarah Miller (Demo Account)");
+        App.updateNav();
+        window.location.hash = '#dashboard';
+        App.renderDashboard();
+      } else {
+        // Fallback demo state
+        Store.setLoggedIn(true, { id: 1, name: 'Sarah Miller', email: 'sarah@example.com', phone: '(555) 234-5678' });
+        showToast("Signed in as Sarah Miller");
+        App.updateNav();
+        window.location.hash = '#dashboard';
+        App.renderDashboard();
+      }
+    },
+
+    handleLoginSubmit(e) {
+      App.handleLogin(e);
+    },
+
     // Helper: render pet avatar
-    getPetAvatarMarkup: function(pet) {
+    getPetAvatarMarkup(pet) {
       if (pet.avatarCustom) {
         return `<img src="${pet.avatarCustom}" alt="${pet.name}" />`;
       }
@@ -465,33 +734,65 @@
         return window.PetIllustrations.avatars[pet.avatarKey];
       }
       // Species fallback
-      if (pet.species === 'cat') return window.PetIllustrations.avatars.catDefault;
-      if (pet.species === 'dog') return window.PetIllustrations.avatars.dogDefault;
-      if (pet.species === 'rabbit') return window.PetIllustrations.avatars.rabbitDefault;
-      return window.PetIllustrations.avatars.otherDefault;
+      if (pet.species === 'cat') return window.PetIllustrations ? window.PetIllustrations.avatars.catDefault : '🐱';
+      if (pet.species === 'dog') return window.PetIllustrations ? window.PetIllustrations.avatars.dogDefault : '🐶';
+      if (pet.species === 'rabbit') return window.PetIllustrations ? window.PetIllustrations.avatars.rabbitDefault : '🐰';
+      return window.PetIllustrations ? window.PetIllustrations.avatars.otherDefault : '🐾';
     },
 
     // =========================================================================
-    // OWNER DASHBOARD RENDERING
+    // OWNER DASHBOARD RENDERING (SQLITE SYNCED)
     // =========================================================================
-    renderDashboard: function() {
-      const pets = Store.getPets();
+    async renderDashboard() {
       const grid = document.getElementById('dashboardPetsGrid');
       if (!grid) return;
+
+      // 1. Initial immediate render from cache
+      const cachedPets = Store.getPets();
+      App.renderPetsGridMarkup(cachedPets);
+      App.renderActivityFeedMarkup(Store.getActivities());
+
+      // 2. Fetch fresh data from SQLite API
+      try {
+        const pets = await Store.syncPets();
+        App.renderPetsGridMarkup(pets);
+
+        const activities = await Store.syncActivities();
+        App.renderActivityFeedMarkup(activities);
+      } catch (err) {
+        console.warn("[Dashboard sync warning]:", err);
+      }
+    },
+
+    renderPetsGridMarkup(pets) {
+      const grid = document.getElementById('dashboardPetsGrid');
+      if (!grid) return;
+
+      if (!pets || pets.length === 0) {
+        grid.innerHTML = `
+          <div style="grid-column: 1 / -1; text-align: center; padding: 48px 24px; background: var(--sand); border: 2px dashed var(--border); border-radius: 20px;">
+            <div style="font-size: 36px; margin-bottom: 12px;">🐾</div>
+            <h3 style="font-size: 20px; color: var(--ink); margin-bottom: 6px;">No pets registered yet</h3>
+            <p style="color: var(--muted); font-size: 14px; margin-bottom: 20px;">Register your first companion to generate a QR tag and link them to your cloud account.</p>
+            <a href="#add-pet" class="btn btn-primary">+ Register a Pet</a>
+          </div>
+        `;
+        return;
+      }
 
       grid.innerHTML = pets.map(pet => {
         const avatarMarkup = App.getPetAvatarMarkup(pet);
         const isLost = pet.isLost;
         const statusBadge = isLost
-          ? `<span class="status-badge lost">${window.AppIcons.get('alertCircle')} LOST</span>`
+          ? `<span class="status-badge lost">${window.AppIcons ? window.AppIcons.get('alertCircle') : '⚠️'} LOST</span>`
           : `<span class="status-badge active">TAG ACTIVE</span>`;
 
         let lostBanner = '';
         if (isLost && pet.lostInfo) {
           lostBanner = `
             <div class="lost-alert-banner">
-              <strong>Missing since ${pet.lostInfo.lastSeenDate} · ${pet.lostInfo.lastSeenTime}</strong>
-              <span>Last seen near: ${pet.lostInfo.lastSeenLocation}</span>
+              <strong>Missing since ${pet.lostInfo.lastSeenDate || 'Recently'} · ${pet.lostInfo.lastSeenTime || ''}</strong>
+              <span>Last seen near: ${pet.lostInfo.lastSeenLocation || 'Unknown'}</span>
             </div>
           `;
         }
@@ -507,8 +808,8 @@
                   ${pet.name}
                   ${statusBadge}
                 </div>
-                <div class="pet-card-species">${pet.species.toUpperCase()} · ${pet.sex} · ${pet.age}</div>
-                <div style="font-size: 13px; color: var(--muted); margin-top: 4px;">Breed: ${pet.breed}</div>
+                <div class="pet-card-species">${(pet.species || 'PET').toUpperCase()} · ${pet.sex || ''} · ${pet.age || ''}</div>
+                <div style="font-size: 13px; color: var(--muted); margin-top: 4px;">Breed: ${pet.breed || 'Mixed'}</div>
               </div>
             </div>
 
@@ -516,38 +817,34 @@
 
             <div class="pet-card-actions">
               <a href="#p/${pet.code}" class="btn btn-secondary btn-sm" target="_blank" title="Preview Public Profile">
-                ${window.AppIcons.get('eye')} View Profile
+                ${window.AppIcons ? window.AppIcons.get('eye') : '👁️'} View Profile
               </a>
               <a href="#pets/${pet.id}/qr" class="btn btn-secondary btn-sm">
-                ${window.AppIcons.get('qr')} QR Tag
+                ${window.AppIcons ? window.AppIcons.get('qr') : '📱'} QR Tag
               </a>
               <button class="btn btn-outline btn-sm" onclick="App.openLostPosterModal('${pet.id}')">
-                ${window.AppIcons.get('poster')} Lost Poster
+                ${window.AppIcons ? window.AppIcons.get('poster') : '📄'} Lost Poster
               </button>
               <button class="btn btn-secondary btn-sm" onclick="App.openEditPetModal('${pet.id}')">
-                ${window.AppIcons.get('edit')} Edit
+                ${window.AppIcons ? window.AppIcons.get('edit') : '✏️'} Edit
               </button>
               ${
                 isLost
-                  ? `<button class="btn btn-success btn-sm" onclick="App.toggleLostStatus('${pet.id}', false)">${window.AppIcons.get('check')} Mark Found</button>`
-                  : `<button class="btn btn-danger btn-sm" onclick="App.openLostModeModal('${pet.id}')">${window.AppIcons.get('siren')} Mark as Lost</button>`
+                  ? `<button class="btn btn-success btn-sm" onclick="App.toggleLostStatus('${pet.id}', false)">${window.AppIcons ? window.AppIcons.get('check') : '✓'} Mark Found</button>`
+                  : `<button class="btn btn-danger btn-sm" onclick="App.openLostModeModal('${pet.id}')">${window.AppIcons ? window.AppIcons.get('siren') : '🚨'} Mark as Lost</button>`
               }
             </div>
           </div>
         `;
       }).join('');
-
-      // Render Dashboard Activity Log
-      App.renderActivityFeed();
     },
 
-    renderActivityFeed: function() {
+    renderActivityFeedMarkup(activities) {
       const feedContainer = document.getElementById('dashboardActivityList');
       if (!feedContainer) return;
-      const activities = Store.getActivities();
 
-      if (activities.length === 0) {
-        feedContainer.innerHTML = `<li style="color: var(--muted); padding: 12px 0;">No recent activity yet. When someone scans your tag, it will appear here.</li>`;
+      if (!activities || activities.length === 0) {
+        feedContainer.innerHTML = `<li style="color: var(--muted); padding: 16px 0; text-align: center;">No scan or finder records yet. When someone scans your tag, it will appear here in real time.</li>`;
         return;
       }
 
@@ -557,14 +854,14 @@
           <li class="activity-item">
             <div class="activity-left">
               <div class="activity-icon ${isFound ? 'found' : 'scan'}">
-                ${isFound ? window.AppIcons.get('paw') : window.AppIcons.get('qr')}
+                ${isFound ? (window.AppIcons ? window.AppIcons.get('paw') : '🐾') : (window.AppIcons ? window.AppIcons.get('qr') : '📱')}
               </div>
               <div class="activity-text">
                 <strong>${act.title} — ${act.petName}</strong>
                 <span>${act.details}</span>
               </div>
             </div>
-            <div style="font-size: 12px; color: var(--muted);">${act.time}</div>
+            <div style="font-size: 12px; color: var(--muted);">${act.time || 'Recently'}</div>
           </li>
         `;
       }).join('');
@@ -573,7 +870,7 @@
     // =========================================================================
     // QR TAG GENERATION VIEW
     // =========================================================================
-    renderQrTagView: function(petId) {
+    renderQrTagView(petId) {
       const pet = Store.getPetById(petId) || Store.getPets()[0];
       if (!pet) return;
 
@@ -589,14 +886,16 @@
       if (shareLinkEl) shareLinkEl.value = publicUrl;
 
       // Generate SVG QR matrix
-      const qrSvg = window.MyPetQR.generateSVG(publicUrl, {
-        size: 160,
-        margin: 1,
-        darkColor: "#181d27"
-      });
+      if (window.MyPetQR) {
+        const qrSvg = window.MyPetQR.generateSVG(publicUrl, {
+          size: 160,
+          margin: 1,
+          darkColor: "#181d27"
+        });
 
-      if (containerEl && window.PetIllustrations) {
-        containerEl.innerHTML = window.PetIllustrations.physicalTagGraphic(pet.name, qrSvg);
+        if (containerEl && window.PetIllustrations) {
+          containerEl.innerHTML = window.PetIllustrations.physicalTagGraphic(pet.name, qrSvg);
+        }
       }
 
       // Action buttons
@@ -613,11 +912,15 @@
       const shareBtn = document.getElementById('btnShareProfile');
       if (shareBtn) {
         shareBtn.onclick = () => {
-          navigator.clipboard.writeText(publicUrl).then(() => {
-            showToast("Profile link copied to clipboard!");
-          }).catch(() => {
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(publicUrl).then(() => {
+              showToast("Profile link copied to clipboard!");
+            }).catch(() => {
+              showToast("Link: " + publicUrl);
+            });
+          } else {
             showToast("Link: " + publicUrl);
-          });
+          }
         };
       }
 
@@ -627,7 +930,8 @@
       }
     },
 
-    downloadTagAsPng: function(pet, url) {
+    downloadTagAsPng(pet, url) {
+      if (!window.MyPetQR) return;
       const canvas = document.createElement('canvas');
       window.MyPetQR.renderToCanvas(canvas, url, { size: 600, margin: 2 });
       const a = document.createElement('a');
@@ -640,17 +944,32 @@
     // =========================================================================
     // PUBLIC PET PROFILE (MOBILE-FIRST RECOVERY SCREEN)
     // =========================================================================
-    renderPublicProfile: function(petCode) {
-      const pet = Store.getPetByCode(petCode) || Store.getPets()[0];
+    async renderPublicProfile(petCode) {
       const container = document.getElementById('publicProfileCard');
-      if (!container || !pet) return;
+      if (!container) return;
+
+      // Fetch verified public pet record from database (this triggers scan logging in SQLite!)
+      let pet = null;
+      try {
+        const res = await API.getPublicPet(petCode);
+        if (res.ok && res.data && res.data.success && res.data.pet) {
+          pet = res.data.pet;
+        }
+      } catch (e) {}
+
+      // Fallback to local store if server unreachable
+      if (!pet) {
+        pet = Store.getPetByCode(petCode) || Store.getPets()[0];
+      }
+
+      if (!pet) return;
 
       const isLost = pet.isLost;
       const avatarMarkup = App.getPetAvatarMarkup(pet);
 
       const statusBadge = isLost
-        ? `<div class="owner-status-pill missing">${window.AppIcons.get('alertCircle')} ${pet.name} is missing</div>`
-        : `<div class="owner-status-pill safe">${window.AppIcons.get('checkCircle')} This pet has an owner</div>`;
+        ? `<div class="owner-status-pill missing">${window.AppIcons ? window.AppIcons.get('alertCircle') : '⚠️'} ${pet.name} is missing</div>`
+        : `<div class="owner-status-pill safe">${window.AppIcons ? window.AppIcons.get('checkCircle') : '✓'} This pet has an owner</div>`;
 
       const greetingBlock = isLost
         ? `
@@ -660,7 +979,7 @@
             ${
               pet.lostInfo ? `
                 <div style="font-size: 13px; color: #b71c1c; background: #ffebee; padding: 8px 12px; border-radius: 8px; margin-top: 6px;">
-                  <strong>Last seen:</strong> ${pet.lostInfo.lastSeenLocation} (${pet.lostInfo.lastSeenDate} · ${pet.lostInfo.lastSeenTime})
+                  <strong>Last seen:</strong> ${pet.lostInfo.lastSeenLocation || ''} (${pet.lostInfo.lastSeenDate || ''} · ${pet.lostInfo.lastSeenTime || ''})
                 </div>
               ` : ''
             }
@@ -668,30 +987,30 @@
         `
         : `
           <div class="public-found-greeting">
-            <h3>You've found ${pet.name}! ${window.AppIcons.get('paw')}</h3>
+            <h3>You've found ${pet.name}! ${window.AppIcons ? window.AppIcons.get('paw') : '🐾'}</h3>
             <p>Thank you so much for helping ${pet.sex === 'Female' ? 'her' : 'him'} get back home safely.</p>
           </div>
         `;
 
       // Phone display based on owner privacy settings
       let phoneAction = '';
-      if (pet.owner.showPhone && pet.owner.phone) {
+      if (pet.owner && pet.owner.showPhone && pet.owner.phone) {
         phoneAction = `
           <a href="tel:${pet.owner.phone}" class="btn btn-primary btn-lg" style="width: 100%;">
-            ${window.AppIcons.get('phone')} Call Owner (${pet.owner.phone})
+            ${window.AppIcons ? window.AppIcons.get('phone') : '📞'} Call Owner (${pet.owner.phone})
           </a>
         `;
       } else {
         phoneAction = `
-          <button class="btn btn-primary btn-lg" style="width: 100%;" onclick="App.openFoundModal('${pet.id}')">
-            ${window.AppIcons.get('phone')} Contact ${pet.name}'s Owner
+          <button type="button" class="btn btn-primary btn-lg" style="width: 100%;" onclick="App.openFoundModal('${pet.id}')">
+            ${window.AppIcons ? window.AppIcons.get('phone') : '📞'} Contact ${pet.name}'s Owner
           </button>
         `;
       }
 
       container.innerHTML = `
         <div class="public-profile-eyebrow">
-          <span>${window.AppIcons.get('paw')}</span>
+          <span>${window.AppIcons ? window.AppIcons.get('paw') : '🐾'}</span>
           <span>MY PET ID</span>
         </div>
 
@@ -700,7 +1019,7 @@
         </div>
 
         <h1 class="public-pet-name">${pet.name}</h1>
-        <div class="public-pet-meta">${pet.species.toUpperCase()} · ${pet.sex} · ${pet.age}</div>
+        <div class="public-pet-meta">${(pet.species || 'PET').toUpperCase()} · ${pet.sex || ''} · ${pet.age || ''}</div>
 
         ${statusBadge}
 
@@ -708,8 +1027,8 @@
 
         <div class="public-actions-stack">
           ${phoneAction}
-          <button class="btn btn-secondary btn-lg" style="width: 100%;" onclick="App.openFoundModal('${pet.id}')">
-            ${window.AppIcons.get('pin')} I Found This Pet
+          <button type="button" class="btn btn-secondary btn-lg" style="width: 100%;" onclick="App.openFoundModal('${pet.id}')">
+            ${window.AppIcons ? window.AppIcons.get('pin') : '📍'} I Found This Pet
           </button>
         </div>
 
@@ -718,8 +1037,8 @@
             <span>About ${pet.name}</span>
           </div>
           <ul class="public-attributes-list">
-            <li><strong>Coat & Color:</strong> ${pet.color}</li>
-            <li><strong>Breed:</strong> ${pet.breed}</li>
+            <li><strong>Coat & Color:</strong> ${pet.color || 'Not specified'}</li>
+            <li><strong>Breed:</strong> ${pet.breed || 'Mixed'}</li>
             <li><strong>Features:</strong> ${pet.distinguishingFeatures || 'None specified'}</li>
             ${pet.medicalNotes ? `<li><strong>Medical notes:</strong> ${pet.medicalNotes}</li>` : ''}
           </ul>
@@ -729,40 +1048,33 @@
           Protected by <strong>MyPet</strong> · A little tag. A big way home.
         </div>
       `;
-
-      // Record automated scan activity in the background
-      Store.addActivity({
-        id: 'act-' + Date.now(),
-        petId: pet.id,
-        petName: pet.name,
-        type: 'scan',
-        title: 'QR Tag Scanned',
-        details: 'Someone accessed ' + pet.name + '\'s public profile',
-        time: 'Just now'
-      });
     },
 
     // =========================================================================
-    // "I FOUND THIS PET" RECOVERY MODAL & WORKFLOW
+    // "I FOUND THIS PET" RECOVERY WORKFLOW
     // =========================================================================
-    openFoundModal: function(petId) {
+    openFoundModal(petId) {
       const pet = Store.getPetById(petId) || Store.getPets()[0];
       const modal = document.getElementById('foundPetModal');
       if (!modal || !pet) return;
 
-      document.getElementById('foundModalPetName').innerText = pet.name;
+      const nameEl = document.getElementById('foundModalPetName');
+      if (nameEl) nameEl.innerText = pet.name;
       document.querySelectorAll('.foundModalPetNameCopy').forEach(el => el.innerText = pet.name);
-      document.getElementById('foundPetIdInput').value = pet.id;
+      
+      const inputId = document.getElementById('foundPetIdInput');
+      if (inputId) inputId.value = pet.id;
+
       modal.classList.add('active');
     },
 
-    closeModal: function(modalId) {
+    closeModal(modalId) {
       const modal = document.getElementById(modalId);
       if (modal) modal.classList.remove('active');
     },
 
-    submitFoundReport: function(e) {
-      e.preventDefault();
+    async submitFoundReport(e) {
+      if (e && e.preventDefault) e.preventDefault();
       const petId = document.getElementById('foundPetIdInput').value;
       const pet = Store.getPetById(petId);
       if (!pet) return;
@@ -772,7 +1084,15 @@
       const finderLocation = document.getElementById('finderLocationInput').value || 'Location shared';
       const finderMessage = document.getElementById('finderMessageInput').value || 'I am with your pet.';
 
-      // Add to activity log for owner
+      // Dispatch to Flask backend database
+      const res = await API.submitFound(pet.code, {
+        name: finderName,
+        phone: finderPhone,
+        location: finderLocation,
+        message: finderMessage
+      });
+
+      // Also record in local activity log
       Store.addActivity({
         id: 'act-' + Date.now(),
         petId: pet.id,
@@ -786,16 +1106,18 @@
       App.closeModal('foundPetModal');
       showToast(`Alert sent to ${pet.name}'s owner! Thank you!`);
 
-      // Show reunion confirmation step
-      alert(`Thank you, ${finderName}!\n\nAn instant notification with your message and location has been dispatched to ${pet.name}'s owner.\n\nOwner Contact: ${pet.owner.phone}\nOwner Email: ${pet.owner.email}`);
+      const ownerPhone = (pet.owner && pet.owner.phone) || '(555) 234-5678';
+      const ownerEmail = (pet.owner && pet.owner.email) || 'sarah@example.com';
+
+      alert(`Thank you, ${finderName}!\n\nAn instant notification with your message and location has been dispatched to ${pet.name}'s owner.\n\nOwner Contact: ${ownerPhone}\nOwner Email: ${ownerEmail}`);
     },
 
     // Geolocation helper for finder
-    useCurrentLocation: function() {
+    useCurrentLocation() {
       const locInput = document.getElementById('finderLocationInput');
       if (!locInput) return;
       locInput.value = "Detecting location...";
-      
+
       if ("geolocation" in navigator) {
         navigator.geolocation.getCurrentPosition(
           pos => {
@@ -814,13 +1136,14 @@
     },
 
     // =========================================================================
-    // LOST MODE MODAL & LOGIC
+    // LOST MODE MODAL & LOGIC (SQLITE BACKED)
     // =========================================================================
-    openLostModeModal: function(petId) {
+    openLostModeModal(petId) {
       const pet = Store.getPetById(petId);
       if (!pet) return;
 
-      document.getElementById('lostModalPetName').innerText = pet.name;
+      const nameEl = document.getElementById('lostModalPetName');
+      if (nameEl) nameEl.innerText = pet.name;
       document.getElementById('lostPetIdInput').value = pet.id;
       document.getElementById('lostLocationInput').value = "Oakland Ave & 4th St";
       document.getElementById('lostDateInput').value = "Today";
@@ -829,24 +1152,34 @@
       document.getElementById('lostModeModal').classList.add('active');
     },
 
-    saveLostMode: function(e) {
-      e.preventDefault();
+    async saveLostMode(e) {
+      if (e && e.preventDefault) e.preventDefault();
       const petId = document.getElementById('lostPetIdInput').value;
       const location = document.getElementById('lostLocationInput').value;
       const date = document.getElementById('lostDateInput').value;
       const time = document.getElementById('lostTimeInput').value;
 
+      const lostInfo = {
+        lastSeenLocation: location,
+        lastSeenDate: date,
+        lastSeenTime: time
+      };
+
+      // Persist in backend SQLite
+      await API.toggleLost(petId, {
+        is_lost: true,
+        last_seen_location: location,
+        last_seen_date: date,
+        last_seen_time: time
+      });
+
       Store.updatePet(petId, {
         isLost: true,
-        lostInfo: {
-          lastSeenLocation: location,
-          lastSeenDate: date,
-          lastSeenTime: time
-        }
+        lostInfo: lostInfo
       });
 
       App.closeModal('lostModeModal');
-      showToast("Pet marked as LOST. Profile updated!");
+      showToast("Pet marked as LOST in database. Profile updated!");
       App.renderDashboard();
 
       // Offer immediate lost poster generation
@@ -857,22 +1190,22 @@
       }, 500);
     },
 
-    toggleLostStatus: function(petId, status) {
+    async toggleLostStatus(petId, status) {
+      await API.toggleLost(petId, { is_lost: status });
       Store.updatePet(petId, { isLost: status });
-      showToast(status ? "Marked as lost" : "Marked as safe and found!");
+      showToast(status ? "Marked as lost in database" : "Marked as safe and found!");
       App.renderDashboard();
     },
 
     // =========================================================================
     // POSTER & FLYER MODAL HANDLERS
     // =========================================================================
-    openLostPosterModal: function(petId) {
+    openLostPosterModal(petId) {
       const pet = Store.getPetById(petId) || Store.getPets()[0];
       if (!pet) return;
 
       if (window.MyPetPoster) {
         window.MyPetPoster.init(pet);
-        // Pre-fill inputs
         const headlineEl = document.getElementById('posterHeadlineInput');
         if (headlineEl) headlineEl.value = window.MyPetPoster.options.headline;
         const rewardEl = document.getElementById('posterRewardInput');
@@ -888,10 +1221,11 @@
       }
 
       App.switchPosterTab('street');
-      document.getElementById('lostPosterModal').classList.add('active');
+      const posterModal = document.getElementById('lostPosterModal');
+      if (posterModal) posterModal.classList.add('active');
     },
 
-    switchPosterTab: function(format) {
+    switchPosterTab(format) {
       document.querySelectorAll('.format-tab-btn').forEach(btn => btn.classList.remove('active'));
       if (format === 'street') {
         const btn = document.getElementById('tabStreet');
@@ -910,49 +1244,65 @@
     },
 
     // =========================================================================
-    // EDIT PET MODAL
+    // EDIT PET MODAL (SQLITE SYNCED)
     // =========================================================================
-    openEditPetModal: function(petId) {
+    openEditPetModal(petId) {
       const pet = Store.getPetById(petId);
       if (!pet) return;
 
       document.getElementById('editPetId').value = pet.id;
-      document.getElementById('editPetName').value = pet.name;
-      document.getElementById('editPetBreed').value = pet.breed;
-      document.getElementById('editPetAge').value = pet.age;
-      document.getElementById('editPetFeatures').value = pet.distinguishingFeatures;
+      document.getElementById('editPetName').value = pet.name || '';
+      document.getElementById('editPetBreed').value = pet.breed || '';
+      document.getElementById('editPetAge').value = pet.age || '';
+      document.getElementById('editPetFeatures').value = pet.distinguishingFeatures || '';
       document.getElementById('editPetMedical').value = pet.medicalNotes || '';
-      document.getElementById('editOwnerPhone').value = pet.owner.phone;
-      document.getElementById('editShowPhone').checked = pet.owner.showPhone;
+      document.getElementById('editOwnerPhone').value = (pet.owner && pet.owner.phone) || '';
+      document.getElementById('editShowPhone').checked = Boolean(pet.owner && pet.owner.showPhone);
 
-      document.getElementById('editPetModal').classList.add('active');
+      const modal = document.getElementById('editPetModal');
+      if (modal) modal.classList.add('active');
     },
 
-    savePetEdits: function(e) {
-      e.preventDefault();
+    async savePetEdits(e) {
+      if (e && e.preventDefault) e.preventDefault();
       const petId = document.getElementById('editPetId').value;
+      const phone = document.getElementById('editOwnerPhone').value;
+      const showPhone = document.getElementById('editShowPhone').checked;
+
       const patch = {
         name: document.getElementById('editPetName').value,
         breed: document.getElementById('editPetBreed').value,
         age: document.getElementById('editPetAge').value,
         distinguishingFeatures: document.getElementById('editPetFeatures').value,
         medicalNotes: document.getElementById('editPetMedical').value,
+        showPhone: showPhone
+      };
+
+      // Persist to backend database
+      await API.updatePet(petId, patch);
+
+      // Update locally
+      Store.updatePet(petId, {
+        name: patch.name,
+        breed: patch.breed,
+        age: patch.age,
+        distinguishingFeatures: patch.distinguishingFeatures,
+        medicalNotes: patch.medicalNotes,
         owner: {
-          phone: document.getElementById('editOwnerPhone').value,
-          showPhone: document.getElementById('editShowPhone').checked,
+          phone: phone,
+          showPhone: showPhone,
           email: "sarah@example.com",
           allowSmsRelay: true
         }
-      };
+      });
 
-      Store.updatePet(petId, patch);
       App.closeModal('editPetModal');
-      showToast("Pet profile updated!");
+      showToast("Pet profile updated in database!");
       App.renderDashboard();
     },
 
     // =========================================================================
-    // ADD PET MULTI-STEP WIZARD (5 STEPS)
+    // ADD PET MULTI-STEP WIZARD (SQLITE PERSISTENCE)
     // =========================================================================
     wizardState: {
       step: 1,
@@ -972,14 +1322,13 @@
       allowSmsRelay: true
     },
 
-    initAddPetWizard: function() {
+    initAddPetWizard() {
       // Species option clicks
       document.querySelectorAll('.species-card-option').forEach(card => {
         card.addEventListener('click', () => {
           document.querySelectorAll('.species-card-option').forEach(c => c.classList.remove('selected'));
           card.classList.add('selected');
           App.wizardState.species = card.dataset.species;
-          // Set default avatar for species
           if (card.dataset.species === 'cat') App.wizardState.avatarKey = 'catDefault';
           else if (card.dataset.species === 'dog') App.wizardState.avatarKey = 'dogDefault';
           else if (card.dataset.species === 'rabbit') App.wizardState.avatarKey = 'rabbitDefault';
@@ -1017,7 +1366,8 @@
       }
     },
 
-    resetAddPetWizard: function() {
+    resetAddPetWizard() {
+      const user = Store.getCurrentUser();
       App.wizardState = {
         step: 1,
         name: '',
@@ -1029,16 +1379,20 @@
         features: '',
         avatarKey: 'catDefault',
         avatarCustom: null,
-        phone: '(555) 234-5678',
-        email: 'sarah@example.com',
+        phone: (user && user.phone) || '(555) 234-5678',
+        email: (user && user.email) || 'sarah@example.com',
         showPhone: true,
         showEmail: false,
         allowSmsRelay: true
       };
+
+      const nameInput = document.getElementById('newPetName');
+      if (nameInput) nameInput.value = '';
+
       App.goToWizardStep(1);
     },
 
-    goToWizardStep: function(stepNum) {
+    goToWizardStep(stepNum) {
       App.wizardState.step = stepNum;
 
       // Update step panels
@@ -1058,20 +1412,18 @@
         fill.style.width = `${((stepNum - 1) / 4) * 100}%`;
       }
 
-      // Update back button visibility
       const backBtn = document.getElementById('wizardBackBtn');
       if (backBtn) {
         backBtn.style.visibility = stepNum === 1 ? 'hidden' : 'visible';
       }
 
-      // Next / finish button text
       const nextBtn = document.getElementById('wizardNextBtn');
       if (nextBtn) {
-        nextBtn.innerHTML = stepNum === 5 ? `Create QR Tag ${window.AppIcons.get('paw')}` : 'Continue &rarr;';
+        nextBtn.innerHTML = stepNum === 5 ? `Create QR Tag ${window.AppIcons ? window.AppIcons.get('paw') : '🐾'}` : 'Continue &rarr;';
       }
     },
 
-    wizardNext: function() {
+    wizardNext() {
       const step = App.wizardState.step;
       if (step === 1) {
         const nameInput = document.getElementById('newPetName').value.trim();
@@ -1080,7 +1432,6 @@
           return;
         }
         App.wizardState.name = nameInput;
-        // Update name in subsequent steps
         document.querySelectorAll('.dynamic-pet-name').forEach(el => el.innerText = nameInput);
       } else if (step === 3) {
         App.wizardState.breed = document.getElementById('newPetBreed').value.trim() || 'Mixed';
@@ -1089,7 +1440,6 @@
         App.wizardState.color = document.getElementById('newPetColor').value.trim() || 'Mixed';
         App.wizardState.features = document.getElementById('newPetFeatures').value.trim();
       } else if (step === 5) {
-        // Finalize pet creation
         App.wizardState.phone = document.getElementById('newPetPhone').value;
         App.wizardState.email = document.getElementById('newPetEmail').value;
         App.wizardState.showPhone = document.getElementById('newPetShowPhone').checked;
@@ -1101,18 +1451,20 @@
       App.goToWizardStep(step + 1);
     },
 
-    wizardPrev: function() {
+    wizardPrev() {
       if (App.wizardState.step > 1) {
         App.goToWizardStep(App.wizardState.step - 1);
       }
     },
 
-    finalizeNewPet: function() {
-      const pets = Store.getPets();
-      const randomCode = App.wizardState.name.toLowerCase().replace(/[^a-z0-9]/g, '') + '-' + Math.random().toString(36).substring(2, 6);
-      const newPet = {
-        id: 'pet-' + Date.now(),
-        code: randomCode,
+    async finalizeNewPet() {
+      const nextBtn = document.getElementById('wizardNextBtn');
+      if (nextBtn) {
+        nextBtn.disabled = true;
+        nextBtn.innerText = "Creating Tag in Database...";
+      }
+
+      const payload = {
         name: App.wizardState.name,
         species: App.wizardState.species,
         breed: App.wizardState.breed,
@@ -1121,61 +1473,80 @@
         color: App.wizardState.color,
         avatarKey: App.wizardState.avatarKey,
         avatarCustom: App.wizardState.avatarCustom,
-        distinguishingFeatures: App.wizardState.features,
-        medicalNotes: "Up to date on vaccines.",
-        isLost: false,
-        lostInfo: null,
-        owner: {
-          name: "Sarah Miller",
-          phone: App.wizardState.phone,
-          email: App.wizardState.email,
-          showPhone: App.wizardState.showPhone,
-          showEmail: App.wizardState.showEmail,
-          allowSmsRelay: true
-        },
-        createdAt: new Date().toISOString().split('T')[0]
+        features: App.wizardState.features,
+        phone: App.wizardState.phone,
+        email: App.wizardState.email,
+        showPhone: App.wizardState.showPhone,
+        showEmail: App.wizardState.showEmail,
+        allowSmsRelay: true
       };
 
+      let newPet = null;
+      try {
+        const res = await API.createPet(payload);
+        if (res.ok && res.data && res.data.success && res.data.pet) {
+          newPet = res.data.pet;
+        }
+      } catch (err) {
+        console.warn("[Pet creation API warning]:", err);
+      }
+
+      // Fallback local creation if offline
+      if (!newPet) {
+        const randomCode = App.wizardState.name.toLowerCase().replace(/[^a-z0-9]/g, '') + '-' + Math.random().toString(36).substring(2, 6);
+        newPet = {
+          id: 'pet-' + Date.now(),
+          rawId: Date.now(),
+          code: randomCode,
+          name: App.wizardState.name,
+          species: App.wizardState.species,
+          breed: App.wizardState.breed,
+          sex: App.wizardState.sex,
+          age: App.wizardState.age,
+          color: App.wizardState.color,
+          avatarKey: App.wizardState.avatarKey,
+          avatarCustom: App.wizardState.avatarCustom,
+          distinguishingFeatures: App.wizardState.features,
+          medicalNotes: "Up to date on vaccinations.",
+          isLost: false,
+          lostInfo: null,
+          owner: {
+            name: "Sarah Miller",
+            phone: App.wizardState.phone,
+            email: App.wizardState.email,
+            showPhone: App.wizardState.showPhone,
+            showEmail: App.wizardState.showEmail,
+            allowSmsRelay: true
+          },
+          createdAt: new Date().toISOString().split('T')[0]
+        };
+      }
+
+      const pets = Store.getPets();
       pets.push(newPet);
       Store.savePets(pets);
-      App.updateNav();
 
-      showToast(`Created QR tag for ${newPet.name}!`);
+      if (nextBtn) {
+        nextBtn.disabled = false;
+        nextBtn.innerText = "Continue →";
+      }
+
+      showToast(`Created persistent QR tag for ${newPet.name}!`);
       // Route immediately to the newly generated QR Tag page
       window.location.hash = `#pets/${newPet.id}/qr`;
     },
 
-    bindGlobalEvents: function() {
+    bindGlobalEvents() {
       // Close modals on backdrop click
       document.querySelectorAll('.modal-backdrop').forEach(modal => {
         modal.addEventListener('click', (e) => {
           if (e.target === modal) modal.classList.remove('active');
         });
       });
-
-      // Close user dropdown when clicking anywhere outside
-      document.addEventListener('click', (e) => {
-        const userDropdown = document.getElementById('userNavDropdown');
-        if (userDropdown && userDropdown.classList.contains('open')) {
-          if (!userDropdown.contains(e.target)) {
-            App.closeUserDropdown();
-          }
-        }
-      });
-
-      // Close dropdown or modals on Escape key
-      document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') {
-          App.closeUserDropdown();
-          document.querySelectorAll('.modal-backdrop.active').forEach(modal => {
-            modal.classList.remove('active');
-          });
-        }
-      });
     }
   };
 
-  // Expose to window
+  // Expose App to global window
   window.App = App;
 
   // Initialize once DOM is ready

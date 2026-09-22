@@ -17,141 +17,25 @@
 </head>
 <body>
 
-  <!-- Minimal Header Navigation (Adapts dynamically for logged-in user in dashboard) -->
+  <!-- Minimal Header Navigation -->
   <header class="site-header no-print">
     <div class="nav-container">
-      <a href="#landing" class="brand-logo" id="headerBrandLogo" aria-label="MyPet Home">
+      <a href="#landing" class="brand-logo" aria-label="MyPet Home">
         <img src="images/logo.png" alt="MyPet Logo" class="brand-logo-img" />
       </a>
 
-      <!-- 1. Public Visitor Nav Links (Shown on marketing views) -->
-      <ul class="nav-links" id="navLinksPublic">
+      <ul class="nav-links">
         <li><a href="#benefits" class="nav-link">Benefits</a></li>
         <li><a href="#how-it-works" class="nav-link">How It Works</a></li>
         <li><a href="#features" class="nav-link">Simulator</a></li>
         <li><a href="#safety" class="nav-link">Safety</a></li>
-        <li><a href="#testimonials" class="nav-link">Reviews</a></li>
         <li><a href="#faq" class="nav-link">FAQ</a></li>
       </ul>
 
-      <!-- 2. Logged-in Dashboard Nav Links (Shown in dashboard & owner views) -->
-      <ul class="nav-links" id="navLinksDashboard" style="display: none;">
-        <li>
-          <a href="#dashboard" class="nav-link" id="navLinkDashboard">
-            <span>My Pets</span>
-            <span class="nav-count-badge" id="navPetCountBadge">2</span>
-          </a>
-        </li>
-        <li>
-          <a href="#add-pet" class="nav-link" id="navLinkAddPet">
-            <span>+ Add Pet</span>
-          </a>
-        </li>
-        <li>
-          <a href="javascript:void(0)" class="nav-link" onclick="App.scrollToActivity(event)">
-            <span>Activity & Scans</span>
-          </a>
-        </li>
-        <li>
-          <a href="javascript:void(0)" class="nav-link" onclick="App.openLostPosterModal('pet-1')">
-            <span>Lost Posters</span>
-          </a>
-        </li>
-        <li>
-          <a href="javascript:void(0)" class="nav-link" onclick="App.openFinderSimulator()">
-            <span>Camera Scanner</span>
-          </a>
-        </li>
-        <li>
-          <a href="#landing" class="nav-link nav-link-external" title="View Public Website">
-            <span>Public Site</span>
-            <svg class="ui-icon" style="width: 13px; height: 13px; margin-left: 4px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-          </a>
-        </li>
-      </ul>
-
-      <!-- Nav Actions (Switches between visitor buttons and owner account widget) -->
-      <div class="nav-actions">
-        <!-- Visitor / Logged-out Actions -->
-        <div id="navActionsPublic" class="nav-action-group">
-          <a href="#login" class="btn btn-secondary btn-sm" id="navSignInBtn">Sign In</a>
-          <a href="#create-tag" class="btn btn-primary btn-sm">Create a Pet Tag</a>
-        </div>
-
-        <!-- Logged-in Owner Actions -->
-        <div id="navActionsDashboard" class="nav-action-group" style="display: none;">
-          <a href="#add-pet" class="btn btn-primary btn-sm nav-add-btn-desktop">
-            <span>+ Add Pet</span>
-          </a>
-
-          <!-- User Profile Dropdown Widget -->
-          <div class="user-nav-dropdown" id="userNavDropdown">
-            <button type="button" class="user-profile-trigger" id="userProfileTrigger" onclick="App.toggleUserDropdown(event)" aria-expanded="false" aria-haspopup="true">
-              <div class="user-nav-avatar">
-                <img src="images/avatar-olivia.svg" alt="Sarah Miller" id="userNavAvatarImg" />
-              </div>
-              <div class="user-nav-meta">
-                <span class="user-nav-name" id="userNavName">Sarah Miller</span>
-                <span class="user-nav-role">Pet Owner</span>
-              </div>
-              <svg class="ui-icon user-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
-            </button>
-
-            <!-- User Menu Dropdown Card -->
-            <div class="user-dropdown-menu" id="userDropdownMenu">
-              <div class="dropdown-user-header">
-                <div class="dropdown-avatar-wrap">
-                  <img src="images/avatar-olivia.svg" alt="Sarah Miller" />
-                </div>
-                <div class="dropdown-user-info">
-                  <strong id="dropdownUserName">Sarah Miller</strong>
-                  <span id="dropdownUserEmail">sarah@example.com</span>
-                  <div class="dropdown-user-status">
-                    <span class="status-dot-green"></span>
-                    <span id="dropdownPetsStatus">2 Pets Protected</span>
-                  </div>
-                </div>
-              </div>
-
-              <div class="dropdown-divider"></div>
-
-              <div class="dropdown-links-list">
-                <a href="#dashboard" class="dropdown-item" onclick="App.closeUserDropdown()">
-                  <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18z"/><circle cx="9" cy="10" r="1.5"/><circle cx="15" cy="10" r="1.5"/><path d="M9 15c1.5 1.5 4.5 1.5 6 0"/></svg>
-                  <span>My Pets</span>
-                  <span class="dropdown-item-badge" id="dropdownBadgeCount">2</span>
-                </a>
-
-                <a href="#add-pet" class="dropdown-item" onclick="App.closeUserDropdown()">
-                  <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
-                  <span>Register New Pet</span>
-                </a>
-
-                <button type="button" class="dropdown-item" onclick="App.openLostPosterModal('pet-1'); App.closeUserDropdown();">
-                  <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="9" x2="15" y2="9"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="11" y2="17"/></svg>
-                  <span>Lost Pet Posters & Flyers</span>
-                </button>
-
-                <button type="button" class="dropdown-item" onclick="App.openFinderSimulator(); App.closeUserDropdown();">
-                  <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
-                  <span>Camera QR Scanner</span>
-                </button>
-
-                <a href="#landing" class="dropdown-item" onclick="App.closeUserDropdown()">
-                  <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-                  <span>Visit Public Website</span>
-                </a>
-              </div>
-
-              <div class="dropdown-divider"></div>
-
-              <button type="button" class="dropdown-item dropdown-logout-btn" onclick="App.logout(); App.closeUserDropdown();">
-                <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-                <span>Log Out</span>
-              </button>
-            </div>
-          </div>
-        </div>
+      <div class="nav-actions" id="navActionsContainer">
+        <a href="#dashboard" class="btn btn-secondary btn-sm" id="navDashboardLink">Dashboard</a>
+        <button id="navAuthBtn" class="btn btn-primary btn-sm" onclick="App.handleNavAuthClick()">Sign In</button>
+        <a href="#add-pet" class="btn btn-outline btn-sm" id="navCreateTagBtn">Create a Pet Tag</a>
       </div>
     </div>
   </header>
@@ -1705,6 +1589,94 @@
 
       </div>
 
+    </div>
+  </div>
+
+  <!-- ====================================================================
+       MODAL 5: REAL DATABASE LOGIN & REGISTRATION
+       ==================================================================== -->
+  <div id="authModal" class="modal-backdrop" aria-hidden="true">
+    <div class="modal-dialog auth-modal-dialog">
+      <button type="button" class="modal-close-btn no-print" onclick="App.closeAuthModal()" aria-label="Close Authentication">✕</button>
+
+      <!-- Brand Logo / Paw -->
+      <div style="text-align: center; margin-bottom: 20px;">
+        <span style="display: inline-flex; align-items: center; justify-content: center; width: 48px; height: 48px; border-radius: 50%; background-color: var(--yellow); border: 2px solid var(--ink); font-size: 22px; margin-bottom: 8px;">🐾</span>
+        <h2 id="authModalTitle" style="font-size: 24px; font-weight: 800; color: var(--ink); margin: 0;">Welcome to MyPet</h2>
+        <p id="authModalSub" style="font-size: 14px; color: var(--muted); margin-top: 4px;">Sign in to manage your pets and collar tags in the cloud database.</p>
+      </div>
+
+      <!-- Auth Modal Tabs -->
+      <div class="auth-tabs-row">
+        <button type="button" class="auth-tab-btn active" id="authTabLogin" onclick="App.switchAuthTab('login')">
+          Sign In
+        </button>
+        <button type="button" class="auth-tab-btn" id="authTabRegister" onclick="App.switchAuthTab('register')">
+          Create Account
+        </button>
+      </div>
+
+      <!-- Quick 1-Click Demo Fill -->
+      <div class="auth-demo-callout" id="authDemoCallout">
+        <div class="demo-callout-text">
+          <strong style="font-size: 13.5px; color: var(--ink); display: block;">Testing with the pre-seeded database?</strong>
+          <span style="font-size: 12px; color: var(--muted);">Click below to auto-fill Sarah Miller's account (Luna & Milo).</span>
+        </div>
+        <button type="button" class="btn btn-secondary btn-sm" onclick="App.fillDemoCredentials()">
+          ✨ Fill Demo (Sarah)
+        </button>
+      </div>
+
+      <!-- Error / Alert Message Banner -->
+      <div id="authErrorBanner" class="auth-error-banner" style="display: none;"></div>
+
+      <!-- Login Form -->
+      <form id="modalLoginForm" onsubmit="App.handleLogin(event)">
+        <div class="form-group">
+          <label class="form-label" for="modalLoginEmail">Email Address</label>
+          <input type="email" id="modalLoginEmail" class="form-input" placeholder="sarah@example.com" required autocomplete="email" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="modalLoginPassword">Password</label>
+          <input type="password" id="modalLoginPassword" class="form-input" placeholder="••••••••" required autocomplete="current-password" />
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-lg" id="modalLoginSubmitBtn" style="width: 100%; margin-top: 10px;">
+          Sign In to Dashboard →
+        </button>
+      </form>
+
+      <!-- Register Form -->
+      <form id="registerForm" style="display: none;" onsubmit="App.handleRegister(event)">
+        <div class="form-group">
+          <label class="form-label" for="regName">Your Full Name</label>
+          <input type="text" id="regName" class="form-input" placeholder="e.g. Alex Johnson" required />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="regEmail">Email Address</label>
+          <input type="email" id="regEmail" class="form-input" placeholder="alex@example.com" required autocomplete="email" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="regPhone">Contact Phone (For Found Pets)</label>
+          <input type="tel" id="regPhone" class="form-input" placeholder="(555) 000-0000" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="regPassword">Create Password</label>
+          <input type="password" id="regPassword" class="form-input" placeholder="At least 6 characters" minlength="6" required autocomplete="new-password" />
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-lg" id="regSubmitBtn" style="width: 100%; margin-top: 10px;">
+          Create MyPet Account →
+        </button>
+      </form>
+
+      <div class="auth-footer-note">
+        🔒 Connected to live SQLite database (<code style="background: var(--sand); padding: 2px 4px; border-radius: 4px;">mypet.db</code>). Passwords hashed with PBKDF2.
+      </div>
     </div>
   </div>
 
