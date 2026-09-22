@@ -499,25 +499,27 @@ h1, h2, h3, h4, .font-display {
 }
 
 .hero-stack {
-  max-width: 1320px;
+  max-width: 1380px;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
+.hero-headline-stage,
 .hero-description-row {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: clamp(16px, 3vw, 40px);
+  gap: clamp(16px, 3vw, 44px);
   width: 100%;
-  margin: -8px 0 24px;
+  max-width: 1380px;
+  margin: 0 auto 24px;
   position: relative;
 }
 
 .hero-center-content {
-  max-width: 540px;
+  max-width: 620px;
   flex: 1;
   text-align: center;
   display: flex;
@@ -528,8 +530,8 @@ h1, h2, h3, h4, .font-display {
 .hero-subtext {
   font-size: var(--text-subheading);
   color: var(--color-graphite);
-  margin: 16px auto 28px;
-  max-width: 520px;
+  margin: 20px auto 32px;
+  max-width: 560px;
   line-height: 1.45;
   letter-spacing: -0.01em;
   font-weight: 500;
@@ -541,7 +543,7 @@ h1, h2, h3, h4, .font-display {
   justify-content: center;
   gap: 16px;
   flex-wrap: wrap;
-  margin-bottom: 8px;
+  margin-bottom: 20px;
 }
 
 .hero-side-art {
@@ -552,6 +554,7 @@ h1, h2, h3, h4, .font-display {
   align-items: center;
   justify-content: center;
   position: relative;
+  align-self: center;
 }
 
 .floating-hero-pet {
@@ -2240,6 +2243,7 @@ h1, h2, h3, h4, .font-display {
    RESPONSIVE DESIGN (TABLET & MOBILE)
    ========================================================================== */
 @media (max-width: 960px) {
+  .hero-headline-stage,
   .hero-description-row {
     gap: 16px;
   }
@@ -2273,6 +2277,7 @@ h1, h2, h3, h4, .font-display {
   .hero-heading {
     font-size: 44px;
   }
+  .hero-headline-stage,
   .hero-description-row {
     display: grid;
     grid-template-columns: 1fr 1fr;
