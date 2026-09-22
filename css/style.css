@@ -61,9 +61,10 @@
   --text-display: 72px;
   --leading-display: 1.11;
   --tracking-display: -1.44px;
-  --text-hero: clamp(52px, 8.5vw, 136px);
-  --leading-hero: 1.05;
-  --tracking-hero: -2.96px;
+  --header-height: 72px;
+  --text-hero: clamp(40px, 4.8vw, 76px);
+  --leading-hero: 1.08;
+  --tracking-hero: -0.025em;
 
   /* Typography — Weights */
   --font-weight-medium: 500;
@@ -178,12 +179,16 @@ h1, h2, h3, h4, .font-display {
 }
 
 .hero-heading {
+  font-family: var(--font-aeonik);
   font-size: var(--text-hero);
   font-weight: 500;
-  letter-spacing: -0.02em;
+  letter-spacing: var(--tracking-hero);
   color: var(--color-ink);
   line-height: var(--leading-hero);
   text-align: center;
+  text-wrap: balance;
+  margin: 0 auto;
+  max-width: 18ch;
 }
 
 .section-heading {
@@ -493,13 +498,32 @@ h1, h2, h3, h4, .font-display {
    HERO SECTION — Centered Stack & Hero Gradient Frame
    ========================================================================== */
 .hero-section {
-  padding: 72px 0 88px;
+  min-height: calc(100vh - var(--header-height));
+  min-height: calc(100dvh - var(--header-height));
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: clamp(16px, 2.5vh, 40px) 0;
   position: relative;
   text-align: center;
+  box-sizing: border-box;
+}
+
+.hero-section .main-wrapper {
+  max-width: 1600px;
+  width: 100%;
+  padding: 0 clamp(16px, 3.5vw, 56px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
 }
 
 .hero-stack {
-  max-width: 1380px;
+  max-width: 1560px;
+  width: 100%;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
@@ -510,27 +534,28 @@ h1, h2, h3, h4, .font-display {
 .hero-description-row {
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: clamp(16px, 3vw, 44px);
+  justify-content: space-between;
+  gap: clamp(16px, 2.5vw, 44px);
   width: 100%;
-  max-width: 1380px;
-  margin: 0 auto 24px;
+  max-width: 1560px;
+  margin: 0 auto;
   position: relative;
 }
 
 .hero-center-content {
-  max-width: 620px;
-  flex: 1;
+  max-width: 740px;
+  flex: 1 1 540px;
   text-align: center;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
 }
 
 .hero-subtext {
-  font-size: var(--text-subheading);
+  font-size: clamp(15px, 1.15vw, 18px);
   color: var(--color-graphite);
-  margin: 20px auto 32px;
+  margin: clamp(12px, 1.8vh, 20px) auto clamp(16px, 2.5vh, 26px);
   max-width: 560px;
   line-height: 1.45;
   letter-spacing: -0.01em;
@@ -541,15 +566,15 @@ h1, h2, h3, h4, .font-display {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 16px;
+  gap: clamp(10px, 1.2vw, 16px);
   flex-wrap: wrap;
-  margin-bottom: 20px;
+  margin-bottom: clamp(10px, 1.6vh, 18px);
 }
 
 .hero-side-art {
-  flex: 0 0 clamp(280px, 26vw, 380px);
-  max-width: 380px;
-  width: clamp(280px, 26vw, 380px);
+  flex: 0 1 clamp(220px, 22vw, 360px);
+  max-width: 360px;
+  width: clamp(220px, 22vw, 360px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -559,10 +584,11 @@ h1, h2, h3, h4, .font-display {
 
 .floating-hero-pet {
   width: 100%;
-  max-width: 380px;
+  max-width: 100%;
   height: auto;
+  max-height: clamp(220px, 42vh, 380px);
   object-fit: contain;
-  filter: drop-shadow(0 16px 32px rgba(0, 105, 224, 0.1));
+  filter: drop-shadow(0 16px 32px rgba(0, 105, 224, 0.12));
   user-select: none;
   pointer-events: none;
   transition: transform 0.3s ease;
@@ -641,10 +667,10 @@ h1, h2, h3, h4, .font-display {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  font-size: var(--text-body-sm);
+  font-size: clamp(12px, 0.9vw, 13.5px);
   color: var(--color-fog);
   font-weight: 500;
-  margin-top: 24px;
+  margin-top: 0;
 }
 
 .hero-footnote::before {
@@ -2302,13 +2328,20 @@ h1, h2, h3, h4, .font-display {
    RESPONSIVE DESIGN (TABLET & MOBILE)
    ========================================================================== */
 @media (max-width: 960px) {
+  .hero-section {
+    min-height: auto;
+    padding: 48px 0;
+  }
   .hero-headline-stage,
   .hero-description-row {
     gap: 16px;
   }
   .hero-side-art {
-    flex: 0 0 180px;
-    max-width: 180px;
+    flex: 0 0 160px;
+    max-width: 160px;
+  }
+  .floating-hero-pet {
+    max-height: 220px;
   }
   .hero-gradient-inner {
     padding: 30px 24px;
@@ -2333,8 +2366,13 @@ h1, h2, h3, h4, .font-display {
   .nav-links {
     display: none;
   }
+  .hero-section {
+    min-height: auto;
+    padding: 32px 0 40px;
+  }
   .hero-heading {
-    font-size: 44px;
+    font-size: clamp(32px, 8vw, 42px);
+    max-width: 100%;
   }
   .hero-headline-stage,
   .hero-description-row {
@@ -2344,17 +2382,20 @@ h1, h2, h3, h4, .font-display {
       "cat dog"
       "center center";
     gap: 16px;
-    margin-top: 12px;
+    margin-top: 8px;
   }
   .hero-cat-art {
     grid-area: cat;
     justify-self: end;
-    max-width: 160px;
+    max-width: 150px;
   }
   .hero-dog-art {
     grid-area: dog;
     justify-self: start;
-    max-width: 160px;
+    max-width: 150px;
+  }
+  .floating-hero-pet {
+    max-height: 170px;
   }
   .hero-center-content {
     grid-area: center;
