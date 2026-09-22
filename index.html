@@ -3,20 +3,20 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MyPet — A little tag. A big way home.</title>
+  <title>MyPet — Digital Pet ID & Recovery</title>
   
-  <!-- Inter font -->
+  <!-- Geniestudio Typography: Geist & Aeonik / Plus Jakarta Sans geometric substitutes -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Plus+Jakarta+Sans:wght@500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
   
-  <!-- MyPet Stylesheet -->
+  <!-- Geniestudio Stylesheet -->
   <link rel="stylesheet" href="css/style.css">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐾</text></svg>">
 </head>
 <body>
 
-  <!-- Minimal Top Navigation -->
+  <!-- Minimal Header Navigation -->
   <header class="site-header no-print">
     <div class="nav-container">
       <a href="#landing" class="brand-logo">
@@ -26,13 +26,13 @@
 
       <ul class="nav-links">
         <li><a href="#how-it-works" class="nav-link">How It Works</a></li>
-        <li><a href="#features" class="nav-link">Features</a></li>
+        <li><a href="#features" class="nav-link">Simulator</a></li>
         <li><a href="#safety" class="nav-link">Safety</a></li>
-        <li><a href="#about" class="nav-link">About</a></li>
+        <li><a href="#faq" class="nav-link">FAQ</a></li>
       </ul>
 
       <div class="nav-actions">
-        <!-- Interactive Mode Switcher for seamless demonstration -->
+        <!-- Interactive Mode Switcher for presentation -->
         <button id="demoRoleSwitcher" class="demo-role-pill" title="Toggle between Owner and Finder experience">
           <span>🐱 Sarah (Owner)</span> · Test Finder Scan
         </button>
@@ -47,60 +47,67 @@
          VIEW 1: MARKETING LANDING PAGE
          ==================================================================== -->
     <div id="landingView" class="view-panel active">
-      <!-- 3-Column Storybook Hero -->
+      
+      <!-- Geniestudio Centered Hero Stack -->
       <section class="hero-section">
         <div class="main-wrapper">
-          <div class="hero-grid">
-            
-            <!-- Left Column: Happy Cat with QR Collar & Doodles -->
-            <div class="hero-col-left">
-              <div class="illustration-wrap">
-                <div id="heroLeftIllustration"></div>
-                <div class="hero-bubble-tag">
-                  <span>🐱</span>
-                  <span>Luna · Tag Active</span>
+          <div class="hero-stack">
+            <span class="eyebrow">PET IDENTITY, MADE SIMPLE</span>
+            <h1 class="hero-heading">Give your pet a way home.</h1>
+            <p class="hero-subtext">
+              Create a digital identity for your companion, attach their unique QR tag, and let finders reach you instantly with zero friction or app downloads.
+            </p>
+            <div class="hero-actions">
+              <a href="#add-pet" class="btn btn-primary btn-lg">Create a Pet Tag</a>
+              <a href="#how-it-works" class="btn btn-secondary btn-lg">See How It Works</a>
+            </div>
+
+            <!-- Hero Gradient Banner (3px Iris Gradient, 90px radius polaroid frame) -->
+            <div class="hero-gradient-banner">
+              <div class="hero-gradient-inner">
+                <div id="hero3DIllustration" class="hero-illustration-center">
+                  <!-- Injected dynamically by PetIllustrations.heroCenterpiece() -->
+                </div>
+                <div class="hero-tag-badge">
+                  <span style="width: 8px; height: 8px; border-radius: 50%; background: #10b981; display: inline-block;"></span>
+                  <span>Scannable 3D Tag · Instant GPS Recovery Alert</span>
                 </div>
               </div>
             </div>
 
-            <!-- Center Column: High Impact Typography & Direct CTAs -->
-            <div class="hero-col-center">
-              <span class="eyebrow">PET IDENTITY, MADE SIMPLE</span>
-              <h1 class="hero-heading">Give your pet a way home.</h1>
-              <p class="hero-subtext">
-                Create a digital identity for your cat or dog, attach their unique QR tag, and make it easy for someone to contact you if they ever get lost.
-              </p>
-              <div class="hero-actions">
-                <a href="#add-pet" class="btn btn-primary btn-lg">Create a Pet Tag</a>
-                <a href="#how-it-works" class="btn btn-secondary btn-lg">See How It Works</a>
-              </div>
-              <div class="hero-footnote">
-                No app required for the person who finds your pet.
-              </div>
+            <div class="hero-footnote">
+              No app required for the person who finds your pet. Works on any smartphone camera.
             </div>
-
-            <!-- Right Column: Happy Dog with QR Collar & Doodles -->
-            <div class="hero-col-right">
-              <div class="illustration-wrap">
-                <div id="heroRightIllustration"></div>
-                <div class="hero-bubble-tag">
-                  <span>🐶</span>
-                  <span>Milo · Reunited</span>
-                </div>
-              </div>
-            </div>
-
           </div>
         </div>
       </section>
 
-      <!-- How It Works: 3 Storybook Cards -->
+      <!-- Continuous Marquee Social Proof Strip (No visible card wrapper) -->
+      <div class="marquee-container">
+        <div class="marquee-track">
+          <div class="marquee-pill">🐾 <strong>12,400+</strong> Pets Protected</div>
+          <div class="marquee-pill">⚡ <strong>Zero Friction</strong> No App Download Required</div>
+          <div class="marquee-pill">📍 <strong>1-Tap GPS</strong> Finder Location Reports</div>
+          <div class="marquee-pill">📱 <strong>Universal QR</strong> Scannable by Any Camera</div>
+          <div class="marquee-pill">🔒 <strong>Privacy Guarded</strong> Owner-Controlled Info</div>
+          <div class="marquee-pill">🚨 <strong>Lost Mode</strong> Instant Community Alert</div>
+          <!-- Repeated for smooth infinite marquee -->
+          <div class="marquee-pill">🐾 <strong>12,400+</strong> Pets Protected</div>
+          <div class="marquee-pill">⚡ <strong>Zero Friction</strong> No App Download Required</div>
+          <div class="marquee-pill">📍 <strong>1-Tap GPS</strong> Finder Location Reports</div>
+          <div class="marquee-pill">📱 <strong>Universal QR</strong> Scannable by Any Camera</div>
+          <div class="marquee-pill">🔒 <strong>Privacy Guarded</strong> Owner-Controlled Info</div>
+          <div class="marquee-pill">🚨 <strong>Lost Mode</strong> Instant Community Alert</div>
+        </div>
+      </div>
+
+      <!-- How It Works: 3-Column Feature Cards (32px radius, bone white #fafdff & soft pastels) -->
       <section id="how-it-works" class="how-it-works-section">
         <div class="main-wrapper">
           <div class="section-header-center">
             <span class="eyebrow">THE RECOVERY FLOW</span>
             <h2 class="section-heading">Three steps. One safer way home.</h2>
-            <p class="section-subtext">Designed to be effortlessly simple for you, and instantly accessible to whoever finds your pet.</p>
+            <p class="section-subtext">Designed to be effortlessly simple for pet parents, and instantly accessible to whoever scans the collar.</p>
           </div>
 
           <div class="steps-grid">
@@ -109,7 +116,7 @@
               <span class="step-badge">01 — CREATE</span>
               <div class="step-art-container" id="stepArt1"></div>
               <h3 class="step-title">Create your pet</h3>
-              <p class="step-desc">Add your pet's name, photo, details, and the best way to contact you. You control exactly what is shared.</p>
+              <p class="step-desc">Add your pet's name, traits, medical notes, and contact details. You decide what information is shown or kept private.</p>
             </div>
 
             <!-- 02 — Tag -->
@@ -117,7 +124,7 @@
               <span class="step-badge">02 — TAG</span>
               <div class="step-art-container" id="stepArt2"></div>
               <h3 class="step-title">Get their QR tag</h3>
-              <p class="step-desc">Every pet gets a unique QR code that connects directly to their profile. Print or attach to any collar.</p>
+              <p class="step-desc">Every pet receives a unique QR code that connects directly to their online profile. Print or attach to any standard collar.</p>
             </div>
 
             <!-- 03 — Reunite -->
@@ -125,23 +132,23 @@
               <span class="step-badge">03 — REUNITE</span>
               <div class="step-art-container" id="stepArt3"></div>
               <h3 class="step-title">Find their way home</h3>
-              <p class="step-desc">When someone scans the tag, they can quickly see the pet's profile and contact their owner with zero app required.</p>
+              <p class="step-desc">When someone finds your companion and scans the tag, they can call you with one tap or share their exact GPS location.</p>
             </div>
           </div>
         </div>
       </section>
 
-      <!-- Interactive Collar Simulator & Test Scan -->
+      <!-- Live Collar Simulator Section (32px radius bone white card) -->
       <section id="features" class="demo-collar-section">
         <div class="main-wrapper">
           <div class="demo-collar-card">
             <div>
               <span class="eyebrow">TRY IT RIGHT NOW</span>
               <h2 class="section-heading" style="margin-bottom: 16px;">Scan Luna's tag to see how it works.</h2>
-              <p style="font-size: 16.5px; color: var(--body); margin-bottom: 24px; line-height: 1.6;">
-                Point your phone's camera at this tag or click the preview card. The finder is instantly taken to Luna's profile — without downloading an app or creating an account.
+              <p style="font-size: 17px; color: var(--color-graphite); margin-bottom: 28px; line-height: 1.6;">
+                Point your smartphone's camera at this tag or click the preview card below. The finder is instantly taken to Luna's profile — without downloading an app or creating an account.
               </p>
-              <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+              <div style="display: flex; gap: 14px; flex-wrap: wrap;">
                 <a href="#p/luna-7x29" class="btn btn-primary">Open Luna's Public Profile →</a>
                 <button class="btn btn-secondary" onclick="window.location.hash='#dashboard'">Open Owner Dashboard</button>
               </div>
@@ -149,18 +156,18 @@
 
             <div class="collar-preview-box">
               <div class="tag-interactive-preview" onclick="window.location.hash='#p/luna-7x29'" title="Click to test finder screen">
-                <div style="font-family: var(--font-display); font-weight: 800; font-size: 14px; margin-bottom: 12px;">🐾 MyPet</div>
+                <div style="font-family: var(--font-aeonik); font-weight: 500; font-size: 14px; margin-bottom: 12px; color: var(--color-ink);">🐾 MyPet</div>
                 <div id="landingCollarQr" style="display: flex; justify-content: center;"></div>
-                <div style="font-family: var(--font-display); font-size: 18px; font-weight: 800; margin-top: 10px;">LUNA</div>
-                <div style="font-size: 11.5px; color: var(--muted); font-weight: 600;">Scan me to reach my family</div>
+                <div style="font-family: var(--font-aeonik); font-size: 20px; font-weight: 500; margin-top: 12px; color: var(--color-ink);">LUNA</div>
+                <div style="font-size: 12px; color: var(--color-fog); font-weight: 500; margin-top: 4px;">Scan me to reach my family</div>
               </div>
-              <span class="tag-scan-hint">📷 Click or scan with your phone camera</span>
+              <span class="tag-scan-hint">📷 Click card or scan with phone camera</span>
             </div>
           </div>
         </div>
       </section>
 
-      <!-- Safety & Privacy Section -->
+      <!-- Safety & Trust Section (32px radius Bone White cards) -->
       <section id="safety" class="safety-section">
         <div class="main-wrapper">
           <div class="section-header-center">
@@ -172,40 +179,100 @@
             <div class="safety-item">
               <span class="safety-icon">🔒</span>
               <h3 class="safety-title">You control your information</h3>
-              <p class="safety-desc">Choose to show or hide your phone number and email. Finders can send secure messages without exposing your personal address.</p>
+              <p class="safety-desc">Choose whether to reveal your phone number or email publicly. Finders can dispatch secure messages through MyPet without seeing your private address.</p>
             </div>
 
             <div class="safety-item">
               <span class="safety-icon">⚡</span>
               <h3 class="safety-title">Zero friction for finders</h3>
-              <p class="safety-desc">Finders don't need to install an app, sign up, or fill out endless forms. A single scan reveals the pet's identity and one-tap call button.</p>
+              <p class="safety-desc">Finders never need to download an application, sign up, or fill out endless forms. A single camera scan instantly reveals your pet's profile and emergency contacts.</p>
             </div>
 
             <div class="safety-item">
               <span class="safety-icon">📍</span>
               <h3 class="safety-title">Lost Mode alerts</h3>
-              <p class="safety-desc">If your pet wanders off, turn on Lost Mode with one tap. Public profiles switch to high-visibility alert mode with last-seen locations.</p>
+              <p class="safety-desc">If your pet ever wanders away, toggle Lost Mode in one click. Public QR scans immediately shift to high-visibility emergency mode with last-seen locations.</p>
             </div>
           </div>
         </div>
       </section>
 
-      <!-- Storybook Footer -->
-      <footer id="about" style="border-top: 1px solid var(--border); padding: 60px 0 40px; text-align: center;">
+      <!-- FAQ Accordion Section (32px radius, 0.65s ease grid-template-rows transition) -->
+      <section id="faq" class="faq-section">
         <div class="main-wrapper">
-          <div style="font-family: var(--font-display); font-size: 24px; font-weight: 800; color: var(--ink); margin-bottom: 8px;">
+          <div class="section-header-center">
+            <span class="eyebrow">QUESTIONS & ANSWERS</span>
+            <h2 class="section-heading">Frequently asked questions.</h2>
+          </div>
+
+          <div class="faq-list">
+            <div class="faq-row" onclick="App.toggleFaq(this)">
+              <div class="faq-question">
+                <span>Does someone who finds my pet need to download an app?</span>
+                <span class="faq-toggle-icon">+</span>
+              </div>
+              <div class="faq-answer-wrapper">
+                <div class="faq-answer-inner">
+                  <p class="faq-answer">No! That is the core beauty of MyPet. Anyone with an iPhone or Android phone can simply point their native camera app at the collar tag, and your pet's recovery page opens immediately in their web browser.</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="faq-row" onclick="App.toggleFaq(this)">
+              <div class="faq-question">
+                <span>Can I hide my phone number and still be reached?</span>
+                <span class="faq-toggle-icon">+</span>
+              </div>
+              <div class="faq-answer-wrapper">
+                <div class="faq-answer-inner">
+                  <p class="faq-answer">Yes. You can toggle your phone number and email visibility on or off at any moment in the dashboard. When hidden, finders can still use the "I Found This Pet" form to send you their phone number and GPS location securely.</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="faq-row" onclick="App.toggleFaq(this)">
+              <div class="faq-question">
+                <span>What happens when I turn on Lost Mode?</span>
+                <span class="faq-toggle-icon">+</span>
+              </div>
+              <div class="faq-answer-wrapper">
+                <div class="faq-answer-inner">
+                  <p class="faq-answer">Turning on Lost Mode updates your pet's public page to a prominent missing alert with their last-seen date, time, and location. It also gives you 1-click tools to generate printable 8.5×11 street flyers and social media graphics.</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="faq-row" onclick="App.toggleFaq(this)">
+              <div class="faq-question">
+                <span>Is MyPet compatible with microchips?</span>
+                <span class="faq-toggle-icon">+</span>
+              </div>
+              <div class="faq-answer-wrapper">
+                <div class="faq-answer-inner">
+                  <p class="faq-answer">Absolutely. A microchip requires a special scanner at a vet clinic, whereas a MyPet tag can be read by any neighbor or finder on the street in 3 seconds. They complement each other perfectly to bring pets home faster.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Minimal Geniestudio Footer -->
+      <footer class="site-footer">
+        <div class="main-wrapper">
+          <div class="footer-brand">
             🐾 MyPet
           </div>
-          <p style="font-size: 16px; color: var(--heading); font-weight: 600; margin-bottom: 24px;">
+          <p style="font-size: 16px; color: var(--color-fog); font-weight: 500;">
             A little tag. A big way home.
           </p>
-          <div style="display: flex; justify-content: center; gap: 20px; font-size: 14px; color: var(--muted); margin-bottom: 24px;">
-            <a href="#landing" style="color: inherit; text-decoration: none;">Home</a>
-            <a href="#how-it-works" style="color: inherit; text-decoration: none;">How It Works</a>
-            <a href="#dashboard" style="color: inherit; text-decoration: none;">Dashboard</a>
-            <a href="#add-pet" style="color: inherit; text-decoration: none;">Create a Pet Tag</a>
-          </div>
-          <p style="font-size: 13px; color: var(--muted);">© 2026 MyPet Technologies. Crafted with warm cream paper aesthetic for pet families everywhere.</p>
+          <ul class="footer-links">
+            <li><a href="#landing">Home</a></li>
+            <li><a href="#how-it-works">How It Works</a></li>
+            <li><a href="#dashboard">Dashboard</a></li>
+            <li><a href="#add-pet">Create a Pet Tag</a></li>
+          </ul>
+          <p style="font-size: 13px; color: var(--color-fog);">© 2026 MyPet Technologies. Designed with Geniestudio light daylight aesthetic.</p>
         </div>
       </footer>
     </div>
@@ -219,22 +286,22 @@
         <div class="dashboard-header-bar">
           <div class="dashboard-title-group">
             <h1>Your pets</h1>
-            <p>Keep your pets' identities and tags in one place.</p>
+            <p>Keep your companions' identities, tags, and scan records in one place.</p>
           </div>
           <a href="#add-pet" class="btn btn-primary">+ Add Pet</a>
         </div>
 
         <!-- Pets List Grid -->
         <div class="pets-grid" id="dashboardPetsGrid">
-          <!-- Dynamic storybook pet cards injected here -->
+          <!-- Dynamic pet cards injected here by App.renderDashboard() -->
         </div>
 
         <!-- Activity & Recovery Feed -->
         <div class="activity-feed-section">
           <div class="activity-feed-header">
             <div>
-              <h3 style="font-size: 20px; color: var(--ink);">Tag Scans & Activity</h3>
-              <p style="font-size: 14px; color: var(--muted);">Live record of tag scans and community finder reports</p>
+              <h3 style="font-size: 22px; color: var(--color-ink);">Tag Scans & Activity</h3>
+              <p style="font-size: 14px; color: var(--color-fog); margin-top: 4px;">Real-time feed of collar scans and community finder reports</p>
             </div>
             <span class="status-badge active">LIVE SYNC</span>
           </div>
@@ -253,7 +320,7 @@
       <div class="main-wrapper">
         <div class="wizard-container">
           
-          <!-- Step Progress Dots -->
+          <!-- Step Progress Bar & Indicators -->
           <div class="wizard-progress">
             <div class="wizard-progress-bar">
               <div class="wizard-progress-fill" id="wizardProgressFill" style="width: 0%;"></div>
@@ -338,18 +405,18 @@
           <!-- Step 4: Photo Selection / Upload -->
           <div class="wizard-step" data-step="4">
             <h2 class="wizard-heading">Add a photo</h2>
-            <p class="wizard-subtext">A clear photo makes <span class="dynamic-pet-name">Luna</span> easier to recognize.</p>
+            <p class="wizard-subtext">A clear portrait makes <span class="dynamic-pet-name">Luna</span> easier to recognize.</p>
 
             <div class="avatar-upload-zone" onclick="document.getElementById('petPhotoUpload').click()">
               <div id="uploadPreviewArea">
-                <div style="font-size: 40px; margin-bottom: 8px;">📷</div>
-                <strong style="color: var(--ink); font-size: 15px; display: block;">Upload your pet's photo</strong>
-                <span style="font-size: 13px; color: var(--muted);">Click to choose from your phone or computer</span>
+                <div style="font-size: 38px; margin-bottom: 8px;">📷</div>
+                <strong style="color: var(--color-ink); font-size: 15px; display: block;">Upload your pet's photo</strong>
+                <span style="font-size: 13px; color: var(--color-fog);">Click to choose from your phone or computer</span>
               </div>
               <input type="file" id="petPhotoUpload" accept="image/*" style="display: none;" />
             </div>
 
-            <div class="avatar-presets-label">Or choose an illustrated storybook avatar:</div>
+            <div class="avatar-presets-label">Or choose a dimensional 3D avatar:</div>
             <div class="avatar-presets-grid">
               <button type="button" class="avatar-preset-btn selected" data-avatar="luna" title="Calico / White Cat">
                 <span style="font-size: 26px;">🐱</span>
@@ -431,12 +498,12 @@
       <div class="main-wrapper">
         <div class="qr-tag-view-container">
           <span class="eyebrow">TAG CREATED & ACTIVE</span>
-          <h1 id="qrPetTitle" class="hero-heading" style="font-size: 42px;">Luna's tag is ready.</h1>
-          <p style="font-size: 17px; color: var(--body); margin-top: 8px;">Scan this code to find your pet's public profile.</p>
+          <h1 id="qrPetTitle" class="section-heading" style="font-size: 38px; margin-top: 8px;">Luna's tag is ready.</h1>
+          <p style="font-size: 16px; color: var(--color-fog); margin-top: 8px;">Scan this code to test your pet's public profile.</p>
 
           <!-- Physical Tag Representation -->
           <div id="qrDisplayMedallion">
-            <!-- Dynamic Physical Tag Graphic injected by JS -->
+            <!-- Injected by PetIllustrations.physicalTagGraphic -->
           </div>
 
           <!-- Action Buttons -->
@@ -448,10 +515,9 @@
           </div>
 
           <div class="qr-hint-callout no-print">
-            <strong>Collar Tip:</strong> Keep the QR code visible and securely attached to your pet's collar. You can test scanning it at any time with your phone camera.
+            <strong>Collar Tip:</strong> Keep the QR code visible and securely attached to your pet's collar. You can test scanning it at any time with your smartphone camera.
           </div>
 
-          <!-- Hidden input for share link copying -->
           <input type="hidden" id="qrShareInput" />
         </div>
       </div>
@@ -479,10 +545,10 @@
     <div class="modal-dialog">
       <button class="modal-close-btn" onclick="App.closeModal('foundPetModal')">✕</button>
       
-      <div style="text-align: center; margin-bottom: 20px;">
+      <div style="text-align: center; margin-bottom: 24px;">
         <span style="font-size: 36px;">🐾</span>
-        <h2 style="font-size: 24px; color: var(--ink); margin-top: 8px;">You found <span id="foundModalPetName">Luna</span>!</h2>
-        <p style="font-size: 14.5px; color: var(--body); margin-top: 4px;">Is <span id="foundModalPetName">Luna</span> safe with you?</p>
+        <h2 style="font-size: 24px; color: var(--color-ink); margin-top: 8px;">You found <span id="foundModalPetName">Luna</span>!</h2>
+        <p style="font-size: 14.5px; color: var(--color-graphite); margin-top: 4px;">Is <span class="foundModalPetNameCopy">Luna</span> safe with you?</p>
       </div>
 
       <form onsubmit="App.submitFoundReport(event)">
@@ -501,7 +567,7 @@
         <div class="form-group">
           <label class="form-label" style="display: flex; justify-content: space-between; align-items: center;">
             <span>Current Location</span>
-            <button type="button" class="btn btn-secondary btn-sm" style="padding: 2px 8px; font-size: 11px;" onclick="App.useCurrentLocation()">
+            <button type="button" class="btn btn-secondary btn-sm" style="padding: 4px 10px; font-size: 11px;" onclick="App.useCurrentLocation()">
               📍 Use Current GPS
             </button>
           </label>
@@ -528,10 +594,10 @@
     <div class="modal-dialog">
       <button class="modal-close-btn" onclick="App.closeModal('lostModeModal')">✕</button>
       
-      <div style="margin-bottom: 20px;">
-        <span class="eyebrow" style="color: var(--red);">EMERGENCY RECOVERY</span>
-        <h2 style="font-size: 24px; color: var(--ink);">Mark <span id="lostModalPetName">Luna</span> as Lost</h2>
-        <p style="font-size: 14.5px; color: var(--body); margin-top: 4px;">This updates the public QR profile to show missing alerts and last-seen instructions.</p>
+      <div style="margin-bottom: 24px;">
+        <span class="eyebrow" style="color: #d92d20;">EMERGENCY RECOVERY</span>
+        <h2 style="font-size: 24px; color: var(--color-ink); margin-top: 4px;">Mark <span id="lostModalPetName">Luna</span> as Lost</h2>
+        <p style="font-size: 14.5px; color: var(--color-graphite); margin-top: 4px;">This updates the public QR profile to show missing alerts and last-seen instructions.</p>
       </div>
 
       <form onsubmit="App.saveLostMode(event)">
@@ -568,7 +634,7 @@
     <div class="modal-dialog">
       <button class="modal-close-btn" onclick="App.closeModal('editPetModal')">✕</button>
       
-      <h2 style="font-size: 22px; color: var(--ink); margin-bottom: 16px;">Edit Pet Profile</h2>
+      <h2 style="font-size: 22px; color: var(--color-ink); margin-bottom: 16px;">Edit Pet Profile</h2>
 
       <form onsubmit="App.savePetEdits(event)">
         <input type="hidden" id="editPetId" />
@@ -627,10 +693,10 @@
     <div class="modal-dialog poster-modal-dialog">
       <button class="modal-close-btn no-print" onclick="App.closeModal('lostPosterModal')">✕</button>
 
-      <div class="no-print" style="margin-bottom: 16px;">
-        <span class="eyebrow" style="color: var(--red);">NEIGHBORHOOD & SOCIAL FLYERS</span>
-        <h2 style="font-size: 24px; color: var(--ink);">Lost Pet Poster & Flyer Generator</h2>
-        <p style="font-size: 14px; color: var(--body); margin-top: 2px;">
+      <div class="no-print" style="margin-bottom: 20px;">
+        <span class="eyebrow" style="color: #d92d20;">NEIGHBORHOOD & SOCIAL FLYERS</span>
+        <h2 style="font-size: 26px; color: var(--color-ink); margin-top: 4px;">Lost Pet Poster & Flyer Generator</h2>
+        <p style="font-size: 14px; color: var(--color-fog); margin-top: 2px;">
           Instant printable flyer with tear-off phone tabs and social media graphics.
         </p>
       </div>
@@ -668,7 +734,7 @@
             <textarea id="posterNotesInput" class="form-textarea" rows="3" oninput="MyPetPoster.updateOption('notes', this.value)">Very friendly, green eyes, wearing pink collar. May be timid around dogs. Please do not chase.</textarea>
           </div>
 
-          <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 20px;">
+          <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 24px;">
             <button class="btn btn-primary" onclick="MyPetPoster.printPoster()">
               🖨️ Print Street Poster (8.5×11")
             </button>

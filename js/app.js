@@ -174,12 +174,17 @@
     },
 
     renderStaticIllustrations: function() {
+      const hero3D = document.getElementById('hero3DIllustration');
+      if (hero3D && window.PetIllustrations && window.PetIllustrations.heroCenterpiece) {
+        hero3D.innerHTML = window.PetIllustrations.heroCenterpiece();
+      }
+
       const leftHero = document.getElementById('heroLeftIllustration');
       const rightHero = document.getElementById('heroRightIllustration');
-      if (leftHero && window.PetIllustrations) {
+      if (leftHero && window.PetIllustrations && window.PetIllustrations.heroCat) {
         leftHero.innerHTML = window.PetIllustrations.heroCat(320, 320);
       }
-      if (rightHero && window.PetIllustrations) {
+      if (rightHero && window.PetIllustrations && window.PetIllustrations.heroDog) {
         rightHero.innerHTML = window.PetIllustrations.heroDog(320, 320);
       }
 
@@ -187,15 +192,21 @@
       const step1El = document.getElementById('stepArt1');
       const step2El = document.getElementById('stepArt2');
       const step3El = document.getElementById('stepArt3');
-      if (step1El) step1El.innerHTML = window.PetIllustrations.step1Create();
-      if (step2El) step2El.innerHTML = window.PetIllustrations.step2Tag();
-      if (step3El) step3El.innerHTML = window.PetIllustrations.step3Reunite();
+      if (step1El && window.PetIllustrations) step1El.innerHTML = window.PetIllustrations.step1Create();
+      if (step2El && window.PetIllustrations) step2El.innerHTML = window.PetIllustrations.step2Tag();
+      if (step3El && window.PetIllustrations) step3El.innerHTML = window.PetIllustrations.step3Reunite();
 
       // Live collar demo tag on landing page
       const landingCollarQr = document.getElementById('landingCollarQr');
       if (landingCollarQr && window.MyPetQR) {
         const demoUrl = window.location.origin + window.location.pathname + '#p/luna-7x29';
-        landingCollarQr.innerHTML = window.MyPetQR.generateSVG(demoUrl, { size: 140, margin: 1 });
+        landingCollarQr.innerHTML = window.MyPetQR.generateSVG(demoUrl, { size: 140, margin: 1, darkColor: "#181d27" });
+      }
+    },
+
+    toggleFaq: function(element) {
+      if (element) {
+        element.classList.toggle('open');
       }
     },
 
@@ -390,7 +401,7 @@
       const qrSvg = window.MyPetQR.generateSVG(publicUrl, {
         size: 160,
         margin: 1,
-        darkColor: "#121212"
+        darkColor: "#181d27"
       });
 
       if (containerEl && window.PetIllustrations) {
@@ -549,6 +560,7 @@
       if (!modal || !pet) return;
 
       document.getElementById('foundModalPetName').innerText = pet.name;
+      document.querySelectorAll('.foundModalPetNameCopy').forEach(el => el.innerText = pet.name);
       document.getElementById('foundPetIdInput').value = pet.id;
       modal.classList.add('active');
     },

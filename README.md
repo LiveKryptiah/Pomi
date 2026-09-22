@@ -3,26 +3,29 @@
 > **A little tag. A big way home.**  
 > *Give your pet an identity. Help them find their way back home.*
 
-**MyPet** is a responsive digital pet identification and lost-pet recovery platform designed in the **Family storybook visual aesthetic** (warm cream paper canvas, hand-drawn vector illustrations, playful doodles, flat saturated colors, generous whitespace, large bold headings, and restrained UI chrome).
+**MyPet** is a responsive digital pet identification and lost-pet recovery platform designed in the **Geniestudio visual aesthetic**: an airy, daylight-studio language featuring a pale sky-blue canvas (`#ebf5ff`), paper-like bone white surfaces (`#fafdff`), mid-weight 500 typography with tight negative tracking, dense charcoal (`#181d27`) pill buttons, soft pastel washes (lavender, mint, powder blue, peach, solar), and whimsical dimensional 3D illustrations floating in generous whitespace.
 
 ---
 
 ## 🌟 Core Product Features
 
-1. **Family Storybook Design Language**
-   - Warm paper canvas (`#fbfaf9`, `#f2f0ed`, `#f6f4ef`)
-   - Original hand-drawn SVG illustrations (cat with QR collar, dog with QR collar, storybook doodles: paw prints, hearts, stars, bones, leaves)
-   - Flat saturated accents (`#0086fc` blue, `#ff3e00` orange, `#00c978` green, `#ffcd6c` yellow, `#ff58ae` pink, `#ff2b3a` red)
-   - Tactile inset pressed-in borders (`box-shadow: inset 0 0 0 1px #f2f0ed`) instead of heavy dropshadows
-   - Distinctive typography using Inter and bold display headers
+1. **Geniestudio Design Language**
+   - Airy daylight canvas (`#ebf5ff`) and bone-white surfaces (`#fafdff`)
+   - Dimensional 3D soft clay illustrations (pet portraits, collar tags, clouds, envelopes, whimsical objects)
+   - Strict mid-weight 500 typography (Aeonik display headers with tight `-0.02em` tracking, Geist UI body face)
+   - Architectural restraint: borderless 32px cards with natural color-shift depth
+   - Filled charcoal (`#181d27`) CTA pill buttons with tight shadow rings
+   - Iris blue accent (`#0069e0`) and 90px-radius polaroid gradient hero banner
 
-2. **Landing Page with 3-Column Hero**
-   - Three-column hero layout with happy cat wearing a QR tag on the left, high-impact headline in the center, and happy dog on the right
-   - "Three steps. One safer way home." storybook cards:
-     - `01 — Create` (Owner & Pet, blue accent)
-     - `02 — Tag` (Collar with QR tag, orange accent)
+2. **Landing Page with Centered Hero Stack & Marquee**
+   - High-impact display headline with tight tracking and centered CTA action
+   - Iris gradient framed banner encasing floating 3D hero pets and scannable tag
+   - Continuous horizontal marquee logo/trust ticker
+   - "Three steps. One safer way home." 3-column feature cards:
+     - `01 — Create` (Owner & Pet, lavender/powder blue accent)
+     - `02 — Tag` (Collar with 3D QR tag, mint accent)
      - `03 — Reunite` (Finder scanning collar with phone, green accent)
-   - Live interactive collar tag simulator on the homepage
+   - Interactive live collar tag simulator and FAQ accordion rows
 
 3. **Owner Dashboard (`#dashboard`)**
    - Large storybook pet cards showing status (`TAG ACTIVE` or `🔴 LOST`)
