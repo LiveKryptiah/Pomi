@@ -127,6 +127,12 @@
         return pets[idx];
       }
       return null;
+    },
+    isLoggedIn: function() {
+      return localStorage.getItem('mypet_auth') === 'true';
+    },
+    setLoggedIn: function(status) {
+      localStorage.setItem('mypet_auth', status ? 'true' : 'false');
     }
   };
 
@@ -220,13 +226,33 @@
       if (!hash || hash === 'landing') {
         App.showView('landingView');
         window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else if (hash === 'login') {
+        App.showView('loginView');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else if (hash === 'create-tag') {
+        // When creating a pet tag: show login form if not logged in; after login route to dashboard
+        if (!Store.isLoggedIn()) {
+          App.showView('loginView');
+        } else {
+          App.showView('dashboardView');
+          App.renderDashboard();
+        }
+        window.scrollTo({ top: 0, behavior: 'smooth' });
       } else if (hash === 'dashboard') {
-        App.showView('dashboardView');
-        App.renderDashboard();
+        if (!Store.isLoggedIn()) {
+          App.showView('loginView');
+        } else {
+          App.showView('dashboardView');
+          App.renderDashboard();
+        }
         window.scrollTo({ top: 0, behavior: 'smooth' });
       } else if (hash === 'add-pet') {
-        App.showView('addPetView');
-        App.resetAddPetWizard();
+        if (!Store.isLoggedIn()) {
+          App.showView('loginView');
+        } else {
+          App.showView('addPetView');
+          App.resetAddPetWizard();
+        }
         window.scrollTo({ top: 0, behavior: 'smooth' });
       } else if (hash.startsWith('pets/') && hash.endsWith('/qr')) {
         const petId = hash.split('/')[1];
@@ -262,6 +288,50 @@
           demoRoleBtn.innerHTML = `<span>🐱 Sarah (Owner)</span> · Test Finder Scan`;
           demoRoleBtn.onclick = () => window.location.hash = '#p/luna-7x29';
         }
+      }
+
+      const isLoggedIn = Store.isLoggedIn();
+      const navDashboardLink = document.getElementById('navDashboardLink');
+      if (navDashboardLink) {
+        navDashboardLink.style.display = isLoggedIn ? 'inline-flex' : 'none';
+      }
+
+      const navAuthBtn = document.getElementById('navAuthBtn');
+      if (navAuthBtn) {
+        navAuthBtn.innerText = isLoggedIn ? 'Log Out' : 'Sign In';
+        navAuthBtn.title = isLoggedIn ? 'Sign out of owner account' : 'Sign in to owner account';
+      }
+    },
+
+    handleLoginSubmit: function(e) {
+      if (e && e.preventDefault) e.preventDefault();
+      const emailInput = document.getElementById('loginEmail');
+      const email = emailInput ? emailInput.value.trim() : 'sarah@example.com';
+      Store.setLoggedIn(true);
+      showToast(`Welcome back! Signed in as ${email || 'Sarah Miller'}`);
+      App.updateNav();
+      window.location.hash = '#dashboard';
+    },
+
+    quickDemoLogin: function() {
+      Store.setLoggedIn(true);
+      showToast("Signed in as Sarah Miller (Demo Owner)");
+      App.updateNav();
+      window.location.hash = '#dashboard';
+    },
+
+    logout: function() {
+      Store.setLoggedIn(false);
+      showToast("You have been signed out.");
+      App.updateNav();
+      window.location.hash = '#landing';
+    },
+
+    toggleNavAuth: function() {
+      if (Store.isLoggedIn()) {
+        App.logout();
+      } else {
+        window.location.hash = '#login';
       }
     },
 

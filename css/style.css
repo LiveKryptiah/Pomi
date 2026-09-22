@@ -994,6 +994,65 @@ h1, h2, h3, h4, .font-display {
 }
 
 /* ==========================================================================
+   LOGIN / SIGN-IN FORM (When Creating a Pet Tag)
+   ========================================================================== */
+.login-container {
+  max-width: 480px;
+  margin: 56px auto 96px;
+  background-color: var(--color-bone-white);
+  border-radius: var(--radius-cards);
+  padding: 48px 40px;
+  box-shadow: var(--shadow-lg);
+  text-align: center;
+}
+
+.login-header {
+  margin-bottom: 28px;
+}
+
+.login-title {
+  font-family: var(--font-aeonik);
+  font-size: var(--text-heading);
+  font-weight: 500;
+  color: var(--color-ink);
+  letter-spacing: var(--tracking-heading);
+  line-height: var(--leading-heading);
+  margin: 12px 0 8px;
+}
+
+.login-subtext {
+  font-size: var(--text-body-sm);
+  color: var(--color-fog);
+  line-height: 1.5;
+}
+
+.login-divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 20px 0;
+  color: var(--color-fog);
+  font-size: 13px;
+}
+
+.login-divider::before,
+.login-divider::after {
+  content: "";
+  flex: 1;
+  border-bottom: 1px solid rgba(10, 13, 18, 0.08);
+}
+
+.login-divider span {
+  padding: 0 12px;
+}
+
+.login-footer-hint {
+  margin-top: 24px;
+  font-size: 14px;
+  color: var(--color-fog);
+}
+
+/* ==========================================================================
    OWNER DASHBOARD
    ========================================================================== */
 .dashboard-header-bar {

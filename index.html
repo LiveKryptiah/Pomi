@@ -36,8 +36,9 @@
         <button id="demoRoleSwitcher" class="demo-role-pill" title="Toggle between Owner and Finder experience">
           <span>🐱 Sarah (Owner)</span> · Test Finder Scan
         </button>
-        <a href="#dashboard" class="btn btn-secondary btn-sm" id="navDashboardLink">Dashboard</a>
-        <a href="#add-pet" class="btn btn-primary btn-sm">Create a Pet Tag</a>
+        <a href="#dashboard" class="btn btn-secondary btn-sm" id="navDashboardLink" style="display: none;">Dashboard</a>
+        <button id="navAuthBtn" class="btn btn-secondary btn-sm" onclick="App.toggleNavAuth()">Sign In</button>
+        <a href="#create-tag" class="btn btn-primary btn-sm">Create a Pet Tag</a>
       </div>
     </div>
   </header>
@@ -66,7 +67,7 @@
                 Create a digital identity for your companion, attach their unique QR tag, and let finders reach you instantly with zero friction or app downloads.
               </p>
               <div class="hero-actions">
-                <a href="#add-pet" class="btn btn-primary btn-lg">Create a Pet Tag</a>
+                <a href="#create-tag" class="btn btn-primary btn-lg">Create a Pet Tag</a>
                 <a href="#how-it-works" class="btn btn-secondary btn-lg">See How It Works</a>
               </div>
               <div class="hero-footnote">
@@ -271,11 +272,59 @@
             <li><a href="#landing">Home</a></li>
             <li><a href="#how-it-works">How It Works</a></li>
             <li><a href="#dashboard">Dashboard</a></li>
-            <li><a href="#add-pet">Create a Pet Tag</a></li>
+            <li><a href="#create-tag">Create a Pet Tag</a></li>
           </ul>
           <p style="font-size: 13px; color: var(--color-fog);">© 2026 MyPet Technologies. Designed with Geniestudio light daylight aesthetic.</p>
         </div>
       </footer>
+    </div>
+
+
+    <!-- ====================================================================
+         VIEW: LOGIN / SIGN IN FORM (When creating a pet tag)
+         ==================================================================== -->
+    <div id="loginView" class="view-panel">
+      <div class="main-wrapper">
+        <div class="login-container">
+          <div class="login-header">
+            <span class="eyebrow">OWNER ACCOUNT</span>
+            <h1 class="login-title">Sign in to create your pet tag</h1>
+            <p class="login-subtext">Access your dashboard to register a new pet, generate QR tags, and manage lost pet alerts.</p>
+          </div>
+
+          <form id="loginForm" class="login-form" onsubmit="App.handleLoginSubmit(event)">
+            <div class="form-group" style="text-align: left;">
+              <label class="form-label" for="loginEmail">Email Address</label>
+              <input type="email" id="loginEmail" class="form-input" placeholder="name@example.com" value="sarah@example.com" required />
+            </div>
+
+            <div class="form-group" style="text-align: left;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                <label class="form-label" for="loginPassword" style="margin-bottom: 0;">Password</label>
+                <a href="javascript:void(0)" onclick="alert('For demo, use any password or click Quick Demo Sign In below.')" style="font-size: 12px; color: var(--color-iris-blue); text-decoration: none;">Forgot?</a>
+              </div>
+              <input type="password" id="loginPassword" class="form-input" placeholder="••••••••" value="password123" required />
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-lg" style="width: 100%; margin-top: 8px;">
+              Sign In to Dashboard →
+            </button>
+
+            <div class="login-divider">
+              <span>or</span>
+            </div>
+
+            <button type="button" class="btn btn-secondary" style="width: 100%;" onclick="App.quickDemoLogin()">
+              ⚡ Demo 1-Click Sign In (Sarah Miller)
+            </button>
+
+            <div class="login-footer-hint">
+              <span>New to MyPet?</span>
+              <a href="javascript:void(0)" onclick="App.quickDemoLogin()" style="color: var(--color-iris-blue); font-weight: 600; text-decoration: none; margin-left: 6px;">Create an account</a>
+            </div>
+          </form>
+        </div>
+      </div>
     </div>
 
 
