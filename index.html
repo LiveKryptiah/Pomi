@@ -11,20 +11,21 @@
   <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Plus+Jakarta+Sans:wght@500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
   
   <!-- Geniestudio Stylesheet -->
-  <link rel="stylesheet" href="css/style.css">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐾</text></svg>">
+  <link rel="stylesheet" href="css/style.css?v=47">
+  <link rel="icon" type="image/png" href="images/logo.png">
+  <script src="js/icons.js"></script>
 </head>
 <body>
 
   <!-- Minimal Header Navigation -->
   <header class="site-header no-print">
     <div class="nav-container">
-      <a href="#landing" class="brand-logo">
-        <span class="brand-paw-badge">🐾</span>
-        <span>MyPet</span>
+      <a href="#landing" class="brand-logo" aria-label="MyPet Home">
+        <img src="images/logo.png" alt="MyPet Logo" class="brand-logo-img" />
       </a>
 
       <ul class="nav-links">
+        <li><a href="#benefits" class="nav-link">Benefits</a></li>
         <li><a href="#how-it-works" class="nav-link">How It Works</a></li>
         <li><a href="#features" class="nav-link">Simulator</a></li>
         <li><a href="#safety" class="nav-link">Safety</a></li>
@@ -32,13 +33,7 @@
       </ul>
 
       <div class="nav-actions">
-        <!-- Interactive Mode Switcher for presentation -->
-        <button id="demoRoleSwitcher" class="demo-role-pill" title="Toggle between Owner and Finder experience">
-          <span>🐱 Sarah (Owner)</span> · Test Finder Scan
-        </button>
-        <a href="#dashboard" class="btn btn-secondary btn-sm" id="navDashboardLink" style="display: none;">Dashboard</a>
-        <button id="navAuthBtn" class="btn btn-secondary btn-sm" onclick="App.toggleNavAuth()">Sign In</button>
-        <a href="#create-tag" class="btn btn-primary btn-sm">Create a Pet Tag</a>
+        <button id="navAuthBtn" class="btn btn-primary btn-sm" onclick="App.toggleNavAuth()">Sign In</button>
       </div>
     </div>
   </header>
@@ -52,62 +47,270 @@
       <!-- Geniestudio Centered Hero Stack with Flanking Illustrations -->
       <section class="hero-section">
         <div class="main-wrapper">
-          <div class="hero-stack">
+          <div class="hero-headline-stage">
+            
+            <!-- Left Side: Leaping Cat on the side of "Give your pet a way home." -->
+            <div class="hero-side-art hero-cat-art">
+              <img src="images/hero-cat.png" alt="Playful Cat" class="floating-hero-pet" />
+            </div>
 
-            <!-- Eyebrow Pill -->
-            <span class="eyebrow">PET IDENTITY, MADE SIMPLE</span>
-
-            <!-- Flanking Headline Stage: Cat Art (Left) + "Give your pet a way home." + Dog Art (Right) -->
-            <div class="hero-headline-stage">
-              <div class="hero-side-art hero-cat-art">
-                <img src="images/hero-cat.png" alt="Playful Cat" class="floating-hero-pet" />
-              </div>
-
+            <!-- Center Content: Eyebrow + Headline + Description + CTAs -->
+            <div class="hero-center-content">
+              <span class="eyebrow">PET IDENTITY, MADE SIMPLE</span>
               <h1 class="hero-heading">Give your pet a way home.</h1>
-
-              <div class="hero-side-art hero-dog-art">
-                <img src="images/hero-dog.png" alt="Playful Dog" class="floating-hero-pet" />
+              <p class="hero-subtext">
+                Create a digital identity for your companion, attach their unique QR tag, and let finders reach you instantly with zero friction or app downloads.
+              </p>
+              <div class="hero-actions">
+                <a href="#create-tag" class="btn btn-primary btn-lg">Create a Pet Tag</a>
+                <button type="button" class="btn btn-secondary btn-lg" onclick="App.openFinderSimulator()">
+                  <svg class="ui-icon" style="width: 18px; height: 18px; margin-right: 6px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+                  Try It As a Finder
+                </button>
+              </div>
+              <div class="hero-footnote">
+                No app required for the person who finds your pet. Works on any smartphone camera.
               </div>
             </div>
 
-            <!-- Description / Subtext -->
-            <p class="hero-subtext">
-              Create a digital identity for your companion, attach their unique QR tag, and let finders reach you instantly with zero friction or app downloads.
-            </p>
-
-            <!-- Actions CTAs -->
-            <div class="hero-actions">
-              <a href="#create-tag" class="btn btn-primary btn-lg">Create a Pet Tag</a>
-              <a href="#how-it-works" class="btn btn-secondary btn-lg">See How It Works</a>
-            </div>
-
-            <!-- Footnote -->
-            <div class="hero-footnote">
-              No app required for the person who finds your pet. Works on any smartphone camera.
+            <!-- Right Side: Leaping Dog on the side of "Give your pet a way home." -->
+            <div class="hero-side-art hero-dog-art">
+              <img src="images/hero-dog.png" alt="Playful Dog" class="floating-hero-pet" />
             </div>
 
           </div>
         </div>
       </section>
 
-      <!-- Continuous Marquee Social Proof Strip (No visible card wrapper) -->
-      <div class="marquee-container">
-        <div class="marquee-track">
-          <div class="marquee-pill">🐾 <strong>12,400+</strong> Pets Protected</div>
-          <div class="marquee-pill">⚡ <strong>Zero Friction</strong> No App Download Required</div>
-          <div class="marquee-pill">📍 <strong>1-Tap GPS</strong> Finder Location Reports</div>
-          <div class="marquee-pill">📱 <strong>Universal QR</strong> Scannable by Any Camera</div>
-          <div class="marquee-pill">🔒 <strong>Privacy Guarded</strong> Owner-Controlled Info</div>
-          <div class="marquee-pill">🚨 <strong>Lost Mode</strong> Instant Community Alert</div>
-          <!-- Repeated for smooth infinite marquee -->
-          <div class="marquee-pill">🐾 <strong>12,400+</strong> Pets Protected</div>
-          <div class="marquee-pill">⚡ <strong>Zero Friction</strong> No App Download Required</div>
-          <div class="marquee-pill">📍 <strong>1-Tap GPS</strong> Finder Location Reports</div>
-          <div class="marquee-pill">📱 <strong>Universal QR</strong> Scannable by Any Camera</div>
-          <div class="marquee-pill">🔒 <strong>Privacy Guarded</strong> Owner-Controlled Info</div>
-          <div class="marquee-pill">🚨 <strong>Lost Mode</strong> Instant Community Alert</div>
+      <!-- Social Proof: Avatar Circles Only (9 Protected Pets) -->
+      <section class="social-proof-section">
+        <div class="social-proof-circles-standalone">
+          <div class="avatar-circle" title="Protected Companion"><img src="images/hero-cat.png" alt="Protected Cat" /></div>
+          <div class="avatar-circle" title="Protected Companion"><img src="images/avatar-husky.png" alt="Protected Husky" /></div>
+          <div class="avatar-circle" title="Protected Companion"><img src="images/hero-dog.png" alt="Protected Dog" /></div>
+          <div class="avatar-circle" title="Protected Companion"><img src="images/avatar-corgi.png" alt="Protected Corgi" /></div>
+          <div class="avatar-circle" title="Protected Companion"><img src="images/step-reunite.png" alt="Reunited Dog" /></div>
+          <div class="avatar-circle" title="Protected Companion"><img src="images/avatar-shiba.png" alt="Protected Shiba" /></div>
+          <div class="avatar-circle" title="Protected Companion"><img src="images/step-tag.png" alt="Tagged Pet" /></div>
+          <div class="avatar-circle" title="Protected Companion"><img src="images/avatar-pug.png" alt="Protected Pug" /></div>
+          <div class="avatar-circle" title="Protected Companion"><img src="images/step-create.png" alt="Safe Pet" /></div>
         </div>
-      </div>
+      </section>
+
+      <!-- ====================================================================
+           SECTION: BENEFITS — Asymmetrical Bento Grid (Reference Screenshot)
+           ==================================================================== -->
+      <section id="benefits" class="benefits-section">
+        <div class="main-wrapper">
+          
+          <div class="section-header-center">
+            <span class="eyebrow">BENEFITS</span>
+            <h2 class="section-heading">Everything you need to keep them safe.</h2>
+            <p class="section-subtext">Four powerful layers of protection built into every digital tag, working seamlessly behind the scenes.</p>
+          </div>
+
+          <div class="benefits-bento-grid">
+            
+            <!-- Left Column -->
+            <div class="bento-col bento-col-left">
+              
+              <!-- Card 1: Easy 1-Tap Contact (Powder Blue) with Flanking Leaping Pup -->
+              <div class="bento-contact-wrap" id="bentoContactWrap">
+                <div class="bento-flank-pup" id="bentoFlankPup" aria-hidden="true">
+                  <img src="images/puppy-running.png" alt="Playful Running Pup" class="flank-pup-img" />
+                </div>
+                <div class="bento-card bento-card-blue" id="bentoCardContact" style="background-image: url('images/benefit-contact.png?v=2'); background-size: cover; background-position: center; background-repeat: no-repeat; background-color: #cce7ff;">
+                  <div class="bento-content">
+                    <h3 class="bento-title">Instant 1-tap contact</h3>
+                    <p class="bento-desc">Make it effortless for finders to reach you. Anyone scanning the collar can call or message you in seconds without installing an app.</p>
+                  </div>
+                  
+                  <div class="bento-mock-contact">
+                    <div class="contact-pill-row">
+                      <div class="contact-pill-user">
+                        <div class="contact-pill-avatar" style="background: #eef4ff;"><svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+                        <div>
+                          <strong class="contact-pill-name">Sarah Miller</strong>
+                          <span class="contact-pill-role">Primary Owner</span>
+                        </div>
+                      </div>
+                      <button type="button" class="contact-pill-btn" onclick="alert('Calling Sarah Miller: (555) 234-5678')">Call Owner</button>
+                    </div>
+
+                    <div class="contact-pill-row">
+                      <div class="contact-pill-user">
+                        <div class="contact-pill-avatar" style="background: #e6f9ed;"><svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16"/><line x1="9" y1="9" x2="15" y2="9"/><line x1="12" y1="6" x2="12" y2="12"/></svg></div>
+                        <div>
+                          <strong class="contact-pill-name">Riverside Vet Clinic</strong>
+                          <span class="contact-pill-role">Emergency Vet</span>
+                        </div>
+                      </div>
+                      <button type="button" class="contact-pill-btn" onclick="alert('Calling Riverside Vet Clinic: (555) 987-6543')">Call Vet</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Card 2: Live GPS Scan Alerts & Chat (Lavender) -->
+              <div class="bento-card bento-card-lavender" style="background-image: url('images/benefit-gps.png?v=2'); background-size: cover; background-position: center; background-repeat: no-repeat; background-color: #f1e6ff;">
+                <div class="bento-content">
+                  <h3 class="bento-title">Live GPS alerts & notifications</h3>
+                  <p class="bento-desc">Stay connected the moment someone scans Luna's collar tag. View real-time location pings and coordinates on your live dashboard.</p>
+                </div>
+
+                <div class="bento-mock-chat">
+                  <div class="chat-bubble chat-bubble-left">
+                    <span><svg class="ui-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 14c-1.66 0-3 1.12-3 2.5 0 1.66 1.34 2.5 3 2.5s3-.84 3-2.5c0-1.38-1.34-2.5-3-2.5zm-5-3c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm10 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm-8-4c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm6 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg></span>
+                    <p>Luna's tag was just scanned near Riverside Park!</p>
+                  </div>
+                  <div class="chat-bubble chat-bubble-right">
+                    <p>Thank you so much! I'm heading over now.</p>
+                    <span class="chat-avatar-mini"><svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
+                  </div>
+                  <div class="chat-status-pill">
+                    <span><svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></span>
+                    <strong>GPS Coordinates Verified:</strong>
+                    <span>37.7749° N, 122.4194° W</span>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Right Column -->
+            <div class="bento-col bento-col-right">
+              
+              <!-- Card 3: Supportive Community / Lost Mode (Tall with Dark Bottom) -->
+              <div class="bento-card bento-card-community">
+                <div class="community-visual-stage">
+                  <img src="images/community-pet.jpg" alt="Supportive Community" class="community-visual-img" />
+                  <div class="community-status-badge">
+                    <span class="pulse-dot"></span>
+                    <span>COMMUNITY NETWORK</span>
+                  </div>
+                </div>
+                <div class="community-dark-content">
+                  <h3 class="bento-title-white">Supportive Community</h3>
+                  <p class="bento-desc-muted">You're not searching alone. Activate Lost Mode to broadcast high-priority alerts with digital flyers to nearby shelters, vets, and pet finders.</p>
+                </div>
+              </div>
+
+              <!-- Card 4: Digital Medical & Care ID with Flanking Cat on Bottom Right -->
+              <div class="bento-medical-wrap" id="bentoMedicalWrap">
+                <div class="bento-flank-cat" id="bentoFlankCat" aria-hidden="true">
+                  <img src="images/cat-landing.png" alt="Playful Pouncing Cat" class="flank-cat-img" />
+                </div>
+                <div class="bento-card bento-card-peach" id="bentoCardMedical" style="background-image: url('images/benefit-medical.png?v=2'); background-size: cover; background-position: center; background-repeat: no-repeat; background-color: #d2f5e2;">
+                  <div class="bento-content">
+                    <h3 class="bento-title">Smart digital medical sheet</h3>
+                    <p class="bento-desc">Store your companion's critical health records, allergy warnings, dietary restrictions, and microchip numbers in one secure profile.</p>
+                  </div>
+
+                  <div class="bento-mock-cards">
+                    <!-- Fan-out mini cards -->
+                    <div class="fan-card fan-card-1">
+                      <span class="fan-card-tag">VACCINES</span>
+                      <strong>Rabies & DHPP</strong>
+                      <small>Updated Sep 2026</small>
+                    </div>
+                    <div class="fan-card fan-card-2">
+                      <span class="fan-card-tag" style="background: #e6f9ed; color: #059669;">MICROCHIP</span>
+                      <strong>#985-1410-02</strong>
+                      <small>Universal 24PetWatch</small>
+                    </div>
+                    <div class="fan-card fan-card-3">
+                      <span class="fan-card-tag" style="background: #fee2e2; color: #dc2626;">ALLERGY</span>
+                      <strong>Chicken & Grain Allergy</strong>
+                      <small>Needs sensitive diet</small>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ====================================================================
+           SECTION: FULL-SCREEN STICKY SCROLLYTELLING (Scroll-Scrubbed Journey)
+           Directly below "Everything you need to keep them safe" (Benefits)
+           ==================================================================== -->
+      <section id="scrolly-journey" class="scrolly-track">
+        <div class="scrolly-viewport">
+          <div class="main-wrapper scrolly-layout">
+            
+            <!-- Narrative Column (Left) -->
+            <div class="scrolly-narrative-col">
+              
+              <div class="scrolly-steps-container">
+                <!-- Step 01 -->
+                <div class="scrolly-step-text active" data-step="0">
+                  <span class="scrolly-step-counter">01 · SMART TAG</span>
+                  <h3 class="scrolly-step-title">Every journey begins with a smart collar.</h3>
+                  <p class="scrolly-step-desc">A durable, lightweight digital ID with encrypted owner contact details stored safely in the cloud and synced in real time.</p>
+                </div>
+
+                <!-- Step 02 -->
+                <div class="scrolly-step-text" data-step="1">
+                  <span class="scrolly-step-counter">02 · ZERO-FRICTION SCAN</span>
+                  <h3 class="scrolly-step-title">A passerby scans with any camera. Zero apps needed.</h3>
+                  <p class="scrolly-step-desc">Instant browser access in 3 seconds. No app downloads, account creation, or friction for whoever finds them.</p>
+                </div>
+
+                <!-- Step 03 -->
+                <div class="scrolly-step-text" data-step="2">
+                  <span class="scrolly-step-counter">03 · GPS RADAR PING</span>
+                  <h3 class="scrolly-step-title">1-Tap GPS radar ping delivered straight to your pocket.</h3>
+                  <p class="scrolly-step-desc">The finder shares exact street coordinates with one tap, triggering instantaneous push notifications and SMS alerts to the owner.</p>
+                </div>
+
+                <!-- Step 04 -->
+                <div class="scrolly-step-text" data-step="3">
+                  <span class="scrolly-step-counter">04 · SAFE REUNION</span>
+                  <h3 class="scrolly-step-title">Safe in your arms in minutes.</h3>
+                  <p class="scrolly-step-desc">Direct 1-tap call connection bridges owner and finder immediately, bringing your beloved companion safely home.</p>
+                </div>
+              </div>
+
+              <!-- Scrub Progress Bar Indicator -->
+              <div class="scrolly-progress-bar-wrap">
+                <div class="scrolly-progress-bar-fill" id="scrollyProgressFill"></div>
+              </div>
+            </div>
+
+            <!-- Visual Stage Column (Right) -->
+            <div class="scrolly-visual-stage">
+              <div class="scrolly-card-deck">
+                
+                <!-- Card 1: Smart Tag Illustration (Image Only) -->
+                <div class="scrolly-visual-card card-tag card-tag-imageonly" id="scrollyCardTag">
+                  <img src="images/scrolly-tag-coco.png" alt="Coco with Smart Tag" class="scrolly-tag-hero-img" />
+                </div>
+
+                <!-- Card 2: Zero-Friction Scan (Image Only) -->
+                <div class="scrolly-visual-card card-scan card-tag-imageonly" id="scrollyCardScan">
+                  <img src="images/scrolly-scan.png" alt="Scanning pet QR tag with phone" class="scrolly-tag-hero-img" />
+                </div>
+
+                <!-- Card 3: GPS Radar Ping (Image Only) -->
+                <div class="scrolly-visual-card card-gps card-tag-imageonly" id="scrollyCardGps">
+                  <img src="images/scrolly-gps.png" alt="GPS radar ping on phone" class="scrolly-tag-hero-img" />
+                </div>
+
+                <!-- Card 4: Safe Reunion (Image Only) -->
+                <div class="scrolly-visual-card card-reunion card-tag-imageonly" id="scrollyCardReunion">
+                  <img src="images/scrolly-reunion.png" alt="Owner reunited with pet" class="scrolly-tag-hero-img" />
+                </div>
+
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
 
       <!-- How It Works: 3-Column Feature Cards (32px radius, bone white #fafdff & soft pastels) -->
       <section id="how-it-works" class="how-it-works-section">
@@ -122,7 +325,9 @@
             <!-- 01 — Create -->
             <div class="step-card step-blue">
               <span class="step-badge">01 — CREATE</span>
-              <div class="step-art-container" id="stepArt1"></div>
+              <div class="step-art-container">
+                <img src="images/step-create.png" alt="Create your pet" class="step-art-image" />
+              </div>
               <h3 class="step-title">Create your pet</h3>
               <p class="step-desc">Add your pet's name, traits, medical notes, and contact details. You decide what information is shown or kept private.</p>
             </div>
@@ -130,7 +335,9 @@
             <!-- 02 — Tag -->
             <div class="step-card step-orange">
               <span class="step-badge">02 — TAG</span>
-              <div class="step-art-container" id="stepArt2"></div>
+              <div class="step-art-container">
+                <img src="images/step-tag.png" alt="Get their QR tag" class="step-art-image" />
+              </div>
               <h3 class="step-title">Get their QR tag</h3>
               <p class="step-desc">Every pet receives a unique QR code that connects directly to their online profile. Print or attach to any standard collar.</p>
             </div>
@@ -138,7 +345,9 @@
             <!-- 03 — Reunite -->
             <div class="step-card step-green">
               <span class="step-badge">03 — REUNITE</span>
-              <div class="step-art-container" id="stepArt3"></div>
+              <div class="step-art-container">
+                <img src="images/step-reunite.png" alt="Find their way home" class="step-art-image" />
+              </div>
               <h3 class="step-title">Find their way home</h3>
               <p class="step-desc">When someone finds your companion and scans the tag, they can call you with one tap or share their exact GPS location.</p>
             </div>
@@ -157,21 +366,177 @@
                 Point your smartphone's camera at this tag or click the preview card below. The finder is instantly taken to Luna's profile — without downloading an app or creating an account.
               </p>
               <div style="display: flex; gap: 14px; flex-wrap: wrap;">
-                <a href="#p/luna-7x29" class="btn btn-primary">Open Luna's Public Profile →</a>
-                <button class="btn btn-secondary" onclick="window.location.hash='#dashboard'">Open Owner Dashboard</button>
+                <button type="button" class="btn btn-primary" onclick="App.openFinderSimulator()">
+                  <svg class="ui-icon" style="width: 18px; height: 18px; margin-right: 6px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+                  Launch Finder Camera Simulator →
+                </button>
+                <a href="#p/luna-7x29" class="btn btn-secondary">Open Public Profile</a>
               </div>
             </div>
 
             <div class="collar-preview-box">
-              <div class="tag-interactive-preview" onclick="window.location.hash='#p/luna-7x29'" title="Click to test finder screen">
-                <div style="font-family: var(--font-aeonik); font-weight: 500; font-size: 14px; margin-bottom: 12px; color: var(--color-ink);">🐾 MyPet</div>
-                <div id="landingCollarQr" style="display: flex; justify-content: center;"></div>
-                <div style="font-family: var(--font-aeonik); font-size: 20px; font-weight: 500; margin-top: 12px; color: var(--color-ink);">LUNA</div>
-                <div style="font-size: 12px; color: var(--color-fog); font-weight: 500; margin-top: 4px;">Scan me to reach my family</div>
-              </div>
-              <span class="tag-scan-hint">📷 Click card or scan with phone camera</span>
+              <img src="images/try-it-luna.png" alt="Scan Luna's tag" class="collar-preview-img" onclick="App.openFinderSimulator()" title="Click to test Finder Camera Simulator" style="cursor: pointer;" />
             </div>
           </div>
+        </div>
+      </section>
+
+      <!-- ====================================================================
+           SECTION: CINEMATIC EDITORIAL SCROLL — APPLE-STYLE PRODUCT REVEAL
+           Positioned directly above "Built with privacy and pet safety first" (#safety)
+           ==================================================================== -->
+      <section id="cinema-experience" class="cinema-track">
+        <div class="cinema-viewport" id="cinemaViewport">
+          
+          <!-- Layer 1.5: Flat Modern 2D Cloud Transition Layer (Parting & Parallax Clouds) -->
+          <div class="cinema-clouds-stage" id="cinemaCloudsStage" aria-hidden="true">
+            <!-- Bottom Horizon Cloud Bank -->
+            <div class="cinema-cloud-bank" id="cinemaCloudBank">
+              <svg viewBox="0 0 1440 160" preserveAspectRatio="none" class="cinema-cloud-bank-svg">
+                <path d="M0,160 L0,85 C60,50 130,40 190,65 C250,90 330,45 410,55 C490,65 550,25 650,35 C750,45 810,75 890,60 C970,45 1030,15 1130,30 C1230,45 1290,80 1370,65 C1410,55 1430,45 1440,50 L1440,160 Z" fill="#ffffff"/>
+              </svg>
+            </div>
+
+            <!-- Top Left Floating Cloud -->
+            <div class="cinema-cloud-wrap cinema-cloud-tl" id="cinemaCloudTL">
+              <div class="cinema-cloud-inner cinema-cloud-float-a">
+                <svg viewBox="0 0 280 150" fill="none" xmlns="http://www.w3.org/2000/svg" class="cinema-cloud-svg">
+                  <path d="M50 120 C25 120 8 102 8 80 C8 60 22 43 42 41 C50 18 72 2 98 2 C120 2 139 14 149 33 C157 26 168 22 180 22 C204 22 224 40 226 64 C243 66 256 80 256 98 C256 110 247 120 235 120 Z" fill="#ffffff"/>
+                </svg>
+              </div>
+            </div>
+
+            <!-- Top Right Floating Cloud -->
+            <div class="cinema-cloud-wrap cinema-cloud-tr" id="cinemaCloudTR">
+              <div class="cinema-cloud-inner cinema-cloud-float-b">
+                <svg viewBox="0 0 240 110" fill="none" xmlns="http://www.w3.org/2000/svg" class="cinema-cloud-svg">
+                  <path d="M40 90 C18 90 2 74 2 54 C2 36 14 20 32 18 C41 8 55 2 70 2 C90 2 107 14 114 31 C121 27 129 25 138 25 C156 25 171 39 174 57 C185 58 194 67 194 78 C194 85 188 90 180 90 Z" fill="#ffffff"/>
+                </svg>
+              </div>
+            </div>
+
+            <!-- Mid Left Floating Cloud -->
+            <div class="cinema-cloud-wrap cinema-cloud-ml" id="cinemaCloudML">
+              <div class="cinema-cloud-inner cinema-cloud-float-b">
+                <svg viewBox="0 0 240 110" fill="none" xmlns="http://www.w3.org/2000/svg" class="cinema-cloud-svg">
+                  <path d="M40 90 C18 90 2 74 2 54 C2 36 14 20 32 18 C41 8 55 2 70 2 C90 2 107 14 114 31 C121 27 129 25 138 25 C156 25 171 39 174 57 C185 58 194 67 194 78 C194 85 188 90 180 90 Z" fill="#ffffff"/>
+                </svg>
+              </div>
+            </div>
+
+            <!-- Mid Right Floating Cloud -->
+            <div class="cinema-cloud-wrap cinema-cloud-mr" id="cinemaCloudMR">
+              <div class="cinema-cloud-inner cinema-cloud-float-a">
+                <svg viewBox="0 0 340 160" fill="none" xmlns="http://www.w3.org/2000/svg" class="cinema-cloud-svg">
+                  <path d="M50 130 C22 130 0 108 0 80 C0 54 18 33 44 30 C55 12 76 0 100 0 C122 0 142 10 153 26 C163 16 177 10 192 10 C214 10 233 24 241 44 C249 40 258 38 268 38 C294 38 316 58 318 84 C331 89 340 101 340 115 C340 123 333 130 325 130 Z" fill="#ffffff"/>
+                </svg>
+              </div>
+            </div>
+
+            <!-- Center Parting Wipe Cloud -->
+            <div class="cinema-cloud-wrap cinema-cloud-center" id="cinemaCloudCenter">
+              <div class="cinema-cloud-inner cinema-cloud-float-a">
+                <svg viewBox="0 0 340 160" fill="none" xmlns="http://www.w3.org/2000/svg" class="cinema-cloud-svg">
+                  <path d="M50 130 C22 130 0 108 0 80 C0 54 18 33 44 30 C55 12 76 0 100 0 C122 0 142 10 153 26 C163 16 177 10 192 10 C214 10 233 24 241 44 C249 40 258 38 268 38 C294 38 316 58 318 84 C331 89 340 101 340 115 C340 123 333 130 325 130 Z" fill="#ffffff"/>
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          <!-- Layer 1.8: Modern Flat 2D Shining Stars Stage -->
+          <div class="cinema-stars-stage" id="cinemaStarsStage" aria-hidden="true">
+            <div class="cinema-star cinema-star-1 cinema-star-shine-a">
+              <svg viewBox="0 0 48 48" class="cinema-star-svg"><path d="M24 0 C24 13.25 34.75 24 48 24 C34.75 24 24 34.75 24 48 C24 34.75 13.25 24 0 24 C13.25 24 24 13.25 24 0 Z" fill="#fbbf24"/><circle cx="24" cy="24" r="5" fill="#ffffff"/></svg>
+            </div>
+            <div class="cinema-star cinema-star-2 cinema-star-shine-b">
+              <svg viewBox="0 0 48 48" class="cinema-star-svg"><path d="M24 0 C24 13.25 34.75 24 48 24 C34.75 24 24 34.75 24 48 C24 34.75 13.25 24 0 24 C13.25 24 24 13.25 24 0 Z" fill="#facc15"/><circle cx="24" cy="24" r="4.5" fill="#ffffff"/></svg>
+            </div>
+            <div class="cinema-star cinema-star-3 cinema-star-shine-c">
+              <svg viewBox="0 0 36 36" class="cinema-star-svg"><path d="M18 0 C18 9.94 26.06 18 36 18 C26.06 18 18 26.06 18 36 C18 26.06 9.94 18 0 18 C9.94 18 18 9.94 18 0 Z" fill="#ffffff"/></svg>
+            </div>
+            <div class="cinema-star cinema-star-4 cinema-star-shine-a">
+              <svg viewBox="0 0 36 36" class="cinema-star-svg"><path d="M18 0 C18 9.94 26.06 18 36 18 C26.06 18 18 26.06 18 36 C18 26.06 9.94 18 0 18 C9.94 18 18 9.94 18 0 Z" fill="#fbbf24"/><circle cx="18" cy="18" r="3.5" fill="#ffffff"/></svg>
+            </div>
+            <div class="cinema-star cinema-star-5 cinema-star-shine-b">
+              <svg viewBox="0 0 28 28" class="cinema-star-svg"><path d="M14 0 C14 7.73 20.27 14 28 14 C20.27 14 14 20.27 14 28 C14 20.27 7.73 14 0 14 C7.73 14 14 7.73 14 0 Z" fill="#fde047"/></svg>
+            </div>
+            <div class="cinema-star cinema-star-6 cinema-star-shine-c">
+              <svg viewBox="0 0 32 32" class="cinema-star-svg"><path d="M16 0 C16 8.84 23.16 16 32 16 C23.16 16 16 23.16 16 32 C16 23.16 8.84 16 0 16 C8.84 16 16 8.84 16 0 Z" fill="#ffffff"/><circle cx="16" cy="16" r="3.5" fill="#fef08a"/></svg>
+            </div>
+            <div class="cinema-star cinema-star-7 cinema-star-shine-a">
+              <svg viewBox="0 0 24 24" class="cinema-star-svg"><path d="M12 0 C12 6.63 17.37 12 24 12 C17.37 12 12 17.37 12 24 C12 17.37 6.63 12 0 12 C6.63 12 12 6.63 12 0 Z" fill="#f59e0b"/></svg>
+            </div>
+            <div class="cinema-star cinema-star-8 cinema-star-shine-b">
+              <svg viewBox="0 0 20 20" class="cinema-star-svg"><circle cx="10" cy="10" r="4.5" fill="#fbbf24"/></svg>
+            </div>
+            <div class="cinema-star cinema-star-9 cinema-star-shine-c">
+              <svg viewBox="0 0 20 20" class="cinema-star-svg"><circle cx="10" cy="10" r="4" fill="#ffffff"/></svg>
+            </div>
+            <div class="cinema-star cinema-star-10 cinema-star-shine-a">
+              <svg viewBox="0 0 28 28" class="cinema-star-svg"><path d="M14 0 C14 7.73 20.27 14 28 14 C20.27 14 14 20.27 14 28 C14 20.27 7.73 14 0 14 C7.73 14 14 7.73 14 0 Z" fill="#facc15"/><circle cx="14" cy="14" r="3" fill="#ffffff"/></svg>
+            </div>
+            <div class="cinema-star cinema-star-11 cinema-star-shine-b">
+              <svg viewBox="0 0 18 18" class="cinema-star-svg"><circle cx="9" cy="9" r="4" fill="#fde047"/></svg>
+            </div>
+            <div class="cinema-star cinema-star-12 cinema-star-shine-c">
+              <svg viewBox="0 0 30 30" class="cinema-star-svg"><path d="M15 0 C15 8.28 21.72 15 30 15 C21.72 15 15 21.72 15 30 C15 21.72 8.28 15 0 15 C8.28 15 15 8.28 15 0 Z" fill="#ffffff"/><circle cx="15" cy="15" r="3.2" fill="#fbbf24"/></svg>
+            </div>
+          </div>
+
+          <!-- Layer 2: Visual Reveal Stage (Emerges behind & through expanding typography) -->
+          <div class="cinema-visual-stage" id="cinemaVisualStage">
+            <div class="cinema-reunion-showcase" id="cinemaReunionShowcase">
+              <div class="cinema-reunion-frames" id="cinemaReunionFrames">
+                <img src="images/reunion-frame-1.png" alt="Reunion Step 1" class="cinema-reunion-frame" id="cinemaFrame1" loading="eager" />
+                <img src="images/reunion-frame-2.png" alt="Reunion Step 2" class="cinema-reunion-frame" id="cinemaFrame2" loading="eager" />
+                <img src="images/reunion-frame-3.png" alt="Reunion Step 3" class="cinema-reunion-frame" id="cinemaFrame3" loading="eager" />
+                <img src="images/reunion-frame-4.png" alt="Reunion Step 4" class="cinema-reunion-frame" id="cinemaFrame4" loading="eager" />
+                <img src="images/reunion-frame-5.png" alt="Reunion Step 5" class="cinema-reunion-frame" id="cinemaFrame5" loading="eager" />
+              </div>
+
+              <!-- Emotional Resolution Call-to-Action (Fades & slides up as Frame 5 settles) -->
+              <div class="cinema-reunion-resolve" id="cinemaReunionResolve">
+                <h3 class="cinema-resolve-headline">The best sound in the world is paws running back to you.</h3>
+                <p class="cinema-resolve-desc">One tap on a collar is all it takes to turn panic into a safe embrace.</p>
+                <div class="cinema-resolve-ctas">
+                  <a href="#create-tag" class="btn btn-primary">Protect Your Companion</a>
+                  <button type="button" class="btn btn-secondary" onclick="App.openFinderSimulator()">
+                    <svg class="ui-icon" style="width: 18px; height: 18px; margin-right: 6px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+                    Try Live Simulator
+                  </button>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Layer 3: Giant Editorial Typography Stage (Zooms and scales across viewport) -->
+          <div class="cinema-typography-stage" id="cinemaTypographyStage">
+            <div class="cinema-typography-inner" id="cinemaTypographyInner">
+              
+              <h2 class="cinema-giant-heading" id="cinemaGiantHeading">
+                <span class="cinema-word-line cinema-line-top" id="cinemaLineTop">
+                  <span>ALWAYS</span>
+                  <span>C<span class="cinema-letter-o"><img src="images/letter-o-puppy.png" alt="O" class="cinema-letter-o-img cinema-letter-puppy-img" /></span>NNECTED.</span>
+                </span>
+                <span class="cinema-word-line cinema-line-bottom" id="cinemaLineBottom">
+                  <span>NEVER</span>
+                  <span>TRULY</span>
+                  <span>L<span class="cinema-letter-o cinema-letter-o-qr"><img src="images/letter-o-lost.png" alt="O" class="cinema-letter-o-img cinema-letter-qr-img" /></span>ST.</span>
+                </span>
+              </h2>
+
+            </div>
+          </div>
+
+          <!-- Scrub Indicator -->
+          <div class="cinema-scrub-indicator" id="cinemaScrubIndicator">
+            <span class="cinema-scrub-label">SCROLL TO DISCOVER</span>
+            <div class="cinema-scrub-track">
+              <div class="cinema-scrub-bar" id="cinemaScrubBar"></div>
+            </div>
+          </div>
+
         </div>
       </section>
 
@@ -185,21 +550,272 @@
 
           <div class="safety-grid">
             <div class="safety-item">
-              <span class="safety-icon">🔒</span>
+              <span class="safety-icon"><svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span>
               <h3 class="safety-title">You control your information</h3>
               <p class="safety-desc">Choose whether to reveal your phone number or email publicly. Finders can dispatch secure messages through MyPet without seeing your private address.</p>
             </div>
 
             <div class="safety-item">
-              <span class="safety-icon">⚡</span>
+              <span class="safety-icon"><svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></span>
               <h3 class="safety-title">Zero friction for finders</h3>
               <p class="safety-desc">Finders never need to download an application, sign up, or fill out endless forms. A single camera scan instantly reveals your pet's profile and emergency contacts.</p>
             </div>
 
             <div class="safety-item">
-              <span class="safety-icon">📍</span>
+              <span class="safety-icon"><svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></span>
               <h3 class="safety-title">Lost Mode alerts</h3>
               <p class="safety-desc">If your pet ever wanders away, toggle Lost Mode in one click. Public QR scans immediately shift to high-visibility emergency mode with last-seen locations.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ====================================================================
+           SECTION: WHAT PEOPLE ARE SAYING? (TESTIMONIALS & REUNION STORIES)
+           Adapted from reference design: 2-row pastel storybook card layout
+           Positioned directly below TRUST & PRIVACY (#safety)
+           ==================================================================== -->
+      <section id="testimonials" class="testimonials-section">
+        <div class="main-wrapper">
+          <div class="section-header-center" style="margin-bottom: 44px;">
+            <h2 class="section-heading" style="font-size: clamp(34px, 4.5vw, 46px); font-weight: 800; letter-spacing: -0.03em; color: var(--color-ink);">What people are saying?</h2>
+            <p class="section-subtext" style="font-size: 16.5px; color: var(--color-fog); max-width: 620px; margin: 12px auto 0; font-weight: 500;">
+              Don't just take our word for it—see what our customers have to say about their experience!
+            </p>
+          </div>
+        </div>
+
+        <!-- Two Offset Scrolling Rows of Pastel Storybook Cards -->
+        <div class="testimonials-marquee-wrap">
+          <!-- Row 1: Warm Pastel Cards -->
+          <div class="testimonials-track track-row-1">
+            <div class="testimonials-track-inner">
+              <!-- Card 1: Coral / Salmon -->
+              <div class="testimonial-card card-coral">
+                <p class="testimonial-quote">"I've tried countless pet tags, but nothing compares to the instant QR recovery on this one. When Mochi slipped out during grocery delivery, a neighbor scanned his tag within minutes. Every morning feels a lot calmer knowing he's safe!"</p>
+                <div class="testimonial-author">
+                  <div class="testimonial-avatar">
+                    <img src="images/avatar-olivia.svg" alt="Olivia Richardson" />
+                  </div>
+                  <div class="testimonial-info">
+                    <strong class="author-name">Olivia Richardson</strong>
+                    <span class="author-meta">New York, USA · Cat Mom</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Card 2: Warm Peach / Apricot -->
+              <div class="testimonial-card card-peach">
+                <p class="testimonial-quote">"As a dog lover, I appreciate the rich attention to detail and clear owner privacy. When Barnaby bolted after a squirrel in the park, a runner tapped 'I Found This Pet' and called me immediately. Reunited in 20 minutes!"</p>
+                <div class="testimonial-author">
+                  <div class="testimonial-avatar">
+                    <img src="images/avatar-sophia.svg" alt="Sophia Mitchell" />
+                  </div>
+                  <div class="testimonial-info">
+                    <strong class="author-name">Sophia Mitchell</strong>
+                    <span class="author-meta">London, UK · Golden Retriever Dad</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Card 3: Soft Butter Yellow -->
+              <div class="testimonial-card card-yellow">
+                <p class="testimonial-quote">"I never knew pet identification could work this well! The public profile is so gentle and soothing. Plus, not having to expose my home address publicly gives me huge relief. The physical tag design is beautiful too!"</p>
+                <div class="testimonial-author">
+                  <div class="testimonial-avatar">
+                    <img src="images/avatar-aisha.svg" alt="Aisha Khan" />
+                  </div>
+                  <div class="testimonial-info">
+                    <strong class="author-name">Aisha Khan</strong>
+                    <span class="author-meta">London, UK · Frenchie Parent</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Card 4: Soft Lavender -->
+              <div class="testimonial-card card-lavender">
+                <p class="testimonial-quote">"The 1-click street poster generator alone was a lifesaver! When Jasper wandered off, we had printable flyers with tear-off phone numbers ready for neighborhood light posts in 30 seconds. Absolutely essential."</p>
+                <div class="testimonial-author">
+                  <div class="testimonial-avatar">
+                    <img src="images/avatar-marcus.svg" alt="Marcus Vance" />
+                  </div>
+                  <div class="testimonial-info">
+                    <strong class="author-name">Marcus Vance</strong>
+                    <span class="author-meta">Austin, TX · Rescue Beagle Dad</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Duplicate track-inner for infinite seamless CSS scroll -->
+            <div class="testimonials-track-inner" aria-hidden="true">
+              <div class="testimonial-card card-coral">
+                <p class="testimonial-quote">"I've tried countless pet tags, but nothing compares to the instant QR recovery on this one. When Mochi slipped out during grocery delivery, a neighbor scanned his tag within minutes. Every morning feels a lot calmer knowing he's safe!"</p>
+                <div class="testimonial-author">
+                  <div class="testimonial-avatar">
+                    <img src="images/avatar-olivia.svg" alt="Olivia Richardson" />
+                  </div>
+                  <div class="testimonial-info">
+                    <strong class="author-name">Olivia Richardson</strong>
+                    <span class="author-meta">New York, USA · Cat Mom</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="testimonial-card card-peach">
+                <p class="testimonial-quote">"As a dog lover, I appreciate the rich attention to detail and clear owner privacy. When Barnaby bolted after a squirrel in the park, a runner tapped 'I Found This Pet' and called me immediately. Reunited in 20 minutes!"</p>
+                <div class="testimonial-author">
+                  <div class="testimonial-avatar">
+                    <img src="images/avatar-sophia.svg" alt="Sophia Mitchell" />
+                  </div>
+                  <div class="testimonial-info">
+                    <strong class="author-name">Sophia Mitchell</strong>
+                    <span class="author-meta">London, UK · Golden Retriever Dad</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="testimonial-card card-yellow">
+                <p class="testimonial-quote">"I never knew pet identification could work this well! The public profile is so gentle and soothing. Plus, not having to expose my home address publicly gives me huge relief. The physical tag design is beautiful too!"</p>
+                <div class="testimonial-author">
+                  <div class="testimonial-avatar">
+                    <img src="images/avatar-aisha.svg" alt="Aisha Khan" />
+                  </div>
+                  <div class="testimonial-info">
+                    <strong class="author-name">Aisha Khan</strong>
+                    <span class="author-meta">London, UK · Frenchie Parent</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="testimonial-card card-lavender">
+                <p class="testimonial-quote">"The 1-click street poster generator alone was a lifesaver! When Jasper wandered off, we had printable flyers with tear-off phone numbers ready for neighborhood light posts in 30 seconds. Absolutely essential."</p>
+                <div class="testimonial-author">
+                  <div class="testimonial-avatar">
+                    <img src="images/avatar-marcus.svg" alt="Marcus Vance" />
+                  </div>
+                  <div class="testimonial-info">
+                    <strong class="author-name">Marcus Vance</strong>
+                    <span class="author-meta">Austin, TX · Rescue Beagle Dad</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Row 2: Cool Pastel Cards -->
+          <div class="testimonials-track track-row-2">
+            <div class="testimonials-track-inner">
+              <!-- Card 5: Soft Mint -->
+              <div class="testimonial-card card-mint">
+                <p class="testimonial-quote">"Traditional microchips require a vet clinic with specialized hardware. MyPet works on the spot for anyone with a normal phone. Zero app download for the person who finds your pet is pure genius!"</p>
+                <div class="testimonial-author">
+                  <div class="testimonial-avatar">
+                    <img src="images/avatar-liam.svg" alt="Liam Cooper" />
+                  </div>
+                  <div class="testimonial-info">
+                    <strong class="author-name">Liam Cooper</strong>
+                    <span class="author-meta">Seattle, WA · Corgi Dad</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Card 6: Soft Sky Blue -->
+              <div class="testimonial-card card-sky">
+                <p class="testimonial-quote">"The variety of privacy options is amazing! Whether I want my phone number directly clickable or prefer secure anonymous relay messaging, this platform has it all. Highly recommend to every pet parent!"</p>
+                <div class="testimonial-author">
+                  <div class="testimonial-avatar">
+                    <img src="images/avatar-emily.svg" alt="Emily Sanders" />
+                  </div>
+                  <div class="testimonial-info">
+                    <strong class="author-name">Emily Sanders</strong>
+                    <span class="author-meta">Sydney, Australia · Calico Mom</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Card 7: Soft Lilac / Purple -->
+              <div class="testimonial-card card-purple">
+                <p class="testimonial-quote">"This platform has changed our daily walks for the better! Knowing that our husky has an active digital identity helps me feel refreshed and stress-free. Love the simple, warm design!"</p>
+                <div class="testimonial-author">
+                  <div class="testimonial-avatar">
+                    <img src="images/avatar-priya.svg" alt="Priya Deshmukh" />
+                  </div>
+                  <div class="testimonial-info">
+                    <strong class="author-name">Priya Deshmukh</strong>
+                    <span class="author-meta">Mumbai, India · Husky Mom</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Card 8: Soft Rose Pink -->
+              <div class="testimonial-card card-rose">
+                <p class="testimonial-quote">"I'm obsessed with how kind and helpful the mobile recovery screen feels. When someone finds a lost pet, the friendly storybook greeting gives them immediate instructions to bring them home safely."</p>
+                <div class="testimonial-author">
+                  <div class="testimonial-avatar">
+                    <img src="images/avatar-mia.svg" alt="Mia Lawrence" />
+                  </div>
+                  <div class="testimonial-info">
+                    <strong class="author-name">Mia Lawrence</strong>
+                    <span class="author-meta">Toronto, Canada · Tabby Parent</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Duplicate track-inner for infinite seamless CSS scroll -->
+            <div class="testimonials-track-inner" aria-hidden="true">
+              <div class="testimonial-card card-mint">
+                <p class="testimonial-quote">"Traditional microchips require a vet clinic with specialized hardware. MyPet works on the spot for anyone with a normal phone. Zero app download for the person who finds your pet is pure genius!"</p>
+                <div class="testimonial-author">
+                  <div class="testimonial-avatar">
+                    <img src="images/avatar-liam.svg" alt="Liam Cooper" />
+                  </div>
+                  <div class="testimonial-info">
+                    <strong class="author-name">Liam Cooper</strong>
+                    <span class="author-meta">Seattle, WA · Corgi Dad</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="testimonial-card card-sky">
+                <p class="testimonial-quote">"The variety of privacy options is amazing! Whether I want my phone number directly clickable or prefer secure anonymous relay messaging, this platform has it all. Highly recommend to every pet parent!"</p>
+                <div class="testimonial-author">
+                  <div class="testimonial-avatar">
+                    <img src="images/avatar-emily.svg" alt="Emily Sanders" />
+                  </div>
+                  <div class="testimonial-info">
+                    <strong class="author-name">Emily Sanders</strong>
+                    <span class="author-meta">Sydney, Australia · Calico Mom</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="testimonial-card card-purple">
+                <p class="testimonial-quote">"This platform has changed our daily walks for the better! Knowing that our husky has an active digital identity helps me feel refreshed and stress-free. Love the simple, warm design!"</p>
+                <div class="testimonial-author">
+                  <div class="testimonial-avatar">
+                    <img src="images/avatar-priya.svg" alt="Priya Deshmukh" />
+                  </div>
+                  <div class="testimonial-info">
+                    <strong class="author-name">Priya Deshmukh</strong>
+                    <span class="author-meta">Mumbai, India · Husky Mom</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="testimonial-card card-rose">
+                <p class="testimonial-quote">"I'm obsessed with how kind and helpful the mobile recovery screen feels. When someone finds a lost pet, the friendly storybook greeting gives them immediate instructions to bring them home safely."</p>
+                <div class="testimonial-author">
+                  <div class="testimonial-avatar">
+                    <img src="images/avatar-mia.svg" alt="Mia Lawrence" />
+                  </div>
+                  <div class="testimonial-info">
+                    <strong class="author-name">Mia Lawrence</strong>
+                    <span class="author-meta">Toronto, Canada · Tabby Parent</span>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -269,18 +885,26 @@
       <footer class="site-footer">
         <div class="main-wrapper">
           <div class="footer-brand">
-            🐾 MyPet
+            <a href="#landing" aria-label="MyPet Home" style="display: inline-block; text-decoration: none;">
+              <img src="images/logo.png" alt="MyPet Logo" class="brand-logo-img" style="height: 44px; width: auto;" />
+            </a>
           </div>
           <p style="font-size: 16px; color: var(--color-fog); font-weight: 500;">
             A little tag. A big way home.
           </p>
           <ul class="footer-links">
             <li><a href="#landing">Home</a></li>
+            <li><a href="#benefits">Benefits</a></li>
             <li><a href="#how-it-works">How It Works</a></li>
-            <li><a href="#dashboard">Dashboard</a></li>
             <li><a href="#create-tag">Create a Pet Tag</a></li>
           </ul>
           <p style="font-size: 13px; color: var(--color-fog);">© 2026 MyPet Technologies. Designed with Geniestudio light daylight aesthetic.</p>
+
+        </div>
+
+        <!-- Edge-to-Edge Screen-Size Footer Image (Only image, no section max width) -->
+        <div class="footer-screen-image">
+          <img src="images/footer-pets.png" alt="Happy Protected Pets" class="footer-full-width-img" />
         </div>
       </footer>
     </div>
@@ -321,7 +945,7 @@
             </div>
 
             <button type="button" class="btn btn-secondary" style="width: 100%;" onclick="App.quickDemoLogin()">
-              ⚡ Demo 1-Click Sign In (Sarah Miller)
+              <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> Demo 1-Click Sign In (Sarah Miller)
             </button>
 
             <div class="login-footer-hint">
@@ -335,35 +959,125 @@
 
 
     <!-- ====================================================================
-         VIEW 2: OWNER DASHBOARD
+         VIEW 2: OWNER DASHBOARD (LEFT SIDEBAR APP SHELL)
          ==================================================================== -->
-    <div id="dashboardView" class="view-panel">
-      <div class="main-wrapper">
-        <div class="dashboard-header-bar">
-          <div class="dashboard-title-group">
-            <h1>Your pets</h1>
+    <div id="dashboardView" class="view-panel dashboard-layout">
+      <!-- Left Navigation Sidebar -->
+      <aside class="dashboard-sidebar" id="dashboardSidebar">
+        <!-- Sidebar Brand & Portal Tag -->
+        <div class="sidebar-header">
+          <a href="#landing" class="sidebar-brand" aria-label="MyPet Home">
+            <img src="images/logo.png" alt="MyPet Logo" class="sidebar-logo-img" />
+          </a>
+          <span class="sidebar-portal-badge">Owner Hub</span>
+        </div>
+
+        <!-- Quick Pet Owner Overview Card -->
+        <div class="sidebar-user-summary">
+          <div class="summary-avatar">
+            <img src="images/avatar-sophia.svg" alt="Sarah Miller" />
+          </div>
+          <div class="summary-text">
+            <strong>Sarah Miller</strong>
+            <span>2 Pets Protected 🐾</span>
+          </div>
+        </div>
+
+        <!-- Sidebar Navigation Menu -->
+        <nav class="sidebar-nav">
+          <div class="sidebar-nav-section-title">PET MANAGEMENT</div>
+          <a href="#dashboard" class="sidebar-nav-item active" onclick="App.switchDashboardSection('pets')">
+            <span class="nav-item-icon">🐶</span>
+            <span class="nav-item-label">Your Pets</span>
+            <span class="nav-item-badge" id="sidebarPetCountBadge">2</span>
+          </a>
+          <a href="#add-pet" class="sidebar-nav-item">
+            <span class="nav-item-icon">➕</span>
+            <span class="nav-item-label">Add New Pet</span>
+          </a>
+          <a href="javascript:void(0)" class="sidebar-nav-item" onclick="App.openPetQrFromSidebar()">
+            <span class="nav-item-icon">📱</span>
+            <span class="nav-item-label">QR Collar Tags</span>
+          </a>
+          <a href="javascript:void(0)" class="sidebar-nav-item" onclick="App.openLostPosterFromSidebar()">
+            <span class="nav-item-icon">🪧</span>
+            <span class="nav-item-label">Lost Pet Posters</span>
+          </a>
+          <a href="javascript:void(0)" class="sidebar-nav-item" onclick="App.switchDashboardSection('activity')">
+            <span class="nav-item-icon">🔔</span>
+            <span class="nav-item-label">Scan Activity</span>
+            <span class="nav-item-badge badge-active" id="sidebarScanBadge">1</span>
+          </a>
+
+          <div class="sidebar-nav-section-title">RECOVERY & TEST</div>
+          <a href="javascript:void(0)" class="sidebar-nav-item" onclick="App.openFinderSimulator()">
+            <span class="nav-item-icon">📷</span>
+            <span class="nav-item-label">Finder Simulator</span>
+          </a>
+          <a href="#p/luna-7x29" class="sidebar-nav-item" target="_blank">
+            <span class="nav-item-icon">👁️</span>
+            <span class="nav-item-label">Public QR Page</span>
+          </a>
+          <a href="#landing" class="sidebar-nav-item" onclick="document.body.classList.remove('dashboard-mode')">
+            <span class="nav-item-icon">🌐</span>
+            <span class="nav-item-label">Back to Website</span>
+          </a>
+        </nav>
+
+        <!-- Sidebar Footer Account Info & Sign Out -->
+        <div class="sidebar-footer">
+          <div class="sidebar-account-info">
+            <span class="account-name">sarah@example.com</span>
+          </div>
+          <button type="button" class="sidebar-logout-btn" onclick="App.handleLogout()" title="Sign Out">
+            <span>Sign Out</span>
+            <svg class="ui-icon" style="width: 14px; height: 14px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          </button>
+        </div>
+      </aside>
+
+      <!-- Main Dashboard Content Area -->
+      <div class="dashboard-main-content">
+        <!-- Topbar inside Dashboard -->
+        <header class="dashboard-topbar">
+          <button type="button" class="mobile-sidebar-toggle" onclick="App.toggleDashboardSidebar()" aria-label="Toggle Sidebar">
+            <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+          </button>
+
+          <div class="dashboard-topbar-title">
+            <h2>Your pets</h2>
             <p>Keep your companions' identities, tags, and scan records in one place.</p>
           </div>
-          <a href="#add-pet" class="btn btn-primary">+ Add Pet</a>
-        </div>
 
-        <!-- Pets List Grid -->
-        <div class="pets-grid" id="dashboardPetsGrid">
-          <!-- Dynamic pet cards injected here by App.renderDashboard() -->
-        </div>
-
-        <!-- Activity & Recovery Feed -->
-        <div class="activity-feed-section">
-          <div class="activity-feed-header">
-            <div>
-              <h3 style="font-size: 22px; color: var(--color-ink);">Tag Scans & Activity</h3>
-              <p style="font-size: 14px; color: var(--color-fog); margin-top: 4px;">Real-time feed of collar scans and community finder reports</p>
+          <div class="dashboard-topbar-actions">
+            <div class="dashboard-stats-strip">
+              <span class="stat-pill"><strong id="topbarPetCount">2</strong> Pets</span>
+              <span class="stat-pill stat-safe"><span class="stat-dot"></span> <strong id="topbarActiveCount">2</strong> Active Tags</span>
             </div>
-            <span class="status-badge active">LIVE SYNC</span>
+            <a href="#add-pet" class="btn btn-primary btn-sm">+ Add Pet</a>
           </div>
-          <ul class="activity-list" id="dashboardActivityList">
-            <!-- Injected dynamically -->
-          </ul>
+        </header>
+
+        <!-- Scrollable Dashboard Content -->
+        <div class="dashboard-body-scroll">
+          <!-- Pets List Grid -->
+          <div class="pets-grid" id="dashboardPetsGrid">
+            <!-- Dynamic pet cards injected here by App.renderDashboard() -->
+          </div>
+
+          <!-- Activity & Recovery Feed -->
+          <div class="activity-feed-section" id="dashboardActivitySection">
+            <div class="activity-feed-header">
+              <div>
+                <h3 style="font-size: 20px; color: var(--color-ink);">Tag Scans & Activity</h3>
+                <p style="font-size: 14px; color: var(--color-fog); margin-top: 4px;">Real-time feed of collar scans and community finder reports</p>
+              </div>
+              <span class="status-badge active">LIVE SYNC</span>
+            </div>
+            <ul class="activity-list" id="dashboardActivityList">
+              <!-- Injected dynamically -->
+            </ul>
+          </div>
         </div>
       </div>
     </div>
@@ -404,19 +1118,27 @@
             <p class="wizard-subtext">Pick the category that best matches your companion.</p>
             <div class="species-cards-grid">
               <div class="species-card-option selected" data-species="cat">
-                <span class="species-icon">🐱</span>
+                <span class="species-icon">
+                  <img src="images/species-cat.png" alt="Cat" class="species-card-img" />
+                </span>
                 <span class="species-name">Cat</span>
               </div>
               <div class="species-card-option" data-species="dog">
-                <span class="species-icon">🐶</span>
+                <span class="species-icon">
+                  <img src="images/species-dog.png" alt="Dog" class="species-card-img" />
+                </span>
                 <span class="species-name">Dog</span>
               </div>
               <div class="species-card-option" data-species="rabbit">
-                <span class="species-icon">🐰</span>
+                <span class="species-icon">
+                  <img src="images/species-rabbit.png" alt="Rabbit" class="species-card-img" />
+                </span>
                 <span class="species-name">Rabbit</span>
               </div>
               <div class="species-card-option" data-species="other">
-                <span class="species-icon">🐹</span>
+                <span class="species-icon">
+                  <img src="images/species-other.png" alt="Other" class="species-card-img" />
+                </span>
                 <span class="species-name">Other</span>
               </div>
             </div>
@@ -465,7 +1187,7 @@
 
             <div class="avatar-upload-zone" onclick="document.getElementById('petPhotoUpload').click()">
               <div id="uploadPreviewArea">
-                <div style="font-size: 38px; margin-bottom: 8px;">📷</div>
+                <div style="margin-bottom: 8px;"><svg class="ui-icon" style="width: 38px; height: 38px; stroke: var(--color-iris-blue);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></div>
                 <strong style="color: var(--color-ink); font-size: 15px; display: block;">Upload your pet's photo</strong>
                 <span style="font-size: 13px; color: var(--color-fog);">Click to choose from your phone or computer</span>
               </div>
@@ -475,19 +1197,19 @@
             <div class="avatar-presets-label">Or choose a dimensional 3D avatar:</div>
             <div class="avatar-presets-grid">
               <button type="button" class="avatar-preset-btn selected" data-avatar="luna" title="Calico / White Cat">
-                <span style="font-size: 26px;">🐱</span>
+                <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5c-3.87 0-7 2.69-7 6 0 1.93 1.07 3.65 2.72 4.75L7 19l3.5-1.5c.48.11.98.17 1.5.17 3.87 0 7-2.69 7-6s-3.13-6-7-6z"/><path d="m5 11-2-5 5 2"/><path d="m19 11 2-5-5 2"/><circle cx="9.5" cy="11.5" r=".5" fill="currentColor"/><circle cx="14.5" cy="11.5" r=".5" fill="currentColor"/></svg>
               </button>
               <button type="button" class="avatar-preset-btn" data-avatar="milo" title="Golden Dog">
-                <span style="font-size: 26px;">🐶</span>
+                <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 5.172C10 3.782 8.423 2.679 6.5 3c-2.823.47-4.113 6.006-4 7 .107.94 1.48 2.374 2.5 2 1.418-.52 2.215-2.01 2.5-3.5"/><path d="M14 5.172C14 3.782 15.577 2.679 17.5 3c2.823.47 4.113 6.006 4 7-.107.94-1.48 2.374-2.5 2-1.418-.52-2.215-2.01-2.5-3.5"/><path d="M8 14v1a4 4 0 0 0 8 0v-1"/><circle cx="9" cy="9" r="1" fill="currentColor"/><circle cx="15" cy="9" r="1" fill="currentColor"/></svg>
               </button>
               <button type="button" class="avatar-preset-btn" data-avatar="catDefault" title="Orange Tabby">
-                <span style="font-size: 26px;">🐈</span>
+                <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5c-3.87 0-7 2.69-7 6 0 1.93 1.07 3.65 2.72 4.75L7 19l3.5-1.5c.48.11.98.17 1.5.17 3.87 0 7-2.69 7-6s-3.13-6-7-6z"/><path d="m5 11-2-5 5 2"/><path d="m19 11 2-5-5 2"/><circle cx="9.5" cy="11.5" r=".5" fill="currentColor"/><circle cx="14.5" cy="11.5" r=".5" fill="currentColor"/></svg>
               </button>
               <button type="button" class="avatar-preset-btn" data-avatar="dogDefault" title="Beagle / Mixed">
-                <span style="font-size: 26px;">🐕</span>
+                <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 5.172C10 3.782 8.423 2.679 6.5 3c-2.823.47-4.113 6.006-4 7 .107.94 1.48 2.374 2.5 2 1.418-.52 2.215-2.01 2.5-3.5"/><path d="M14 5.172C14 3.782 15.577 2.679 17.5 3c2.823.47 4.113 6.006 4 7-.107.94-1.48 2.374-2.5 2-1.418-.52-2.215-2.01-2.5-3.5"/><path d="M8 14v1a4 4 0 0 0 8 0v-1"/><circle cx="9" cy="9" r="1" fill="currentColor"/><circle cx="15" cy="9" r="1" fill="currentColor"/></svg>
               </button>
               <button type="button" class="avatar-preset-btn" data-avatar="rabbitDefault" title="Rabbit">
-                <span style="font-size: 26px;">🐰</span>
+                <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h1"/><path d="M16 2a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2h-1"/><path d="M7 14a5 5 0 0 0 10 0v-2H7v2z"/><circle cx="9.5" cy="15.5" r=".5" fill="currentColor"/><circle cx="14.5" cy="15.5" r=".5" fill="currentColor"/></svg>
               </button>
             </div>
           </div>
@@ -564,10 +1286,10 @@
 
           <!-- Action Buttons -->
           <div class="qr-actions-row no-print">
-            <button class="btn btn-primary" id="btnDownloadQr">⬇️ Download QR</button>
-            <button class="btn btn-secondary" id="btnPrintTag">🖨️ Print Tag</button>
-            <button class="btn btn-secondary" id="btnShareProfile">🔗 Share Profile</button>
-            <a href="#" class="btn btn-outline" id="btnTestFinderView">👁️ Test Finder View</a>
+            <button class="btn btn-primary" id="btnDownloadQr"><svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Download QR</button>
+            <button class="btn btn-secondary" id="btnPrintTag"><svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg> Print Tag</button>
+            <button class="btn btn-secondary" id="btnShareProfile"><svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg> Share Profile</button>
+            <a href="#" class="btn btn-outline" id="btnTestFinderView"><svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg> Test Finder View</a>
           </div>
 
           <div class="qr-hint-callout no-print">
@@ -599,10 +1321,10 @@
        ==================================================================== -->
   <div id="foundPetModal" class="modal-backdrop">
     <div class="modal-dialog">
-      <button class="modal-close-btn" onclick="App.closeModal('foundPetModal')">✕</button>
+      <button class="modal-close-btn" onclick="App.closeModal('foundPetModal')"><svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
       
       <div style="text-align: center; margin-bottom: 24px;">
-        <span style="font-size: 36px;">🐾</span>
+        <span style="display: inline-flex;"><svg class="ui-icon" style="width: 42px; height: 42px; color: var(--color-iris-blue);" viewBox="0 0 24 24" fill="currentColor"><path d="M12 14c-1.66 0-3 1.12-3 2.5 0 1.66 1.34 2.5 3 2.5s3-.84 3-2.5c0-1.38-1.34-2.5-3-2.5zm-5-3c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm10 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm-8-4c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm6 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg></span>
         <h2 style="font-size: 24px; color: var(--color-ink); margin-top: 8px;">You found <span id="foundModalPetName">Luna</span>!</h2>
         <p style="font-size: 14.5px; color: var(--color-graphite); margin-top: 4px;">Is <span class="foundModalPetNameCopy">Luna</span> safe with you?</p>
       </div>
@@ -624,7 +1346,7 @@
           <label class="form-label" style="display: flex; justify-content: space-between; align-items: center;">
             <span>Current Location</span>
             <button type="button" class="btn btn-secondary btn-sm" style="padding: 4px 10px; font-size: 11px;" onclick="App.useCurrentLocation()">
-              📍 Use Current GPS
+              <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> Use Current GPS
             </button>
           </label>
           <input type="text" id="finderLocationInput" class="form-input" placeholder="e.g. Corner of Elm & 5th Ave" required />
@@ -636,7 +1358,7 @@
         </div>
 
         <button type="submit" class="btn btn-primary btn-lg" style="width: 100%;">
-          Send to Owner 🐾
+          Send to Owner <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
         </button>
       </form>
     </div>
@@ -648,7 +1370,7 @@
        ==================================================================== -->
   <div id="lostModeModal" class="modal-backdrop">
     <div class="modal-dialog">
-      <button class="modal-close-btn" onclick="App.closeModal('lostModeModal')">✕</button>
+      <button class="modal-close-btn" onclick="App.closeModal('lostModeModal')"><svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
       
       <div style="margin-bottom: 24px;">
         <span class="eyebrow" style="color: #d92d20;">EMERGENCY RECOVERY</span>
@@ -676,7 +1398,7 @@
         </div>
 
         <button type="submit" class="btn btn-danger btn-lg" style="width: 100%; margin-top: 10px;">
-          Activate Lost Mode 🔴
+          Activate Lost Mode <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
         </button>
       </form>
     </div>
@@ -688,7 +1410,7 @@
        ==================================================================== -->
   <div id="editPetModal" class="modal-backdrop">
     <div class="modal-dialog">
-      <button class="modal-close-btn" onclick="App.closeModal('editPetModal')">✕</button>
+      <button class="modal-close-btn" onclick="App.closeModal('editPetModal')"><svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
       
       <h2 style="font-size: 22px; color: var(--color-ink); margin-bottom: 16px;">Edit Pet Profile</h2>
 
@@ -747,7 +1469,7 @@
        ==================================================================== -->
   <div id="lostPosterModal" class="modal-backdrop">
     <div class="modal-dialog poster-modal-dialog">
-      <button class="modal-close-btn no-print" onclick="App.closeModal('lostPosterModal')">✕</button>
+      <button class="modal-close-btn no-print" onclick="App.closeModal('lostPosterModal')"><svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
 
       <div class="no-print" style="margin-bottom: 20px;">
         <span class="eyebrow" style="color: #d92d20;">NEIGHBORHOOD & SOCIAL FLYERS</span>
@@ -792,13 +1514,13 @@
 
           <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 24px;">
             <button class="btn btn-primary" onclick="MyPetPoster.printPoster()">
-              🖨️ Print Street Poster (8.5×11")
+              <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg> Print Street Poster (8.5×11")
             </button>
             <button class="btn btn-secondary" onclick="MyPetPoster.downloadFlyerAsPng()">
-              ⬇️ Download Graphic (PNG)
+              <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Download Graphic (PNG)
             </button>
             <button class="btn btn-outline" onclick="MyPetPoster.copySocialCaption()">
-              📋 Copy Social Media Caption
+              <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg> Copy Social Media Caption
             </button>
           </div>
         </div>
@@ -807,13 +1529,13 @@
         <div class="poster-preview-col">
           <div class="format-switcher-tabs no-print">
             <button class="format-tab-btn active" id="tabStreet" onclick="App.switchPosterTab('street')">
-              🪧 Street Poster (8.5×11")
+              <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg> Street Poster (8.5×11")
             </button>
             <button class="format-tab-btn" id="tabSquare" onclick="App.switchPosterTab('square')">
-              📱 Social Square (1:1)
+              <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/></svg> Social Square (1:1)
             </button>
             <button class="format-tab-btn" id="tabStory" onclick="App.switchPosterTab('story')">
-              📖 Story (9:16)
+              <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg> Story (9:16)
             </button>
           </div>
 
@@ -828,13 +1550,145 @@
   </div>
 
 
+  <!-- ====================================================================
+       MODAL: SIMULATED FINDER CAMERA VIEWFINDER (0.4s Apple-Style QR Scanner)
+       ==================================================================== -->
+  <div id="finderSimulatorModal" class="finder-modal-backdrop" aria-hidden="true">
+    <div class="finder-modal-container">
+      
+      <!-- Top Action Bar (Above phone chassis) -->
+      <div class="finder-modal-nav">
+        <div class="finder-nav-left">
+          <span class="finder-nav-pill">
+            <span class="pulse-dot"></span> SIMULATED FINDER VIEW
+          </span>
+        </div>
+        <div class="finder-nav-right">
+          <button type="button" class="btn-finder-pill" onclick="FinderSimulator.restartScan()" title="Scan Again">
+            <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+            <span>Scan Again</span>
+          </button>
+          <button type="button" class="btn-finder-close finder-backdrop-close" onclick="FinderSimulator.close()" aria-label="Close Finder Simulator">
+            <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Smartphone Chassis -->
+      <div class="finder-device-chassis">
+        
+        <!-- Device Speaker & Dynamic Island -->
+        <div class="finder-device-topbar">
+          <span class="finder-device-clock">9:41</span>
+          <div class="finder-dynamic-island">
+            <div class="island-camera-dot"></div>
+          </div>
+          <div class="finder-device-status-icons">
+            <svg class="ui-icon" style="width: 14px; height: 14px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 20h.01M7 20v-4M12 20v-8M17 20V4"/></svg>
+            <svg class="ui-icon" style="width: 14px; height: 14px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12.55a11 11 0 0 1 14.08 0M1.42 9a16 16 0 0 1 21.16 0M8.53 16.11a6 6 0 0 1 6.95 0M12 20h.01"/></svg>
+            <div class="finder-battery-pill"><div class="finder-battery-level"></div></div>
+          </div>
+        </div>
+
+        <!-- iOS Safari Notification Dropdown Banner -->
+        <div id="finderScanBanner" class="finder-safari-banner" onclick="FinderSimulator.showProfileSheet()">
+          <div class="banner-icon-box">
+            <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
+          </div>
+          <div class="banner-text-box">
+            <span class="banner-eyebrow">QR CODE DETECTED · SAFARI</span>
+            <span class="banner-title">Luna's Emergency Tag (MyPet ID)</span>
+            <span class="banner-sub">Tap to open encrypted cloud profile</span>
+          </div>
+          <span class="banner-action-chip">Open →</span>
+        </div>
+
+        <!-- Camera Viewfinder Stage -->
+        <div class="finder-camera-stage">
+          
+          <!-- Viewfinder Top Camera Tools -->
+          <div class="finder-cam-toolbar">
+            <button type="button" class="cam-tool-btn" title="Flash"><svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></button>
+            <span class="cam-tool-pill">0.4s NATIVE SCAN</span>
+            <button type="button" class="cam-tool-btn" title="Exposure"><svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg></button>
+          </div>
+
+          <!-- Scene Artwork: Luna's QR Tag in the Daylight Frame -->
+          <div class="finder-scene-backdrop">
+            <div class="finder-tag-target">
+              <img src="images/finder-scan-tag.png" alt="Pet Tag Target" class="finder-tag-preview-img" />
+            </div>
+            
+            <!-- Laser Scan Beam Line -->
+            <div id="finderLaserBeam" class="finder-laser-beam"></div>
+
+            <!-- 4-Corner Targeting Reticle Brackets -->
+            <div id="finderReticle" class="finder-reticle">
+              <span class="reticle-bracket bracket-tl"></span>
+              <span class="reticle-bracket bracket-tr"></span>
+              <span class="reticle-bracket bracket-bl"></span>
+              <span class="reticle-bracket bracket-br"></span>
+              <div class="reticle-indicator">
+                <span class="reticle-label">QR CODE DETECTED</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bottom Camera Shutter Controls -->
+          <div class="finder-cam-shutter-bar">
+            <div class="finder-lens-selector">
+              <span class="lens-opt">0.5</span>
+              <span class="lens-opt active">1x</span>
+              <span class="lens-opt">2</span>
+            </div>
+            <div class="finder-cam-modes">
+              <span>PHOTO</span>
+            </div>
+            <div class="finder-shutter-controls">
+              <div class="finder-gallery-thumb"><img src="images/species-cat.png" alt="Recent" /></div>
+              <button type="button" class="finder-shutter-btn" onclick="FinderSimulator.restartScan()" title="Scan Again"></button>
+              <div class="finder-flip-btn"><svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg></div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Simulated In-App Mobile Safari Profile Sheet -->
+        <div id="finderProfileSheet" class="finder-profile-sheet">
+          <div class="finder-sheet-drag-handle" onclick="FinderSimulator.hideProfileSheet()"></div>
+          
+          <div class="finder-safari-nav-header">
+            <button type="button" class="safari-nav-btn" onclick="FinderSimulator.hideProfileSheet()">
+              <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg> Camera
+            </button>
+            <div class="safari-url-pill">
+              <svg class="ui-icon" style="width: 12px; height: 12px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              <span>mypet.id/p/luna-7x29</span>
+            </div>
+            <button type="button" class="safari-nav-btn" onclick="FinderSimulator.restartScan()" title="Refresh">
+              <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+            </button>
+          </div>
+
+          <div class="finder-sheet-scroll" id="finderSheetContent">
+            <!-- Dynamically populated by FinderSimulator.populateProfileSheet() -->
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
   <!-- Toast Notification Container -->
   <div id="toastNotice" class="toast-notice"></div>
 
   <!-- Scripts -->
   <script src="js/qr.js"></script>
-  <script src="js/illustrations.js"></script>
+  <script src="js/illustrations.js?v=46"></script>
   <script src="js/poster.js"></script>
-  <script src="js/app.js"></script>
+  <script src="js/scrolly.js?v=46"></script>
+  <script src="js/finder-simulator.js?v=46"></script>
+  <script src="js/app.js?v=46"></script>
 </body>
 </html>

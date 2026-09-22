@@ -45,48 +45,40 @@ const PetIllustrations = {
           <stop offset="0%" stop-color="#ffffff"/>
           <stop offset="100%" stop-color="#f1e6ff"/>
         </linearGradient>
-
-        <filter id="softShadow" x="-10%" y="-10%" width="130%" height="130%">
-          <feDropShadow dx="0" dy="12" stdDeviation="14" flood-color="#0069e0" flood-opacity="0.12"/>
-        </filter>
-
-        <filter id="clayShadow" x="-20%" y="-20%" width="140%" height="140%">
-          <feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#0a0d12" flood-opacity="0.08"/>
-        </filter>
       </defs>
 
       <!-- 1. Floating Soft 3D Cloud Left -->
-      <g transform="translate(40, 70)" filter="url(#softShadow)">
+      <g transform="translate(40, 70)">
         <path d="M45 40 C45 20, 65 10, 85 18 C95 8, 120 8, 132 20 C145 15, 165 22, 165 40 C175 42, 182 52, 178 65 C174 76, 162 82, 150 80 L50 80 C32 80, 20 68, 22 52 C24 42, 34 38, 45 40 Z" fill="url(#cloudGrad)"/>
         <!-- Soft highlight -->
         <ellipse cx="90" cy="30" rx="35" ry="12" fill="#ffffff" opacity="0.6"/>
       </g>
 
       <!-- 2. Floating 3D Envelope with Iris Blue Wax Seal -->
-      <g transform="translate(510, 45) rotate(12)" filter="url(#softShadow)">
+      <g transform="translate(510, 45) rotate(12)">
         <!-- Envelope Body -->
         <rect x="0" y="0" width="110" height="74" rx="16" fill="url(#envelopeGrad)"/>
         <!-- Envelope Flap -->
         <path d="M4 8 L55 46 L106 8" stroke="#ffffff" stroke-width="3" stroke-linecap="round"/>
         <!-- Iris Blue Seal -->
-        <circle cx="55" cy="46" r="14" fill="url(#irisGrad)" filter="url(#clayShadow)"/>
+        <circle cx="55" cy="46" r="14" fill="url(#irisGrad)"/>
         <path d="M51 46 L54 49 L60 43" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
       </g>
 
       <!-- 3. Floating 3D Crayon / Heart Doodle -->
       <g transform="translate(110, 195) rotate(-18)">
-        <path d="M22 6 C28 -2, 42 2, 44 12 C46 24, 25 38, 22 40 C19 38, -2 24, 0 12 C2 2, 16 -2, 22 6 Z" fill="#ffd1b8" filter="url(#clayShadow)"/>
+        <path d="M22 6 C28 -2, 42 2, 44 12 C46 24, 25 38, 22 40 C19 38, -2 24, 0 12 C2 2, 16 -2, 22 6 Z" fill="#ffd1b8"/>
         <circle cx="16" cy="12" r="3" fill="#ffffff" opacity="0.8"/>
       </g>
 
       <!-- 4. Floating 3D Sphere / Accent Ball -->
-      <circle cx="590" cy="190" r="18" fill="#d3f6e3" filter="url(#clayShadow)"/>
+      <circle cx="590" cy="190" r="18" fill="#d3f6e3"/>
       <ellipse cx="584" cy="184" rx="5" ry="3" fill="#ffffff" opacity="0.7"/>
 
       <!-- 5. MAIN 3D CHARACTER PAIR (Cat & Dog Clay Renders) -->
 
       <!-- 3D Dog (Right Side of Center) -->
-      <g transform="translate(340, 60)" filter="url(#softShadow)">
+      <g transform="translate(340, 60)">
         <!-- Dog Body -->
         <ellipse cx="90" cy="155" rx="65" ry="55" fill="url(#dogSphere)"/>
         <!-- Dog Floppy Ear Left -->
@@ -109,7 +101,7 @@ const PetIllustrations = {
       </g>
 
       <!-- 3D Cat (Left Side of Center) -->
-      <g transform="translate(190, 75)" filter="url(#softShadow)">
+      <g transform="translate(190, 75)">
         <!-- Cat Body -->
         <ellipse cx="85" cy="140" rx="60" ry="50" fill="url(#catSphere)"/>
         <!-- Cat Ear Left -->
@@ -133,7 +125,7 @@ const PetIllustrations = {
       </g>
 
       <!-- 6. Floating 3D QR Tag Medallion (Center Foreground) -->
-      <g transform="translate(305, 175)" filter="url(#softShadow)">
+      <g transform="translate(305, 175)">
         <!-- Connecting Ring -->
         <ellipse cx="35" cy="6" rx="9" ry="12" fill="none" stroke="url(#irisGrad)" stroke-width="4"/>
         <!-- Rounded Pill Medallion -->
@@ -167,16 +159,13 @@ const PetIllustrations = {
           <stop offset="60%" stop-color="#f1e6ff"/>
           <stop offset="100%" stop-color="#e4ccff"/>
         </radialGradient>
-        <filter id="s1Shadow" x="-10%" y="-10%" width="125%" height="125%">
-          <feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#7c3aed" flood-opacity="0.08"/>
-        </filter>
       </defs>
 
       <!-- Floating Pastel Background Disk -->
       <circle cx="100" cy="80" r="65" fill="#f1e6ff" opacity="0.6"/>
 
       <!-- 3D Card / Phone Body -->
-      <g transform="translate(55, 20)" filter="url(#s1Shadow)">
+      <g transform="translate(55, 20)">
         <rect x="0" y="0" width="90" height="120" rx="20" fill="#ffffff"/>
         
         <!-- Dimensional Avatar Bubble -->
@@ -216,20 +205,17 @@ const PetIllustrations = {
           <stop offset="0%" stop-color="#479dff"/>
           <stop offset="100%" stop-color="#0069e0"/>
         </linearGradient>
-        <filter id="s2Shadow" x="-15%" y="-15%" width="130%" height="130%">
-          <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#0069e0" flood-opacity="0.1"/>
-        </filter>
       </defs>
 
       <!-- Background Disk -->
       <circle cx="100" cy="80" r="65" fill="#cce7ff" opacity="0.6"/>
 
       <!-- 3D Curved Collar -->
-      <path d="M30 65 C65 105, 135 105, 170 65" stroke="url(#collarGrad)" stroke-width="14" stroke-linecap="round" filter="url(#s2Shadow)"/>
+      <path d="M30 65 C65 105, 135 105, 170 65" stroke="url(#collarGrad)" stroke-width="14" stroke-linecap="round"/>
       <rect x="44" y="60" width="14" height="20" rx="4" fill="#ffffff"/>
 
       <!-- Hanging 3D Pill Tag -->
-      <g transform="translate(76, 75)" filter="url(#s2Shadow)">
+      <g transform="translate(76, 75)">
         <ellipse cx="24" cy="5" rx="6" ry="9" fill="none" stroke="url(#tagIrisGrad)" stroke-width="3"/>
         <rect x="0" y="12" width="48" height="58" rx="16" fill="#ffffff"/>
         
@@ -257,16 +243,13 @@ const PetIllustrations = {
           <stop offset="0%" stop-color="#ebf5ff"/>
           <stop offset="100%" stop-color="#d3f6e3"/>
         </linearGradient>
-        <filter id="s3Shadow" x="-15%" y="-15%" width="130%" height="130%">
-          <feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#10b981" flood-opacity="0.12"/>
-        </filter>
       </defs>
 
       <!-- Background Disk -->
       <circle cx="100" cy="80" r="65" fill="#d3f6e3" opacity="0.6"/>
 
       <!-- Smartphone scanning -->
-      <g transform="translate(60, 22) rotate(-6)" filter="url(#s3Shadow)">
+      <g transform="translate(60, 22) rotate(-6)">
         <rect x="0" y="0" width="80" height="120" rx="20" fill="#ffffff"/>
         <rect x="6" y="12" width="68" height="96" rx="14" fill="url(#screenGrad)"/>
         

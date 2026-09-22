@@ -40,10 +40,10 @@ class MyPetHandler(http.server.SimpleHTTPRequestHandler):
 
 def run_server(port=PORT):
     handler = MyPetHandler
-    socketserver.TCPServer.allow_reuse_address = True
+    socketserver.ThreadingTCPServer.allow_reuse_address = True
     
     try:
-        with socketserver.TCPServer(("", port), handler) as httpd:
+        with socketserver.ThreadingTCPServer(("", port), handler) as httpd:
             print("==================================================")
             print("[MyPet] Digital Pet ID & QR Recovery Web App")
             print(f"-> Local URL:   http://localhost:{port}")

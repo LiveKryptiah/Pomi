@@ -147,7 +147,7 @@
 
           <!-- Perforated Tear-off line -->
           <div class="poster-perforation-line">
-            <span>✂ TEAR OFF A NUMBER BELOW</span>
+            <span>${window.AppIcons ? window.AppIcons.get('scissors') : ''} TEAR OFF A NUMBER BELOW</span>
           </div>
 
           <!-- Tear-off Tabs -->
@@ -169,7 +169,7 @@
       return `
         <div class="social-card social-square">
           <div class="social-badge-row">
-            <span class="social-urgent-pill">🚨 URGENT: PLEASE SHARE</span>
+            <span class="social-urgent-pill">${window.AppIcons ? window.AppIcons.get('siren') : ''} URGENT: PLEASE SHARE</span>
             ${opts.reward ? `<span class="social-reward-pill">${opts.reward}</span>` : ''}
           </div>
 
@@ -211,7 +211,7 @@
       return `
         <div class="social-card social-story">
           <div class="social-badge-row" style="justify-content: center;">
-            <span class="social-urgent-pill" style="font-size: 14px; padding: 6px 16px;">🚨 PLEASE SHARE THIS STORY</span>
+            <span class="social-urgent-pill" style="font-size: 14px; padding: 6px 16px;">${window.AppIcons ? window.AppIcons.get('siren') : ''} PLEASE SHARE THIS STORY</span>
           </div>
 
           <h1 class="social-headline" style="font-size: 28px; text-align: center; margin: 16px 0 6px;">
@@ -361,22 +361,22 @@
       const publicUrl = window.location.origin + window.location.pathname + '#p/' + pet.code;
 
       const caption = 
-`🚨 MISSING PET ALERT: PLEASE SHARE 🚨
+`MISSING PET ALERT: PLEASE SHARE
 
 Our beloved ${pet.species}, ${pet.name.toUpperCase()}, is missing!
 
-📍 Last Seen: ${opts.lastSeen}
-🐾 Description: ${pet.breed}, ${pet.color}, ${pet.sex}, ${pet.age}
-⚠️ Key Traits: ${opts.notes}
-${opts.reward ? `💰 ${opts.reward}\n` : ''}
-📞 IF SEEN PLEASE CALL OR TEXT: ${opts.contactPhone}
-🔗 Live Status & GPS Alert: ${publicUrl}
+Last Seen: ${opts.lastSeen}
+Description: ${pet.breed}, ${pet.color}, ${pet.sex}, ${pet.age}
+Key Traits: ${opts.notes}
+${opts.reward ? `Reward: ${opts.reward}\n` : ''}
+IF SEEN PLEASE CALL OR TEXT: ${opts.contactPhone}
+Live Status & GPS Alert: ${publicUrl}
 
-Please share with local groups in the neighborhood. Thank you for helping bring ${pet.name} home! ❤️🐾
+Please share with local groups in the neighborhood. Thank you for helping bring ${pet.name} home!
 #LostPet #Missing${pet.species.toUpperCase()} #PetRecovery #MyPet`;
 
       navigator.clipboard.writeText(caption).then(() => {
-        alert("📋 Social media caption copied to clipboard!\n\nReady to paste into Instagram, Facebook, Nextdoor, or WhatsApp.");
+        alert("Social media caption copied to clipboard!\n\nReady to paste into Instagram, Facebook, Nextdoor, or WhatsApp.");
       }).catch(() => {
         prompt("Copy caption below:", caption);
       });

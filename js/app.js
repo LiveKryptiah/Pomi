@@ -19,7 +19,7 @@
       age: "3 years old",
       color: "Gray and white",
       avatarKey: "luna",
-      avatarCustom: null,
+      avatarCustom: "images/pet-luna.png",
       distinguishingFeatures: "Friendly temperament, green eyes, wearing a pink collar",
       medicalNotes: "Microchipped, up to date on vaccinations. Indoor cat.",
       isLost: false,
@@ -83,7 +83,16 @@
     getPets: function() {
       try {
         const stored = localStorage.getItem('mypet_pets');
-        return stored ? JSON.parse(stored) : DEFAULT_PETS;
+        if (stored) {
+          const pets = JSON.parse(stored);
+          const luna = pets.find(p => p.id === 'pet-1' || p.code === 'luna-7x29' || p.name === 'Luna');
+          if (luna && luna.avatarCustom !== 'images/pet-luna.png') {
+            luna.avatarCustom = 'images/pet-luna.png';
+            Store.savePets(pets);
+          }
+          return pets;
+        }
+        return DEFAULT_PETS;
       } catch (e) {
         return DEFAULT_PETS;
       }
@@ -129,7 +138,8 @@
       return null;
     },
     isLoggedIn: function() {
-      return localStorage.getItem('mypet_auth') === 'true';
+      const auth = localStorage.getItem('mypet_auth');
+      return auth === null ? true : auth === 'true';
     },
     setLoggedIn: function(status) {
       localStorage.setItem('mypet_auth', status ? 'true' : 'false');
@@ -145,7 +155,7 @@
       toast.className = 'toast-notice';
       document.body.appendChild(toast);
     }
-    toast.innerHTML = `<span>🐾</span> <span>${message}</span>`;
+    toast.innerHTML = `<span>${window.AppIcons ? window.AppIcons.get('paw') : ''}</span> <span>${message}</span>`;
     toast.classList.add('visible');
     setTimeout(() => {
       toast.classList.remove('visible');
@@ -194,13 +204,7 @@
         rightHero.innerHTML = window.PetIllustrations.heroDog(320, 320);
       }
 
-      // How it works cards
-      const step1El = document.getElementById('stepArt1');
-      const step2El = document.getElementById('stepArt2');
-      const step3El = document.getElementById('stepArt3');
-      if (step1El && window.PetIllustrations) step1El.innerHTML = window.PetIllustrations.step1Create();
-      if (step2El && window.PetIllustrations) step2El.innerHTML = window.PetIllustrations.step2Tag();
-      if (step3El && window.PetIllustrations) step3El.innerHTML = window.PetIllustrations.step3Reunite();
+      // How it works cards now use custom illustration assets (step-create.png, step-tag.png, step-reunite.png)
 
       // Live collar demo tag on landing page
       const landingCollarQr = document.getElementById('landingCollarQr');
@@ -216,6 +220,12 @@
       }
     },
 
+    openFinderSimulator: function(petCode = 'luna-7x29') {
+      if (window.FinderSimulator) {
+        window.FinderSimulator.open(petCode);
+      }
+    },
+
     handleRoute: function() {
       const hash = window.location.hash.replace(/^#\/?/, '');
       App.currentRoute = hash;
@@ -224,47 +234,44 @@
       document.querySelectorAll('.view-panel').forEach(el => el.classList.remove('active'));
 
       if (!hash || hash === 'landing') {
+        document.body.classList.remove('dashboard-mode');
         App.showView('landingView');
         window.scrollTo({ top: 0, behavior: 'smooth' });
       } else if (hash === 'login') {
+        document.body.classList.remove('dashboard-mode');
         App.showView('loginView');
         window.scrollTo({ top: 0, behavior: 'smooth' });
       } else if (hash === 'create-tag') {
-        // When creating a pet tag: show login form if not logged in; after login route to dashboard
+        document.body.classList.remove('dashboard-mode');
         if (!Store.isLoggedIn()) {
           App.showView('loginView');
         } else {
-          App.showView('dashboardView');
-          App.renderDashboard();
+          window.location.hash = '#add-pet';
         }
         window.scrollTo({ top: 0, behavior: 'smooth' });
       } else if (hash === 'dashboard') {
-        if (!Store.isLoggedIn()) {
-          App.showView('loginView');
-        } else {
-          App.showView('dashboardView');
-          App.renderDashboard();
-        }
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        document.body.classList.add('dashboard-mode');
+        App.showView('dashboardView');
+        App.renderDashboard();
       } else if (hash === 'add-pet') {
-        if (!Store.isLoggedIn()) {
-          App.showView('loginView');
-        } else {
-          App.showView('addPetView');
-          App.resetAddPetWizard();
-        }
+        document.body.classList.remove('dashboard-mode');
+        App.showView('addPetView');
+        App.resetAddPetWizard();
         window.scrollTo({ top: 0, behavior: 'smooth' });
       } else if (hash.startsWith('pets/') && hash.endsWith('/qr')) {
+        document.body.classList.remove('dashboard-mode');
         const petId = hash.split('/')[1];
         App.showView('qrTagView');
         App.renderQrTagView(petId);
         window.scrollTo({ top: 0, behavior: 'smooth' });
       } else if (hash.startsWith('p/')) {
+        document.body.classList.remove('dashboard-mode');
         const petCode = hash.split('/')[1];
         App.showView('publicProfileView');
         App.renderPublicProfile(petCode);
         window.scrollTo({ top: 0, behavior: 'smooth' });
       } else {
+        document.body.classList.remove('dashboard-mode');
         App.showView('landingView');
       }
 
@@ -282,10 +289,10 @@
       const demoRoleBtn = document.getElementById('demoRoleSwitcher');
       if (demoRoleBtn) {
         if (hash.startsWith('p/')) {
-          demoRoleBtn.innerHTML = `<span>👤 Finder View</span> · Switch to Owner`;
+          demoRoleBtn.innerHTML = `<span>${window.AppIcons.get('user')} Finder View</span> · Switch to Owner`;
           demoRoleBtn.onclick = () => window.location.hash = '#dashboard';
         } else {
-          demoRoleBtn.innerHTML = `<span>🐱 Sarah (Owner)</span> · Test Finder Scan`;
+          demoRoleBtn.innerHTML = `<span>${window.AppIcons.get('cat')} Sarah (Owner)</span> · Test Finder Scan`;
           demoRoleBtn.onclick = () => window.location.hash = '#p/luna-7x29';
         }
       }
@@ -340,6 +347,9 @@
       if (pet.avatarCustom) {
         return `<img src="${pet.avatarCustom}" alt="${pet.name}" />`;
       }
+      if (pet.name === 'Luna' || pet.code === 'luna-7x29') {
+        return `<img src="images/pet-luna.png" alt="${pet.name}" />`;
+      }
       if (pet.avatarKey && window.PetIllustrations && window.PetIllustrations.avatars[pet.avatarKey]) {
         return window.PetIllustrations.avatars[pet.avatarKey];
       }
@@ -358,11 +368,30 @@
       const grid = document.getElementById('dashboardPetsGrid');
       if (!grid) return;
 
+      // Update sidebar and topbar stats/badges
+      const petCountEl = document.getElementById('sidebarPetCountBadge');
+      if (petCountEl) petCountEl.textContent = pets.length;
+
+      const topbarPetCount = document.getElementById('topbarPetCount');
+      if (topbarPetCount) topbarPetCount.textContent = pets.length;
+
+      const topbarActiveCount = document.getElementById('topbarActiveCount');
+      if (topbarActiveCount) {
+        const activeCount = pets.filter(p => !p.isLost).length;
+        topbarActiveCount.textContent = activeCount;
+      }
+
+      const scanBadge = document.getElementById('sidebarScanBadge');
+      if (scanBadge) {
+        const activities = Store.getActivities();
+        scanBadge.textContent = activities.length;
+      }
+
       grid.innerHTML = pets.map(pet => {
         const avatarMarkup = App.getPetAvatarMarkup(pet);
         const isLost = pet.isLost;
         const statusBadge = isLost
-          ? `<span class="status-badge lost">🔴 LOST</span>`
+          ? `<span class="status-badge lost">${window.AppIcons.get('alertCircle')} LOST</span>`
           : `<span class="status-badge active">TAG ACTIVE</span>`;
 
         let lostBanner = '';
@@ -395,21 +424,21 @@
 
             <div class="pet-card-actions">
               <a href="#p/${pet.code}" class="btn btn-secondary btn-sm" target="_blank" title="Preview Public Profile">
-                👁️ View Profile
+                ${window.AppIcons.get('eye')} View Profile
               </a>
               <a href="#pets/${pet.id}/qr" class="btn btn-secondary btn-sm">
-                📱 QR Tag
+                ${window.AppIcons.get('qr')} QR Tag
               </a>
               <button class="btn btn-outline btn-sm" onclick="App.openLostPosterModal('${pet.id}')">
-                🪧 Lost Poster
+                ${window.AppIcons.get('poster')} Lost Poster
               </button>
               <button class="btn btn-secondary btn-sm" onclick="App.openEditPetModal('${pet.id}')">
-                ✏️ Edit
+                ${window.AppIcons.get('edit')} Edit
               </button>
               ${
                 isLost
-                  ? `<button class="btn btn-success btn-sm" onclick="App.toggleLostStatus('${pet.id}', false)">✓ Mark Found</button>`
-                  : `<button class="btn btn-danger btn-sm" onclick="App.openLostModeModal('${pet.id}')">🔴 Mark as Lost</button>`
+                  ? `<button class="btn btn-success btn-sm" onclick="App.toggleLostStatus('${pet.id}', false)">${window.AppIcons.get('check')} Mark Found</button>`
+                  : `<button class="btn btn-danger btn-sm" onclick="App.openLostModeModal('${pet.id}')">${window.AppIcons.get('siren')} Mark as Lost</button>`
               }
             </div>
           </div>
@@ -436,7 +465,7 @@
           <li class="activity-item">
             <div class="activity-left">
               <div class="activity-icon ${isFound ? 'found' : 'scan'}">
-                ${isFound ? '🐾' : '📱'}
+                ${isFound ? window.AppIcons.get('paw') : window.AppIcons.get('qr')}
               </div>
               <div class="activity-text">
                 <strong>${act.title} — ${act.petName}</strong>
@@ -447,6 +476,65 @@
           </li>
         `;
       }).join('');
+    },
+
+    toggleDashboardSidebar: function() {
+      const sidebar = document.getElementById('dashboardSidebar');
+      if (sidebar) {
+        sidebar.classList.toggle('mobile-open');
+      }
+    },
+
+    handleLogout: function() {
+      Store.setLoggedIn(false);
+      showToast('You have been signed out.');
+      document.body.classList.remove('dashboard-mode');
+      App.updateNav();
+      window.location.hash = '#landing';
+    },
+
+    openPetQrFromSidebar: function() {
+      const pets = Store.getPets();
+      if (pets && pets.length > 0) {
+        window.location.hash = `#pets/${pets[0].id}/qr`;
+      } else {
+        showToast('No pets found. Create a pet first!');
+      }
+    },
+
+    openLostPosterFromSidebar: function() {
+      const pets = Store.getPets();
+      if (pets && pets.length > 0) {
+        App.openLostPosterModal(pets[0].id);
+      } else {
+        showToast('No pets found. Create a pet first!');
+      }
+    },
+
+    switchDashboardSection: function(section) {
+      // Highlight sidebar active item
+      const navItems = document.querySelectorAll('.dashboard-sidebar .sidebar-nav-item');
+      navItems.forEach(item => item.classList.remove('active'));
+
+      if (section === 'pets') {
+        const petsNav = document.querySelector('.dashboard-sidebar a[href="#dashboard"]');
+        if (petsNav) petsNav.classList.add('active');
+        const grid = document.getElementById('dashboardPetsGrid');
+        if (grid) {
+          grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      } else if (section === 'activity') {
+        const activityItem = document.getElementById('dashboardActivitySection');
+        if (activityItem) {
+          activityItem.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }
+
+      // Close mobile sidebar if open
+      const sidebar = document.getElementById('dashboardSidebar');
+      if (sidebar && sidebar.classList.contains('mobile-open')) {
+        sidebar.classList.remove('mobile-open');
+      }
     },
 
     // =========================================================================
@@ -528,8 +616,8 @@
       const avatarMarkup = App.getPetAvatarMarkup(pet);
 
       const statusBadge = isLost
-        ? `<div class="owner-status-pill missing">🔴 ${pet.name} is missing</div>`
-        : `<div class="owner-status-pill safe">🟢 This pet has an owner</div>`;
+        ? `<div class="owner-status-pill missing">${window.AppIcons.get('alertCircle')} ${pet.name} is missing</div>`
+        : `<div class="owner-status-pill safe">${window.AppIcons.get('checkCircle')} This pet has an owner</div>`;
 
       const greetingBlock = isLost
         ? `
@@ -547,7 +635,7 @@
         `
         : `
           <div class="public-found-greeting">
-            <h3>You've found ${pet.name}! 🐾</h3>
+            <h3>You've found ${pet.name}! ${window.AppIcons.get('paw')}</h3>
             <p>Thank you so much for helping ${pet.sex === 'Female' ? 'her' : 'him'} get back home safely.</p>
           </div>
         `;
@@ -557,20 +645,20 @@
       if (pet.owner.showPhone && pet.owner.phone) {
         phoneAction = `
           <a href="tel:${pet.owner.phone}" class="btn btn-primary btn-lg" style="width: 100%;">
-            📞 Call Owner (${pet.owner.phone})
+            ${window.AppIcons.get('phone')} Call Owner (${pet.owner.phone})
           </a>
         `;
       } else {
         phoneAction = `
           <button class="btn btn-primary btn-lg" style="width: 100%;" onclick="App.openFoundModal('${pet.id}')">
-            📞 Contact ${pet.name}'s Owner
+            ${window.AppIcons.get('phone')} Contact ${pet.name}'s Owner
           </button>
         `;
       }
 
       container.innerHTML = `
         <div class="public-profile-eyebrow">
-          <span>🐾</span>
+          <span>${window.AppIcons.get('paw')}</span>
           <span>MY PET ID</span>
         </div>
 
@@ -588,7 +676,7 @@
         <div class="public-actions-stack">
           ${phoneAction}
           <button class="btn btn-secondary btn-lg" style="width: 100%;" onclick="App.openFoundModal('${pet.id}')">
-            📍 I Found This Pet
+            ${window.AppIcons.get('pin')} I Found This Pet
           </button>
         </div>
 
@@ -666,7 +754,7 @@
       showToast(`Alert sent to ${pet.name}'s owner! Thank you!`);
 
       // Show reunion confirmation step
-      alert(`🎉 Thank you, ${finderName}!\n\nAn instant notification with your message and location has been dispatched to ${pet.name}'s owner.\n\nOwner Contact: ${pet.owner.phone}\nOwner Email: ${pet.owner.email}`);
+      alert(`Thank you, ${finderName}!\n\nAn instant notification with your message and location has been dispatched to ${pet.name}'s owner.\n\nOwner Contact: ${pet.owner.phone}\nOwner Email: ${pet.owner.email}`);
     },
 
     // Geolocation helper for finder
@@ -738,7 +826,7 @@
 
     toggleLostStatus: function(petId, status) {
       Store.updatePet(petId, { isLost: status });
-      showToast(status ? "Marked as lost" : "Marked as safe and found! 🎉");
+      showToast(status ? "Marked as lost" : "Marked as safe and found!");
       App.renderDashboard();
     },
 
@@ -946,7 +1034,7 @@
       // Next / finish button text
       const nextBtn = document.getElementById('wizardNextBtn');
       if (nextBtn) {
-        nextBtn.innerText = stepNum === 5 ? 'Create QR Tag 🐾' : 'Continue →';
+        nextBtn.innerHTML = stepNum === 5 ? `Create QR Tag ${window.AppIcons.get('paw')}` : 'Continue &rarr;';
       }
     },
 

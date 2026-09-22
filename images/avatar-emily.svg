@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+  <defs>
+    <clipPath id="circleClip6"><circle cx="50" cy="50" r="48"/></clipPath>
+  </defs>
+  <circle cx="50" cy="50" r="48" fill="#bae6fd"/>
+  <g clip-path="url(#circleClip6)">
+    <rect width="100" height="100" fill="#f0f9ff"/>
+    <!-- Torso -->
+    <path d="M16 105 C20 78 34 70 50 70 C66 70 80 78 84 105 Z" fill="#0369a1"/>
+    <rect x="44" y="54" width="12" height="18" fill="#fde2d0" rx="4"/>
+    <ellipse cx="50" cy="42" rx="18" ry="21" fill="#fde2d0"/>
+    <!-- Curly Auburn Hair -->
+    <path d="M26 44 C22 24 34 14 50 14 C66 14 78 24 74 44 C72 60 70 72 66 76 C62 66 64 52 64 42 C58 38 42 38 36 42 C36 52 38 66 34 76 C30 72 28 60 26 44 Z" fill="#9a3412"/>
+    <!-- Round Modern Glasses -->
+    <circle cx="43" cy="42" r="6" fill="none" stroke="#0f172a" stroke-width="1.8"/>
+    <circle cx="57" cy="42" r="6" fill="none" stroke="#0f172a" stroke-width="1.8"/>
+    <line x1="49" y1="42" x2="51" y2="42" stroke="#0f172a" stroke-width="1.8"/>
+    <circle cx="43" cy="42" r="2.2" fill="#0f172a"/>
+    <circle cx="57" cy="42" r="2.2" fill="#0f172a"/>
+    <circle cx="44" cy="41" r="0.8" fill="#ffffff"/>
+    <circle cx="58" cy="41" r="0.8" fill="#ffffff"/>
+    <path d="M50 45 L50 49" stroke="#ea580c" stroke-width="1.4" stroke-linecap="round"/>
+    <path d="M45 53 Q50 58 55 53" stroke="#e11d48" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+  </g>
+  <circle cx="50" cy="50" r="48" fill="none" stroke="#ffffff" stroke-width="3"/>
+</svg>
