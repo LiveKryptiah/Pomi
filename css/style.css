@@ -499,7 +499,7 @@ h1, h2, h3, h4, .font-display {
 }
 
 .hero-stack {
-  max-width: 1140px;
+  max-width: 1320px;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
@@ -510,14 +510,14 @@ h1, h2, h3, h4, .font-display {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 28px;
+  gap: clamp(16px, 3vw, 40px);
   width: 100%;
-  margin: 8px 0 20px;
+  margin: -8px 0 24px;
   position: relative;
 }
 
 .hero-center-content {
-  max-width: 580px;
+  max-width: 540px;
   flex: 1;
   text-align: center;
   display: flex;
@@ -529,7 +529,7 @@ h1, h2, h3, h4, .font-display {
   font-size: var(--text-subheading);
   color: var(--color-graphite);
   margin: 16px auto 28px;
-  max-width: 560px;
+  max-width: 520px;
   line-height: 1.45;
   letter-spacing: -0.01em;
   font-weight: 500;
@@ -545,8 +545,9 @@ h1, h2, h3, h4, .font-display {
 }
 
 .hero-side-art {
-  flex: 0 0 220px;
-  max-width: 220px;
+  flex: 0 0 clamp(280px, 26vw, 380px);
+  max-width: 380px;
+  width: clamp(280px, 26vw, 380px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -555,10 +556,10 @@ h1, h2, h3, h4, .font-display {
 
 .floating-hero-pet {
   width: 100%;
-  max-width: 220px;
+  max-width: 380px;
   height: auto;
   object-fit: contain;
-  filter: drop-shadow(0 14px 28px rgba(0, 105, 224, 0.08));
+  filter: drop-shadow(0 16px 32px rgba(0, 105, 224, 0.1));
   user-select: none;
   pointer-events: none;
   transition: transform 0.3s ease;
@@ -2243,8 +2244,8 @@ h1, h2, h3, h4, .font-display {
     gap: 16px;
   }
   .hero-side-art {
-    flex: 0 0 150px;
-    max-width: 150px;
+    flex: 0 0 180px;
+    max-width: 180px;
   }
   .hero-gradient-inner {
     padding: 30px 24px;
@@ -2278,17 +2279,18 @@ h1, h2, h3, h4, .font-display {
     grid-template-areas:
       "cat dog"
       "center center";
-    gap: 12px;
+    gap: 16px;
+    margin-top: 12px;
   }
   .hero-cat-art {
     grid-area: cat;
     justify-self: end;
-    max-width: 120px;
+    max-width: 160px;
   }
   .hero-dog-art {
     grid-area: dog;
     justify-self: start;
-    max-width: 120px;
+    max-width: 160px;
   }
   .hero-center-content {
     grid-area: center;
