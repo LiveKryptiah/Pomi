@@ -488,6 +488,10 @@ def api_public_submit_found(code):
 # =============================================================================
 # STATIC FILE & SPA ROUTING
 # =============================================================================
+@app.route('/login')
+def login_page():
+    return send_from_directory(BASE_DIR, 'login.html')
+
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
 def catch_all(path):

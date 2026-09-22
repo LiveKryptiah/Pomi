@@ -427,13 +427,13 @@
         App.showView('landingView');
         window.scrollTo({ top: 0, behavior: 'smooth' });
       } else if (hash === 'login') {
-        App.showView('loginView');
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        window.location.href = 'login.html';
+        return;
       } else if (hash === 'create-tag') {
-        // If not logged in, prompt modal; if logged in, proceed to add-pet
+        // If not logged in, route to dedicated login.html; if logged in, proceed to add-pet
         if (!Store.isLoggedIn()) {
-          App.showView('landingView');
-          App.openAuthModal('login');
+          window.location.href = 'login.html';
+          return;
         } else {
           App.showView('addPetView');
           App.resetAddPetWizard();
@@ -441,8 +441,8 @@
         window.scrollTo({ top: 0, behavior: 'smooth' });
       } else if (hash === 'dashboard') {
         if (!Store.isLoggedIn()) {
-          App.showView('landingView');
-          App.openAuthModal('login');
+          window.location.href = 'login.html';
+          return;
         } else {
           App.showView('dashboardView');
           App.renderDashboard();
@@ -450,8 +450,8 @@
         window.scrollTo({ top: 0, behavior: 'smooth' });
       } else if (hash === 'add-pet') {
         if (!Store.isLoggedIn()) {
-          App.showView('landingView');
-          App.openAuthModal('login');
+          window.location.href = 'login.html';
+          return;
         } else {
           App.showView('addPetView');
           App.resetAddPetWizard();
@@ -511,14 +511,11 @@
             <span class="user-name-display">${user.name}</span>
           </div>
           <a href="#dashboard" class="btn btn-secondary btn-sm" id="navDashboardLink">Dashboard</a>
-          <a href="#add-pet" class="btn btn-primary btn-sm" id="navCreateTagBtn">+ Add Pet</a>
           <button type="button" class="btn btn-outline btn-sm" onclick="App.handleLogout()" title="Sign out of account">Sign Out</button>
         `;
       } else {
         navContainer.innerHTML = `
-          <button type="button" id="navAuthBtn" class="btn btn-secondary btn-sm" onclick="App.openAuthModal('login')">Sign In</button>
-          <button type="button" class="btn btn-primary btn-sm" onclick="App.openAuthModal('register')">Create Account</button>
-          <a href="#create-tag" class="btn btn-outline btn-sm" id="navCreateTagBtn">Create a Pet Tag</a>
+          <a href="login.html" id="navAuthBtn" class="btn btn-black btn-sm">Sign In</a>
         `;
       }
     },
@@ -694,7 +691,7 @@
       if (Store.isLoggedIn()) {
         App.handleLogout();
       } else {
-        App.openAuthModal('login');
+        window.location.href = 'login.html';
       }
     },
 
