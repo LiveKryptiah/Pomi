@@ -499,8 +499,27 @@ h1, h2, h3, h4, .font-display {
 }
 
 .hero-stack {
-  max-width: 900px;
+  max-width: 1140px;
   margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.hero-description-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 28px;
+  width: 100%;
+  margin: 8px 0 20px;
+  position: relative;
+}
+
+.hero-center-content {
+  max-width: 580px;
+  flex: 1;
+  text-align: center;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -509,8 +528,8 @@ h1, h2, h3, h4, .font-display {
 .hero-subtext {
   font-size: var(--text-subheading);
   color: var(--color-graphite);
-  margin: 24px auto 36px;
-  max-width: 620px;
+  margin: 16px auto 28px;
+  max-width: 560px;
   line-height: 1.45;
   letter-spacing: -0.01em;
   font-weight: 500;
@@ -522,7 +541,45 @@ h1, h2, h3, h4, .font-display {
   justify-content: center;
   gap: 16px;
   flex-wrap: wrap;
-  margin-bottom: 24px;
+  margin-bottom: 8px;
+}
+
+.hero-side-art {
+  flex: 0 0 220px;
+  max-width: 220px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.floating-hero-pet {
+  width: 100%;
+  max-width: 220px;
+  height: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 14px 28px rgba(0, 105, 224, 0.08));
+  user-select: none;
+  pointer-events: none;
+  transition: transform 0.3s ease;
+}
+
+.hero-cat-art .floating-hero-pet {
+  animation: floatCat 4.5s ease-in-out infinite alternate;
+}
+
+.hero-dog-art .floating-hero-pet {
+  animation: floatDog 5s ease-in-out infinite alternate;
+}
+
+@keyframes floatCat {
+  0% { transform: translateY(0px) rotate(-1.5deg); }
+  100% { transform: translateY(-12px) rotate(2deg); }
+}
+
+@keyframes floatDog {
+  0% { transform: translateY(0px) rotate(1.5deg); }
+  100% { transform: translateY(-14px) rotate(-2deg); }
 }
 
 /* Hero Gradient Banner:
@@ -2182,6 +2239,13 @@ h1, h2, h3, h4, .font-display {
    RESPONSIVE DESIGN (TABLET & MOBILE)
    ========================================================================== */
 @media (max-width: 960px) {
+  .hero-description-row {
+    gap: 16px;
+  }
+  .hero-side-art {
+    flex: 0 0 150px;
+    max-width: 150px;
+  }
   .hero-gradient-inner {
     padding: 30px 24px;
   }
@@ -2207,6 +2271,27 @@ h1, h2, h3, h4, .font-display {
   }
   .hero-heading {
     font-size: 44px;
+  }
+  .hero-description-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas:
+      "cat dog"
+      "center center";
+    gap: 12px;
+  }
+  .hero-cat-art {
+    grid-area: cat;
+    justify-self: end;
+    max-width: 120px;
+  }
+  .hero-dog-art {
+    grid-area: dog;
+    justify-self: start;
+    max-width: 120px;
+  }
+  .hero-center-content {
+    grid-area: center;
   }
   .section-heading {
     font-size: 30px;
