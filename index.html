@@ -32,9 +32,8 @@
         <li><a href="#faq" class="nav-link">FAQ</a></li>
       </ul>
 
-      <div class="nav-actions" id="navActionsContainer">
-        <a href="#dashboard" class="btn btn-secondary btn-sm" id="navDashboardLink" style="display: none;">Dashboard</a>
-        <a href="login.html" id="navAuthBtn" class="btn btn-black btn-sm">Sign In</a>
+      <div class="nav-actions">
+        <button id="navAuthBtn" class="btn btn-primary btn-sm" onclick="App.toggleNavAuth()">Sign In</button>
       </div>
     </div>
   </header>
@@ -1588,94 +1587,6 @@
 
       </div>
 
-    </div>
-  </div>
-
-  <!-- ====================================================================
-       MODAL 5: REAL DATABASE LOGIN & REGISTRATION
-       ==================================================================== -->
-  <div id="authModal" class="modal-backdrop" aria-hidden="true">
-    <div class="modal-dialog auth-modal-dialog">
-      <button type="button" class="modal-close-btn no-print" onclick="App.closeAuthModal()" aria-label="Close Authentication">✕</button>
-
-      <!-- Brand Logo / Paw -->
-      <div style="text-align: center; margin-bottom: 20px;">
-        <span style="display: inline-flex; align-items: center; justify-content: center; width: 48px; height: 48px; border-radius: 50%; background-color: var(--yellow); border: 2px solid var(--ink); font-size: 22px; margin-bottom: 8px;">🐾</span>
-        <h2 id="authModalTitle" style="font-size: 24px; font-weight: 800; color: var(--ink); margin: 0;">Welcome to MyPet</h2>
-        <p id="authModalSub" style="font-size: 14px; color: var(--muted); margin-top: 4px;">Sign in to manage your pets and collar tags in the cloud database.</p>
-      </div>
-
-      <!-- Auth Modal Tabs -->
-      <div class="auth-tabs-row">
-        <button type="button" class="auth-tab-btn active" id="authTabLogin" onclick="App.switchAuthTab('login')">
-          Sign In
-        </button>
-        <button type="button" class="auth-tab-btn" id="authTabRegister" onclick="App.switchAuthTab('register')">
-          Create Account
-        </button>
-      </div>
-
-      <!-- Quick 1-Click Demo Fill -->
-      <div class="auth-demo-callout" id="authDemoCallout">
-        <div class="demo-callout-text">
-          <strong style="font-size: 13.5px; color: var(--ink); display: block;">Testing with the pre-seeded database?</strong>
-          <span style="font-size: 12px; color: var(--muted);">Click below to auto-fill Sarah Miller's account (Luna & Milo).</span>
-        </div>
-        <button type="button" class="btn btn-secondary btn-sm" onclick="App.fillDemoCredentials()">
-          ✨ Fill Demo (Sarah)
-        </button>
-      </div>
-
-      <!-- Error / Alert Message Banner -->
-      <div id="authErrorBanner" class="auth-error-banner" style="display: none;"></div>
-
-      <!-- Login Form -->
-      <form id="modalLoginForm" onsubmit="App.handleLogin(event)">
-        <div class="form-group">
-          <label class="form-label" for="modalLoginEmail">Email Address</label>
-          <input type="email" id="modalLoginEmail" class="form-input" placeholder="sarah@example.com" required autocomplete="email" />
-        </div>
-
-        <div class="form-group">
-          <label class="form-label" for="modalLoginPassword">Password</label>
-          <input type="password" id="modalLoginPassword" class="form-input" placeholder="••••••••" required autocomplete="current-password" />
-        </div>
-
-        <button type="submit" class="btn btn-primary btn-lg" id="modalLoginSubmitBtn" style="width: 100%; margin-top: 10px;">
-          Sign In to Dashboard →
-        </button>
-      </form>
-
-      <!-- Register Form -->
-      <form id="registerForm" style="display: none;" onsubmit="App.handleRegister(event)">
-        <div class="form-group">
-          <label class="form-label" for="regName">Your Full Name</label>
-          <input type="text" id="regName" class="form-input" placeholder="e.g. Alex Johnson" required />
-        </div>
-
-        <div class="form-group">
-          <label class="form-label" for="regEmail">Email Address</label>
-          <input type="email" id="regEmail" class="form-input" placeholder="alex@example.com" required autocomplete="email" />
-        </div>
-
-        <div class="form-group">
-          <label class="form-label" for="regPhone">Contact Phone (For Found Pets)</label>
-          <input type="tel" id="regPhone" class="form-input" placeholder="(555) 000-0000" />
-        </div>
-
-        <div class="form-group">
-          <label class="form-label" for="regPassword">Create Password</label>
-          <input type="password" id="regPassword" class="form-input" placeholder="At least 6 characters" minlength="6" required autocomplete="new-password" />
-        </div>
-
-        <button type="submit" class="btn btn-primary btn-lg" id="regSubmitBtn" style="width: 100%; margin-top: 10px;">
-          Create MyPet Account →
-        </button>
-      </form>
-
-      <div class="auth-footer-note">
-        🔒 Connected to live SQLite database (<code style="background: var(--sand); padding: 2px 4px; border-radius: 4px;">mypet.db</code>). Passwords hashed with PBKDF2.
-      </div>
     </div>
   </div>
 
