@@ -37,6 +37,54 @@
         showEmail: false,
         allowSmsRelay: true
       },
+      healthVault: {
+        showPublicMedical: true,
+        microchip: {
+          number: "985-141-002-384-912",
+          registry: "HomeAgain Pet Recovery",
+          implantedDate: "2024-04-15",
+          verified: true
+        },
+        vetClinic: {
+          name: "Oakland Pet Hospital & Urgent Care",
+          doctor: "Dr. Emily Hayes, DVM",
+          phone: "(555) 892-3401",
+          address: "742 Evergreen Blvd, Oakland, CA 94611",
+          emergencyHours: "24/7 Urgent Care Available"
+        },
+        allergies: ["Chicken byproduct", "Flea bite sensitivity"],
+        medications: "Thyroid supplement (0.1mg daily at breakfast)",
+        dietNotes: "Purina Pro Plan Sensitive Skin & Stomach (Wet & Dry only). Do not feed poultry scraps.",
+        vaccines: [
+          {
+            id: "vac-1",
+            name: "Rabies (1-Year Core)",
+            dateAdministered: "2026-01-15",
+            dueDate: "2027-01-15",
+            batchLot: "RB-84920",
+            clinic: "Oakland Pet Hospital",
+            doctor: "Dr. Emily Hayes"
+          },
+          {
+            id: "vac-2",
+            name: "FVRCP (Feline Viral Rhinotracheitis)",
+            dateAdministered: "2025-10-10",
+            dueDate: "2026-10-10",
+            batchLot: "FV-30911",
+            clinic: "Oakland Pet Hospital",
+            doctor: "Dr. Emily Hayes"
+          },
+          {
+            id: "vac-3",
+            name: "FeLV (Feline Leukemia)",
+            dateAdministered: "2025-08-14",
+            dueDate: "2026-08-14",
+            batchLot: "FL-11029",
+            clinic: "Oakland Pet Hospital",
+            doctor: "Dr. Emily Hayes"
+          }
+        ]
+      },
       createdAt: "2026-09-01"
     },
     {
@@ -62,6 +110,54 @@
         showEmail: true,
         allowSmsRelay: true
       },
+      healthVault: {
+        showPublicMedical: true,
+        microchip: {
+          number: "985-141-004-921-750",
+          registry: "AKC Reunite",
+          implantedDate: "2024-11-20",
+          verified: true
+        },
+        vetClinic: {
+          name: "Golden Gate Veterinary Clinic",
+          doctor: "Dr. Marcus Vance, DVM",
+          phone: "(555) 731-9920",
+          address: "1200 Bayview St, Suite 4, San Francisco, CA",
+          emergencyHours: "Open Monday - Saturday 8am - 7pm"
+        },
+        allergies: ["Wheat gluten"],
+        medications: "Heartgard Plus (Monthly chewable on 1st)",
+        dietNotes: "Hill's Science Diet Adult Large Breed. Loves sliced carrots and peanut butter treats.",
+        vaccines: [
+          {
+            id: "vac-4",
+            name: "Rabies (3-Year Core)",
+            dateAdministered: "2025-03-12",
+            dueDate: "2028-03-12",
+            batchLot: "RB-77102",
+            clinic: "Golden Gate Veterinary",
+            doctor: "Dr. Marcus Vance"
+          },
+          {
+            id: "vac-5",
+            name: "DHPP (Distemper, Parvo, Hepatitis)",
+            dateAdministered: "2026-02-18",
+            dueDate: "2027-02-18",
+            batchLot: "DH-99410",
+            clinic: "Golden Gate Veterinary",
+            doctor: "Dr. Marcus Vance"
+          },
+          {
+            id: "vac-6",
+            name: "Bordetella (Kennel Cough)",
+            dateAdministered: "2026-04-01",
+            dueDate: "2026-10-01",
+            batchLot: "BD-45122",
+            clinic: "Golden Gate Veterinary",
+            doctor: "Dr. Marcus Vance"
+          }
+        ]
+      },
       createdAt: "2026-09-10"
     }
   ];
@@ -85,9 +181,34 @@
         const stored = localStorage.getItem('mypet_pets');
         if (stored) {
           const pets = JSON.parse(stored);
+          let changed = false;
           const luna = pets.find(p => p.id === 'pet-1' || p.code === 'luna-7x29' || p.name === 'Luna');
           if (luna && luna.avatarCustom !== 'images/pet-luna.png') {
             luna.avatarCustom = 'images/pet-luna.png';
+            changed = true;
+          }
+          // Ensure every pet has a healthVault
+          pets.forEach(pet => {
+            if (!pet.healthVault) {
+              if (pet.id === 'pet-1' || pet.code === 'luna-7x29' || pet.name === 'Luna') {
+                pet.healthVault = JSON.parse(JSON.stringify(DEFAULT_PETS[0].healthVault));
+              } else if (pet.id === 'pet-2' || pet.code === 'milo-9k42' || pet.name === 'Milo') {
+                pet.healthVault = JSON.parse(JSON.stringify(DEFAULT_PETS[1].healthVault));
+              } else {
+                pet.healthVault = {
+                  showPublicMedical: true,
+                  microchip: { number: '985141009823104', registry: 'HomeAgain', implantedDate: '2025-01-10', verified: true },
+                  vetClinic: { name: 'Local Veterinary Clinic', doctor: 'Dr. Smith', phone: '(555) 123-4567', address: '123 Main St', emergencyHours: 'Regular Hours' },
+                  allergies: [],
+                  medications: '',
+                  dietNotes: '',
+                  vaccines: []
+                };
+              }
+              changed = true;
+            }
+          });
+          if (changed) {
             Store.savePets(pets);
           }
           return pets;
@@ -142,6 +263,20 @@
     },
     setLoggedIn: function(status) {
       localStorage.setItem('mypet_auth', status ? 'true' : 'false');
+    },
+    getCurrentUser: function() {
+      try {
+        const u = localStorage.getItem('mypet_user');
+        return u ? JSON.parse(u) : { name: "Sarah Miller", email: "sarah@example.com", phone: "(555) 234-5678" };
+      } catch (e) {
+        return { name: "Sarah Miller", email: "sarah@example.com", phone: "(555) 234-5678" };
+      }
+    },
+    setCurrentUser: function(user) {
+      try {
+        localStorage.setItem('mypet_user', JSON.stringify(user));
+        localStorage.setItem('mypet_auth', 'true');
+      } catch (e) {}
     }
   };
 
@@ -236,12 +371,16 @@
         App.showView('landingView');
         window.scrollTo({ top: 0, behavior: 'smooth' });
       } else if (hash === 'login') {
-        App.showView('loginView');
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        window.location.href = 'login.html';
+        return;
+      } else if (hash === 'register') {
+        window.location.href = 'register.html';
+        return;
       } else if (hash === 'create-tag') {
-        // When creating a pet tag: show login form if not logged in; after login route to dashboard
+        // When creating a pet tag: redirect to login page if not logged in
         if (!Store.isLoggedIn()) {
-          App.showView('loginView');
+          window.location.href = 'login.html';
+          return;
         } else {
           App.showView('dashboardView');
           App.renderDashboard();
@@ -249,7 +388,8 @@
         window.scrollTo({ top: 0, behavior: 'smooth' });
       } else if (hash === 'dashboard') {
         if (!Store.isLoggedIn()) {
-          App.showView('loginView');
+          window.location.href = 'login.html';
+          return;
         } else {
           App.showView('dashboardView');
           App.renderDashboard();
@@ -257,7 +397,8 @@
         window.scrollTo({ top: 0, behavior: 'smooth' });
       } else if (hash === 'add-pet') {
         if (!Store.isLoggedIn()) {
-          App.showView('loginView');
+          window.location.href = 'login.html';
+          return;
         } else {
           App.showView('addPetView');
           App.resetAddPetWizard();
@@ -294,22 +435,118 @@
           demoRoleBtn.innerHTML = `<span>${window.AppIcons.get('user')} Finder View</span> · Switch to Owner`;
           demoRoleBtn.onclick = () => window.location.hash = '#dashboard';
         } else {
-          demoRoleBtn.innerHTML = `<span>${window.AppIcons.get('cat')} Sarah (Owner)</span> · Test Finder Scan`;
+          const u = Store.getCurrentUser();
+          const firstName = u && u.name ? u.name.split(' ')[0] : 'Sarah';
+          demoRoleBtn.innerHTML = `<span>${window.AppIcons.get('cat')} ${firstName} (Owner)</span> · Test Finder Scan`;
           demoRoleBtn.onclick = () => window.location.hash = '#p/luna-7x29';
         }
       }
 
       const isLoggedIn = Store.isLoggedIn();
-      const navDashboardLink = document.getElementById('navDashboardLink');
-      if (navDashboardLink) {
-        navDashboardLink.style.display = isLoggedIn ? 'inline-flex' : 'none';
-      }
+      const isDashboardView = (hash === 'dashboard' || hash === 'add-pet' || (hash.startsWith('pets/') && hash.endsWith('/qr')));
 
-      const navAuthBtn = document.getElementById('navAuthBtn');
-      if (navAuthBtn) {
-        navAuthBtn.innerText = isLoggedIn ? 'Log Out' : 'Sign In';
-        navAuthBtn.title = isLoggedIn ? 'Sign out of owner account' : 'Sign in to owner account';
+      const navLinksPublic = document.getElementById('navLinksPublic');
+      const navLinksDashboard = document.getElementById('navLinksDashboard');
+      const navActionsPublic = document.getElementById('navActionsPublic');
+      const navActionsDashboard = document.getElementById('navActionsDashboard');
+      const navPortalBadge = document.getElementById('navPortalBadge');
+
+      const user = Store.getCurrentUser();
+      const pets = Store.getPets();
+      const petCount = pets.length;
+
+      // Update badge counts and labels
+      const petCountBadge = document.getElementById('navPetCountBadge');
+      if (petCountBadge) petCountBadge.textContent = petCount;
+      const dropdownBadgeCount = document.getElementById('dropdownBadgeCount');
+      if (dropdownBadgeCount) dropdownBadgeCount.textContent = petCount;
+      const dropdownPetsStatus = document.getElementById('dropdownPetsStatus');
+      if (dropdownPetsStatus) dropdownPetsStatus.textContent = `${petCount} Pet${petCount === 1 ? '' : 's'} Protected`;
+
+      // Update user details
+      const userNavName = document.getElementById('userNavName');
+      if (userNavName) userNavName.textContent = user.name || 'Sarah Miller';
+      const dropdownUserName = document.getElementById('dropdownUserName');
+      if (dropdownUserName) dropdownUserName.textContent = user.name || 'Sarah Miller';
+      const dropdownUserEmail = document.getElementById('dropdownUserEmail');
+      if (dropdownUserEmail) dropdownUserEmail.textContent = user.email || 'sarah@example.com';
+
+      // Decide whether to show dashboard nav or public nav:
+      // When user is in dashboard view (or logged in and viewing owner views), show dashboard nav!
+      if (isLoggedIn && (isDashboardView || window.location.hash === '#dashboard')) {
+        if (navLinksPublic) navLinksPublic.style.display = 'none';
+        if (navLinksDashboard) navLinksDashboard.style.display = 'flex';
+        if (navActionsPublic) navActionsPublic.style.display = 'none';
+        if (navActionsDashboard) navActionsDashboard.style.display = 'flex';
+        if (navPortalBadge) navPortalBadge.style.display = 'inline-flex';
+
+        // Update active class on dashboard nav links
+        document.querySelectorAll('#navLinksDashboard .nav-link').forEach(link => {
+          link.classList.remove('active');
+        });
+        if (hash === 'dashboard' || !hash) {
+          const l = document.getElementById('navLinkDashboard');
+          if (l) l.classList.add('active');
+        } else if (hash === 'add-pet') {
+          const l = document.getElementById('navLinkAddPet');
+          if (l) l.classList.add('active');
+        }
+      } else {
+        // Public website mode
+        if (navLinksPublic) navLinksPublic.style.display = 'flex';
+        if (navLinksDashboard) navLinksDashboard.style.display = 'none';
+        if (navPortalBadge) navPortalBadge.style.display = 'none';
+
+        if (isLoggedIn) {
+          // Logged in user visiting public pages: allow one-click back to dashboard via profile
+          if (navActionsPublic) navActionsPublic.style.display = 'none';
+          if (navActionsDashboard) navActionsDashboard.style.display = 'flex';
+        } else {
+          // Public visitor
+          if (navActionsPublic) navActionsPublic.style.display = 'flex';
+          if (navActionsDashboard) navActionsDashboard.style.display = 'none';
+        }
       }
+    },
+
+    toggleUserDropdown: function(e) {
+      if (e) {
+        e.stopPropagation();
+        e.preventDefault();
+      }
+      const dropdown = document.getElementById('userNavDropdown');
+      const trigger = document.getElementById('userProfileTrigger');
+      if (dropdown) {
+        const isOpen = dropdown.classList.toggle('open');
+        if (trigger) {
+          trigger.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+        }
+      }
+    },
+
+    closeUserDropdown: function() {
+      const dropdown = document.getElementById('userNavDropdown');
+      const trigger = document.getElementById('userProfileTrigger');
+      if (dropdown && dropdown.classList.contains('open')) {
+        dropdown.classList.remove('open');
+        if (trigger) {
+          trigger.setAttribute('aria-expanded', 'false');
+        }
+      }
+    },
+
+    scrollToActivity: function(e) {
+      if (e) e.preventDefault();
+      App.closeUserDropdown();
+      if (window.location.hash !== '#dashboard') {
+        window.location.hash = '#dashboard';
+      }
+      setTimeout(() => {
+        const feed = document.querySelector('.activity-feed-section') || document.getElementById('dashboardActivityList');
+        if (feed) {
+          feed.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 100);
     },
 
     handleLoginSubmit: function(e) {
@@ -331,16 +568,24 @@
 
     logout: function() {
       Store.setLoggedIn(false);
+      try {
+        localStorage.removeItem('mypet_auth');
+        localStorage.removeItem('mypet_user');
+      } catch (e) {}
       showToast("You have been signed out.");
       App.updateNav();
       window.location.hash = '#landing';
+    },
+
+    handleLogout: function() {
+      App.logout();
     },
 
     toggleNavAuth: function() {
       if (Store.isLoggedIn()) {
         App.logout();
       } else {
-        window.location.hash = '#login';
+        window.location.href = 'login.html';
       }
     },
 
@@ -387,6 +632,32 @@
           `;
         }
 
+        const overallHealth = App.getOverallHealthStatus(pet);
+        const chipSnippet = (pet.healthVault && pet.healthVault.microchip && pet.healthVault.microchip.number)
+          ? `<span class="health-chip" title="Microchip Registered">🔍 Chip: …${pet.healthVault.microchip.number.slice(-4)}</span>`
+          : '';
+        const vetSnippet = (pet.healthVault && pet.healthVault.vetClinic && pet.healthVault.vetClinic.name)
+          ? `<span class="health-chip" title="Veterinary Clinic">🏥 ${pet.healthVault.vetClinic.name}</span>`
+          : '';
+
+        const healthVaultStrip = `
+          <div class="pet-health-vault-strip">
+            <div class="pet-health-status-col">
+              <div class="pet-health-status-badge ${overallHealth.badgeClass}">
+                <span class="health-dot"></span>
+                <span>${overallHealth.summaryText}</span>
+              </div>
+              <div class="pet-health-meta-chips">
+                ${chipSnippet}
+                ${vetSnippet}
+              </div>
+            </div>
+            <button type="button" class="btn-health-vault" onclick="App.openHealthVaultModal('${pet.id}')">
+              🩺 Health Vault &rarr;
+            </button>
+          </div>
+        `;
+
         return `
           <div class="pet-card ${isLost ? 'is-lost' : ''}" data-pet-id="${pet.id}">
             <div class="pet-card-top">
@@ -405,6 +676,8 @@
 
             ${lostBanner}
 
+            ${healthVaultStrip}
+
             <div class="pet-card-actions">
               <a href="#p/${pet.code}" class="btn btn-secondary btn-sm" target="_blank" title="Preview Public Profile">
                 ${window.AppIcons.get('eye')} View Profile
@@ -412,6 +685,9 @@
               <a href="#pets/${pet.id}/qr" class="btn btn-secondary btn-sm">
                 ${window.AppIcons.get('qr')} QR Tag
               </a>
+              <button class="btn btn-secondary btn-sm" onclick="App.openHealthVaultModal('${pet.id}')" title="Health & Vaccine Vault">
+                ${window.AppIcons.get('paw')} Health Vault
+              </button>
               <button class="btn btn-outline btn-sm" onclick="App.openLostPosterModal('${pet.id}')">
                 ${window.AppIcons.get('poster')} Lost Poster
               </button>
@@ -615,6 +891,38 @@
             ${pet.medicalNotes ? `<li><strong>Medical notes:</strong> ${pet.medicalNotes}</li>` : ''}
           </ul>
         </div>
+
+        ${
+          pet.healthVault ? `
+            <div class="public-about-section" style="margin-top: 18px;">
+              <div class="public-about-title">
+                <span>Health & Verification Vault</span>
+              </div>
+              <ul class="public-attributes-list">
+                <li>
+                  <strong>Core Vaccinations:</strong> 
+                  <span class="status-badge vaccine-valid" style="margin: 0 0 0 6px;">Rabies & Core Shots Verified</span>
+                </li>
+                ${pet.healthVault.microchip && pet.healthVault.microchip.number ? `
+                  <li><strong>Microchip ID:</strong> Registered with ${pet.healthVault.microchip.registry || 'National Database'}</li>
+                ` : ''}
+                ${pet.healthVault.vetClinic && pet.healthVault.vetClinic.name ? `
+                  <li><strong>Primary Vet:</strong> ${pet.healthVault.vetClinic.name} (${pet.healthVault.vetClinic.phone || 'On file'})</li>
+                ` : ''}
+                ${pet.healthVault.showPublicMedical && pet.healthVault.allergies && pet.healthVault.allergies.length > 0 ? `
+                  <li style="color: #991b1b; background: #fef2f2; padding: 8px 12px; border-radius: 10px; margin-top: 6px;">
+                    <strong>⚠️ Dietary Alert:</strong> Allergic to ${pet.healthVault.allergies.join(', ')}. Please do not feed treats or scraps.
+                  </li>
+                ` : ''}
+                ${pet.healthVault.showPublicMedical && pet.healthVault.medications ? `
+                  <li style="color: #0c4a6e; background: #f0f9ff; padding: 8px 12px; border-radius: 10px; margin-top: 4px;">
+                    <strong>💊 Daily Medication:</strong> ${pet.healthVault.medications}
+                  </li>
+                ` : ''}
+              </ul>
+            </div>
+          ` : ''
+        }
 
         <div style="margin-top: 24px; font-size: 12.5px; color: var(--muted);">
           Protected by <strong>MyPet</strong> · A little tag. A big way home.
@@ -843,6 +1151,574 @@
     },
 
     // =========================================================================
+    // PET HEALTH VAULT & VACCINATION TRACKER ENGINE
+    // =========================================================================
+    activeHealthVaultPetId: 'pet-1',
+    activeHealthVaultTab: 'vaccines',
+
+    getFirstPetId: function() {
+      const pets = Store.getPets();
+      return (pets && pets.length > 0) ? pets[0].id : 'pet-1';
+    },
+
+    calculateVaccineStatus: function(dueDateStr) {
+      if (!dueDateStr) {
+        return { statusKey: 'valid', label: 'Valid', badgeClass: 'vaccine-valid', chipClass: 'valid', daysRemaining: 365, text: 'Active' };
+      }
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const due = new Date(dueDateStr);
+      due.setHours(0, 0, 0, 0);
+      const diffMs = due.getTime() - today.getTime();
+      const diffDays = Math.round(diffMs / (1000 * 60 * 60 * 24));
+
+      if (diffDays < 0) {
+        const overdueDays = Math.abs(diffDays);
+        return {
+          statusKey: 'overdue',
+          label: 'Overdue',
+          badgeClass: 'vaccine-overdue',
+          chipClass: 'overdue',
+          daysRemaining: diffDays,
+          text: `Overdue by ${overdueDays} day${overdueDays === 1 ? '' : 's'}`
+        };
+      } else if (diffDays <= 30) {
+        return {
+          statusKey: 'due_soon',
+          label: 'Due Soon',
+          badgeClass: 'vaccine-due-soon',
+          chipClass: 'due-soon',
+          daysRemaining: diffDays,
+          text: diffDays === 0 ? 'Due Today' : `Due in ${diffDays} day${diffDays === 1 ? '' : 's'}`
+        };
+      } else {
+        const months = Math.round(diffDays / 30.4);
+        return {
+          statusKey: 'valid',
+          label: 'Up to Date',
+          badgeClass: 'vaccine-valid',
+          chipClass: 'valid',
+          daysRemaining: diffDays,
+          text: months >= 12 ? `Valid for ${Math.round(months / 12)} yr${Math.round(months / 12) > 1 ? 's' : ''}` : `Valid for ${months} mo${months > 1 ? 's' : ''}`
+        };
+      }
+    },
+
+    getOverallHealthStatus: function(pet) {
+      const vaccines = (pet && pet.healthVault && pet.healthVault.vaccines) ? pet.healthVault.vaccines : [];
+      let validCount = 0;
+      let dueSoonCount = 0;
+      let overdueCount = 0;
+
+      vaccines.forEach(vac => {
+        const stat = App.calculateVaccineStatus(vac.dueDate);
+        if (stat.statusKey === 'overdue') overdueCount++;
+        else if (stat.statusKey === 'due_soon') dueSoonCount++;
+        else validCount++;
+      });
+
+      if (overdueCount > 0) {
+        return {
+          badgeClass: 'status-overdue',
+          overallBadgeClass: 'vaccine-overdue',
+          overallLabel: 'Action Needed',
+          summaryText: `${overdueCount} Overdue · ${validCount} Active`,
+          validCount,
+          dueSoonCount,
+          overdueCount
+        };
+      } else if (dueSoonCount > 0) {
+        return {
+          badgeClass: 'status-due-soon',
+          overallBadgeClass: 'vaccine-due-soon',
+          overallLabel: 'Renewal Due Soon',
+          summaryText: `${dueSoonCount} Due Soon · ${validCount} Active`,
+          validCount,
+          dueSoonCount,
+          overdueCount
+        };
+      } else if (vaccines.length > 0) {
+        return {
+          badgeClass: 'status-valid',
+          overallBadgeClass: 'vaccine-valid',
+          overallLabel: 'Up to Date',
+          summaryText: `${vaccines.length} Vaccines Active`,
+          validCount,
+          dueSoonCount,
+          overdueCount
+        };
+      } else {
+        return {
+          badgeClass: 'status-valid',
+          overallBadgeClass: 'vaccine-valid',
+          overallLabel: 'Records Available',
+          summaryText: `Microchip & Vet On File`,
+          validCount: 0,
+          dueSoonCount: 0,
+          overdueCount: 0
+        };
+      }
+    },
+
+    openHealthVaultModal: function(petId, defaultTab = 'vaccines') {
+      const pets = Store.getPets();
+      if (!pets || pets.length === 0) return;
+      const targetPet = Store.getPetById(petId) || pets[0];
+      App.activeHealthVaultPetId = targetPet.id;
+      App.activeHealthVaultTab = defaultTab;
+
+      // Populate pet selector dropdown
+      const selector = document.getElementById('hvPetSelector');
+      if (selector) {
+        selector.innerHTML = pets.map(p => `
+          <option value="${p.id}" ${p.id === targetPet.id ? 'selected' : ''}>
+            ${p.species === 'cat' ? '🐱' : p.species === 'dog' ? '🐶' : '🐾'} ${p.name}
+          </option>
+        `).join('');
+      }
+
+      App.renderHealthVaultModal(targetPet.id);
+      App.switchHealthVaultTab(defaultTab);
+      document.getElementById('healthVaultModal').classList.add('active');
+    },
+
+    switchHealthVaultTab: function(tabName) {
+      App.activeHealthVaultTab = tabName;
+      const tabs = ['vaccines', 'microchip', 'vet', 'allergies'];
+      tabs.forEach(t => {
+        const btn = document.getElementById('btnTab' + t.charAt(0).toUpperCase() + t.slice(1));
+        const panel = document.getElementById('hvTab' + t.charAt(0).toUpperCase() + t.slice(1));
+        if (btn) btn.classList.toggle('active', t === tabName);
+        if (panel) panel.classList.toggle('active', t === tabName);
+      });
+    },
+
+    renderHealthVaultModal: function(petId) {
+      const pet = Store.getPetById(petId);
+      if (!pet) return;
+      if (!pet.healthVault) {
+        pet.healthVault = {
+          showPublicMedical: true,
+          microchip: { number: '', registry: '', implantedDate: '', verified: false },
+          vetClinic: { name: '', doctor: '', phone: '', address: '', emergencyHours: '' },
+          allergies: [],
+          medications: '',
+          dietNotes: '',
+          vaccines: []
+        };
+      }
+
+      // Header
+      const avatarEl = document.getElementById('hvPetAvatar');
+      if (avatarEl) avatarEl.innerHTML = App.getPetAvatarMarkup(pet);
+
+      const titleEl = document.getElementById('hvPetTitle');
+      if (titleEl) titleEl.innerText = `${pet.name}'s Health Vault`;
+
+      const subEl = document.getElementById('hvPetSubtitle');
+      if (subEl) subEl.innerText = `Verified vaccinations, microchip ID & veterinary care · ${pet.breed || pet.species}`;
+
+      const overall = App.getOverallHealthStatus(pet);
+      const badgeEl = document.getElementById('hvOverallBadge');
+      if (badgeEl) {
+        badgeEl.className = `status-badge ${overall.overallBadgeClass}`;
+        badgeEl.innerText = overall.overallLabel;
+      }
+
+      // Tab 1: Vaccines
+      const countEl = document.getElementById('hvVaccineCount');
+      if (countEl) countEl.innerText = (pet.healthVault.vaccines || []).length;
+      const statValEl = document.getElementById('hvStatValid');
+      if (statValEl) statValEl.innerText = overall.validCount;
+      const statDueEl = document.getElementById('hvStatDueSoon');
+      if (statDueEl) statDueEl.innerText = overall.dueSoonCount;
+      const statOverEl = document.getElementById('hvStatOverdue');
+      if (statOverEl) statOverEl.innerText = overall.overdueCount;
+
+      App.renderVaccinesList();
+
+      // Tab 2: Microchip
+      const chip = pet.healthVault.microchip || {};
+      const chipDisplay = document.getElementById('hvMicrochipCodeDisplay');
+      if (chipDisplay) {
+        const raw = chip.number || 'No chip recorded';
+        chipDisplay.innerText = raw.length >= 10 ? raw.replace(/(\d{3})(?=\d)/g, '$1 · ') : raw;
+      }
+      const regDisplay = document.getElementById('hvChipRegistryDisplay');
+      if (regDisplay) regDisplay.innerText = chip.registry || 'Not Specified';
+      const dateDisplay = document.getElementById('hvChipDateDisplay');
+      if (dateDisplay) dateDisplay.innerText = chip.implantedDate || 'On Record';
+
+      const chipInput = document.getElementById('hvChipInput');
+      if (chipInput) chipInput.value = chip.number || '';
+      const regInput = document.getElementById('hvRegistryInput');
+      if (regInput) regInput.value = chip.registry || '';
+      const impDateInput = document.getElementById('hvImplantDateInput');
+      if (impDateInput) impDateInput.value = chip.implantedDate || '';
+
+      // Tab 3: Vet Clinic
+      const vet = pet.healthVault.vetClinic || {};
+      const vName = document.getElementById('hvVetNameDisplay');
+      if (vName) vName.innerText = vet.name || 'No clinic on file';
+      const vDoc = document.getElementById('hvVetDoctorDisplay');
+      if (vDoc) vDoc.innerText = vet.doctor ? vet.doctor : (vet.name ? 'Primary Care Practice' : 'Click "Edit Vet Info" to add your primary veterinarian');
+      const vPhone = document.getElementById('hvVetPhoneDisplay');
+      if (vPhone) vPhone.innerText = vet.phone || 'None provided';
+      const vAddr = document.getElementById('hvVetAddressDisplay');
+      if (vAddr) vAddr.innerText = vet.address || 'Address not listed';
+      const vEmerg = document.getElementById('hvVetEmergencyDisplay');
+      if (vEmerg) vEmerg.innerText = vet.emergencyHours || 'Regular veterinary hours';
+
+      const vCallLink = document.getElementById('hvVetCallLink');
+      if (vCallLink) {
+        vCallLink.href = vet.phone ? `tel:${vet.phone.replace(/[^0-9+]/g, '')}` : 'javascript:void(0)';
+      }
+      const vMapLink = document.getElementById('hvVetMapLink');
+      if (vMapLink) {
+        vMapLink.href = vet.address ? `https://maps.google.com/?q=${encodeURIComponent(vet.address)}` : `https://maps.google.com/?q=${encodeURIComponent(vet.name || 'Veterinarian')}`;
+      }
+
+      // Tab 4: Allergies & Care
+      App.renderAllergyTags();
+      const medsInput = document.getElementById('hvMedicationsInput');
+      if (medsInput) medsInput.value = pet.healthVault.medications || '';
+      const dietInput = document.getElementById('hvDietInput');
+      if (dietInput) dietInput.value = pet.healthVault.dietNotes || '';
+      const showPubMed = document.getElementById('hvShowPublicMedical');
+      if (showPubMed) showPubMed.checked = pet.healthVault.showPublicMedical !== false;
+    },
+
+    renderVaccinesList: function() {
+      const pet = Store.getPetById(App.activeHealthVaultPetId);
+      const container = document.getElementById('hvVaccinesListContainer');
+      if (!container || !pet) return;
+
+      const vaccines = (pet.healthVault && pet.healthVault.vaccines) ? pet.healthVault.vaccines : [];
+      if (vaccines.length === 0) {
+        container.innerHTML = `
+          <div style="text-align: center; padding: 36px 20px; background: #ffffff; border: 1px dashed var(--color-sky-tint); border-radius: 18px;">
+            <span style="font-size: 32px; display: block; margin-bottom: 8px;">💉</span>
+            <h4 style="font-size: 15px; color: var(--color-ink); margin: 0 0 4px;">No vaccinations recorded yet</h4>
+            <p style="font-size: 13px; color: var(--color-fog); margin: 0 0 16px;">Log your pet's rabies and core shots to track renewals and safety.</p>
+            <button type="button" class="btn btn-secondary btn-sm" onclick="App.toggleAddVaccineForm(true)">+ Add First Vaccine</button>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = vaccines.map(vac => {
+        const stat = App.calculateVaccineStatus(vac.dueDate);
+        return `
+          <div class="vaccine-card" id="vacCard-${vac.id}">
+            <div class="vaccine-card-top">
+              <h4 class="vaccine-title">
+                <span>💉 ${vac.name}</span>
+                <span class="vaccine-countdown-chip ${stat.chipClass}">${stat.text}</span>
+              </h4>
+              <span class="status-badge ${stat.badgeClass}">${stat.label}</span>
+            </div>
+            <div class="vaccine-meta-grid">
+              <div class="vaccine-meta-item">
+                <div class="vaccine-meta-label">Administered Date</div>
+                <div class="vaccine-meta-val">${vac.dateAdministered || 'Not recorded'}</div>
+              </div>
+              <div class="vaccine-meta-item">
+                <div class="vaccine-meta-label">Next Renewal Due</div>
+                <div class="vaccine-meta-val">${vac.dueDate || 'Not set'}</div>
+              </div>
+              <div class="vaccine-meta-item">
+                <div class="vaccine-meta-label">Batch / Lot #</div>
+                <div class="vaccine-meta-val" style="font-family: monospace;">${vac.batchLot || 'N/A'}</div>
+              </div>
+              <div class="vaccine-meta-item">
+                <div class="vaccine-meta-label">Veterinary Provider</div>
+                <div class="vaccine-meta-val">${vac.clinic || 'Primary Care Vet'}</div>
+              </div>
+            </div>
+            <div class="vaccine-card-actions">
+              <button type="button" class="btn btn-outline btn-sm" onclick="App.renewVaccine('${vac.id}')" title="Record annual renewal today">
+                🔄 Renew for 1 Year
+              </button>
+              <button type="button" class="btn btn-secondary btn-sm" onclick="App.editVaccine('${vac.id}')">
+                ✏️ Edit
+              </button>
+              <button type="button" class="btn btn-outline btn-sm" style="color: #991b1b; border-color: #fee2e2;" onclick="App.deleteVaccine('${vac.id}')">
+                🗑️ Delete
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    },
+
+    toggleAddVaccineForm: function(forceShow) {
+      const form = document.getElementById('hvNewVaccineForm');
+      const btnText = document.getElementById('hvAddVacBtnText');
+      if (!form) return;
+      const isHidden = form.style.display === 'none';
+      const shouldShow = (typeof forceShow === 'boolean') ? forceShow : isHidden;
+      form.style.display = shouldShow ? 'block' : 'none';
+      if (btnText) btnText.innerText = shouldShow ? '✕ Close Form' : '+ Log Vaccination Record';
+
+      if (shouldShow && !document.getElementById('hvVacEditId').value) {
+        document.getElementById('hvVacName').value = '';
+        document.getElementById('hvVacLot').value = '';
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('hvVacDateAdmin').value = today;
+        const nextYear = new Date();
+        nextYear.setFullYear(nextYear.getFullYear() + 1);
+        document.getElementById('hvVacDueDate').value = nextYear.toISOString().split('T')[0];
+
+        const pet = Store.getPetById(App.activeHealthVaultPetId);
+        if (pet && pet.healthVault && pet.healthVault.vetClinic) {
+          document.getElementById('hvVacClinic').value = pet.healthVault.vetClinic.name || '';
+          document.getElementById('hvVacDoctor').value = pet.healthVault.vetClinic.doctor || '';
+        }
+        document.getElementById('hvVaccineFormHeading').innerText = 'Log New Vaccination Record';
+      }
+    },
+
+    setVaccineDueOffset: function(years) {
+      const adminInput = document.getElementById('hvVacDateAdmin');
+      const dueInput = document.getElementById('hvVacDueDate');
+      const baseDate = adminInput.value ? new Date(adminInput.value) : new Date();
+      baseDate.setFullYear(baseDate.getFullYear() + years);
+      dueInput.value = baseDate.toISOString().split('T')[0];
+    },
+
+    handleSaveVaccine: function(e) {
+      e.preventDefault();
+      const pet = Store.getPetById(App.activeHealthVaultPetId);
+      if (!pet) return;
+      if (!pet.healthVault) pet.healthVault = { vaccines: [] };
+      if (!pet.healthVault.vaccines) pet.healthVault.vaccines = [];
+
+      const editId = document.getElementById('hvVacEditId').value;
+      const name = document.getElementById('hvVacName').value.trim();
+      const lot = document.getElementById('hvVacLot').value.trim();
+      const dateAdmin = document.getElementById('hvVacDateAdmin').value;
+      const dueDate = document.getElementById('hvVacDueDate').value;
+      const clinic = document.getElementById('hvVacClinic').value.trim();
+      const doctor = document.getElementById('hvVacDoctor').value.trim();
+
+      if (editId) {
+        const existing = pet.healthVault.vaccines.find(v => v.id === editId);
+        if (existing) {
+          existing.name = name;
+          existing.batchLot = lot;
+          existing.dateAdministered = dateAdmin;
+          existing.dueDate = dueDate;
+          existing.clinic = clinic;
+          existing.doctor = doctor;
+        }
+      } else {
+        pet.healthVault.vaccines.push({
+          id: 'vac-' + Date.now(),
+          name,
+          batchLot: lot,
+          dateAdministered: dateAdmin,
+          dueDate,
+          clinic,
+          doctor
+        });
+      }
+
+      Store.updatePet(pet.id, { healthVault: pet.healthVault });
+      document.getElementById('hvVacEditId').value = '';
+      App.toggleAddVaccineForm(false);
+      App.renderHealthVaultModal(pet.id);
+      App.renderDashboard();
+      showToast(editId ? "Vaccination record updated!" : "New vaccination saved to Vault!");
+    },
+
+    renewVaccine: function(vacId) {
+      const pet = Store.getPetById(App.activeHealthVaultPetId);
+      if (!pet || !pet.healthVault || !pet.healthVault.vaccines) return;
+      const vac = pet.healthVault.vaccines.find(v => v.id === vacId);
+      if (!vac) return;
+
+      const today = new Date();
+      const nextYear = new Date();
+      nextYear.setFullYear(today.getFullYear() + 1);
+
+      vac.dateAdministered = today.toISOString().split('T')[0];
+      vac.dueDate = nextYear.toISOString().split('T')[0];
+
+      Store.updatePet(pet.id, { healthVault: pet.healthVault });
+      App.renderHealthVaultModal(pet.id);
+      App.renderDashboard();
+      showToast(`${vac.name} renewed for 1 year!`);
+    },
+
+    deleteVaccine: function(vacId) {
+      if (!confirm("Are you sure you want to delete this vaccination record?")) return;
+      const pet = Store.getPetById(App.activeHealthVaultPetId);
+      if (!pet || !pet.healthVault || !pet.healthVault.vaccines) return;
+      pet.healthVault.vaccines = pet.healthVault.vaccines.filter(v => v.id !== vacId);
+      Store.updatePet(pet.id, { healthVault: pet.healthVault });
+      App.renderHealthVaultModal(pet.id);
+      App.renderDashboard();
+      showToast("Vaccination record removed.");
+    },
+
+    editVaccine: function(vacId) {
+      const pet = Store.getPetById(App.activeHealthVaultPetId);
+      if (!pet || !pet.healthVault || !pet.healthVault.vaccines) return;
+      const vac = pet.healthVault.vaccines.find(v => v.id === vacId);
+      if (!vac) return;
+
+      document.getElementById('hvVacEditId').value = vac.id;
+      document.getElementById('hvVacName').value = vac.name || '';
+      document.getElementById('hvVacLot').value = vac.batchLot || '';
+      document.getElementById('hvVacDateAdmin').value = vac.dateAdministered || '';
+      document.getElementById('hvVacDueDate').value = vac.dueDate || '';
+      document.getElementById('hvVacClinic').value = vac.clinic || '';
+      document.getElementById('hvVacDoctor').value = vac.doctor || '';
+      document.getElementById('hvVaccineFormHeading').innerText = `Edit ${vac.name}`;
+
+      App.toggleAddVaccineForm(true);
+      const form = document.getElementById('hvNewVaccineForm');
+      if (form) form.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    },
+
+    copyMicrochipNumber: function() {
+      const pet = Store.getPetById(App.activeHealthVaultPetId);
+      if (!pet || !pet.healthVault || !pet.healthVault.microchip) return;
+      const num = pet.healthVault.microchip.number || '';
+      if (!num) return;
+      navigator.clipboard.writeText(num.replace(/[^0-9]/g, '')).then(() => {
+        const btn = document.getElementById('btnCopyMicrochip');
+        if (btn) btn.innerHTML = '✅ Copied!';
+        setTimeout(() => {
+          if (btn) btn.innerHTML = '<svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 14px; height: 14px;"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy Number';
+        }, 2000);
+        showToast(`Microchip #${num} copied to clipboard!`);
+      }).catch(() => {
+        showToast(`Microchip: ${num}`);
+      });
+    },
+
+    toggleEditMicrochipForm: function(forceShow) {
+      const form = document.getElementById('hvEditMicrochipForm');
+      if (!form) return;
+      const isHidden = form.style.display === 'none';
+      form.style.display = ((typeof forceShow === 'boolean') ? forceShow : isHidden) ? 'block' : 'none';
+    },
+
+    handleSaveMicrochip: function(e) {
+      e.preventDefault();
+      const pet = Store.getPetById(App.activeHealthVaultPetId);
+      if (!pet) return;
+      if (!pet.healthVault) pet.healthVault = {};
+      pet.healthVault.microchip = {
+        number: document.getElementById('hvChipInput').value.trim(),
+        registry: document.getElementById('hvRegistryInput').value.trim() || 'HomeAgain Pet Recovery',
+        implantedDate: document.getElementById('hvImplantDateInput').value,
+        verified: true
+      };
+      Store.updatePet(pet.id, { healthVault: pet.healthVault });
+      App.toggleEditMicrochipForm(false);
+      App.renderHealthVaultModal(pet.id);
+      App.renderDashboard();
+      showToast("Microchip details updated!");
+    },
+
+    toggleEditVetForm: function(forceShow) {
+      const form = document.getElementById('hvEditVetForm');
+      if (!form) return;
+      const isHidden = form.style.display === 'none';
+      const shouldShow = (typeof forceShow === 'boolean') ? forceShow : isHidden;
+      form.style.display = shouldShow ? 'block' : 'none';
+      if (shouldShow) {
+        const pet = Store.getPetById(App.activeHealthVaultPetId);
+        const vet = (pet && pet.healthVault && pet.healthVault.vetClinic) ? pet.healthVault.vetClinic : {};
+        document.getElementById('hvVetClinicName').value = vet.name || '';
+        document.getElementById('hvVetDoctorName').value = vet.doctor || '';
+        document.getElementById('hvVetPhone').value = vet.phone || '';
+        document.getElementById('hvVetEmergency').value = vet.emergencyHours || '';
+        document.getElementById('hvVetAddress').value = vet.address || '';
+      }
+    },
+
+    handleSaveVetClinic: function(e) {
+      e.preventDefault();
+      const pet = Store.getPetById(App.activeHealthVaultPetId);
+      if (!pet) return;
+      if (!pet.healthVault) pet.healthVault = {};
+      pet.healthVault.vetClinic = {
+        name: document.getElementById('hvVetClinicName').value.trim(),
+        doctor: document.getElementById('hvVetDoctorName').value.trim(),
+        phone: document.getElementById('hvVetPhone').value.trim(),
+        emergencyHours: document.getElementById('hvVetEmergency').value.trim(),
+        address: document.getElementById('hvVetAddress').value.trim()
+      };
+      Store.updatePet(pet.id, { healthVault: pet.healthVault });
+      App.toggleEditVetForm(false);
+      App.renderHealthVaultModal(pet.id);
+      App.renderDashboard();
+      showToast("Veterinary clinic information updated!");
+    },
+
+    renderAllergyTags: function() {
+      const pet = Store.getPetById(App.activeHealthVaultPetId);
+      const container = document.getElementById('hvAllergyTags');
+      if (!container || !pet) return;
+      const allergies = (pet.healthVault && pet.healthVault.allergies) ? pet.healthVault.allergies : [];
+      if (allergies.length === 0) {
+        container.innerHTML = '<span style="font-size: 13px; color: var(--color-fog); font-style: italic;">No known allergies recorded.</span>';
+        return;
+      }
+      container.innerHTML = allergies.map((all, idx) => `
+        <span class="allergy-pill">
+          <span>⚠️ ${all}</span>
+          <button type="button" class="allergy-pill-remove" onclick="App.removeAllergyTag(${idx})" title="Remove">✕</button>
+        </span>
+      `).join('');
+    },
+
+    addAllergyTag: function() {
+      const input = document.getElementById('hvNewAllergyInput');
+      if (!input) return;
+      const val = input.value.trim();
+      if (!val) return;
+      const pet = Store.getPetById(App.activeHealthVaultPetId);
+      if (!pet) return;
+      if (!pet.healthVault) pet.healthVault = {};
+      if (!pet.healthVault.allergies) pet.healthVault.allergies = [];
+      if (!pet.healthVault.allergies.includes(val)) {
+        pet.healthVault.allergies.push(val);
+        Store.updatePet(pet.id, { healthVault: pet.healthVault });
+        App.renderAllergyTags();
+        showToast(`Added allergy: ${val}`);
+      }
+      input.value = '';
+    },
+
+    removeAllergyTag: function(index) {
+      const pet = Store.getPetById(App.activeHealthVaultPetId);
+      if (!pet || !pet.healthVault || !pet.healthVault.allergies) return;
+      pet.healthVault.allergies.splice(index, 1);
+      Store.updatePet(pet.id, { healthVault: pet.healthVault });
+      App.renderAllergyTags();
+      showToast(`Removed allergy.`);
+    },
+
+    handleSaveAllergiesCare: function(e) {
+      e.preventDefault();
+      const pet = Store.getPetById(App.activeHealthVaultPetId);
+      if (!pet) return;
+      if (!pet.healthVault) pet.healthVault = {};
+      pet.healthVault.medications = document.getElementById('hvMedicationsInput').value.trim();
+      pet.healthVault.dietNotes = document.getElementById('hvDietInput').value.trim();
+      pet.healthVault.showPublicMedical = document.getElementById('hvShowPublicMedical').checked;
+
+      Store.updatePet(pet.id, { healthVault: pet.healthVault });
+      App.renderHealthVaultModal(pet.id);
+      App.renderDashboard();
+      showToast("Allergies and care instructions saved!");
+    },
+
+    // =========================================================================
     // ADD PET MULTI-STEP WIZARD (5 STEPS)
     // =========================================================================
     wizardState: {
@@ -1016,6 +1892,36 @@
         medicalNotes: "Up to date on vaccines.",
         isLost: false,
         lostInfo: null,
+        healthVault: {
+          showPublicMedical: true,
+          microchip: {
+            number: "985-141-" + Math.floor(100000000 + Math.random() * 900000000),
+            registry: "HomeAgain Pet Recovery",
+            implantedDate: new Date().toISOString().split('T')[0],
+            verified: true
+          },
+          vetClinic: {
+            name: "Oakland Pet Hospital",
+            doctor: "Dr. Emily Hayes",
+            phone: "(555) 892-3401",
+            address: "742 Evergreen Blvd",
+            emergencyHours: "24/7 Urgent Care"
+          },
+          allergies: [],
+          medications: "",
+          dietNotes: "",
+          vaccines: [
+            {
+              id: "vac-" + Date.now(),
+              name: "Rabies (1-Year Core)",
+              dateAdministered: new Date().toISOString().split('T')[0],
+              dueDate: new Date(new Date().setFullYear(new Date().getFullYear() + 1)).toISOString().split('T')[0],
+              batchLot: "RB-" + Math.floor(10000 + Math.random() * 90000),
+              clinic: "Oakland Pet Hospital",
+              doctor: "Dr. Emily Hayes"
+            }
+          ]
+        },
         owner: {
           name: "Sarah Miller",
           phone: App.wizardState.phone,
@@ -1041,6 +1947,14 @@
         modal.addEventListener('click', (e) => {
           if (e.target === modal) modal.classList.remove('active');
         });
+      });
+
+      // Close user dropdown when clicking outside
+      document.addEventListener('click', (e) => {
+        const dropdown = document.getElementById('userNavDropdown');
+        if (dropdown && dropdown.classList.contains('open') && !dropdown.contains(e.target)) {
+          App.closeUserDropdown();
+        }
       });
     }
   };

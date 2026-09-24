@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Create Account — MyPet Digital Pet ID</title>
+  <link rel="icon" href="images/logo.png" type="image/png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body class="auth-page">
+
+  <!-- Header -->
+  <header class="auth-header">
+    <a href="index.html" class="brand-logo" aria-label="MyPet Home">
+      <img src="images/logo.png" alt="MyPet Logo" class="brand-logo-img" style="height: 38px;" />
+    </a>
+    <a href="index.html" class="auth-back-link">
+      <span>&larr;</span> Back to Home
+    </a>
+  </header>
+
+  <!-- Main Container -->
+  <main class="auth-container">
+    
+    <!-- 2D Flat Modern Clouds Floating Layer -->
+    <div class="flat-clouds-layer" aria-hidden="true">
+      <!-- Top Left Cloud -->
+      <svg class="flat-cloud cloud-top-left" viewBox="0 0 180 90" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="20" y="44" width="140" height="34" rx="17" fill="#d9edff"/>
+        <circle cx="56" cy="44" r="22" fill="#d9edff"/>
+        <circle cx="94" cy="36" r="32" fill="#d9edff"/>
+        <circle cx="132" cy="48" r="18" fill="#d9edff"/>
+        <rect x="20" y="38" width="140" height="34" rx="17" fill="#ffffff"/>
+        <circle cx="56" cy="38" r="22" fill="#ffffff"/>
+        <circle cx="94" cy="30" r="32" fill="#ffffff"/>
+        <circle cx="132" cy="42" r="18" fill="#ffffff"/>
+        <rect x="74" y="24" width="40" height="8" rx="4" fill="#f0f7ff" opacity="0.9"/>
+      </svg>
+
+      <!-- Top Right Cloud -->
+      <svg class="flat-cloud cloud-top-right" viewBox="0 0 210 95" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="18" y="48" width="174" height="36" rx="18" fill="#d9edff"/>
+        <circle cx="50" cy="48" r="22" fill="#d9edff"/>
+        <circle cx="90" cy="36" r="30" fill="#d9edff"/>
+        <circle cx="135" cy="40" r="26" fill="#d9edff"/>
+        <circle cx="168" cy="52" r="18" fill="#d9edff"/>
+        <rect x="18" y="42" width="174" height="36" rx="18" fill="#ffffff"/>
+        <circle cx="50" cy="42" r="22" fill="#ffffff"/>
+        <circle cx="90" cy="30" r="30" fill="#ffffff"/>
+        <circle cx="135" cy="34" r="26" fill="#ffffff"/>
+        <circle cx="168" cy="46" r="18" fill="#ffffff"/>
+        <rect x="75" y="22" width="48" height="7" rx="3.5" fill="#f0f7ff" opacity="0.9"/>
+      </svg>
+
+      <!-- Mid Left Cloud -->
+      <svg class="flat-cloud cloud-mid-left" viewBox="0 0 140 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="14" y="40" width="112" height="28" rx="14" fill="#d9edff"/>
+        <circle cx="48" cy="38" r="22" fill="#d9edff"/>
+        <circle cx="86" cy="34" r="26" fill="#d9edff"/>
+        <rect x="14" y="34" width="112" height="28" rx="14" fill="#ffffff"/>
+        <circle cx="48" cy="32" r="22" fill="#ffffff"/>
+        <circle cx="86" cy="28" r="26" fill="#ffffff"/>
+        <circle cx="86" cy="22" r="10" fill="#f0f7ff" opacity="0.9"/>
+      </svg>
+
+      <!-- Mid Right Cloud -->
+      <svg class="flat-cloud cloud-mid-right" viewBox="0 0 180 90" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="20" y="44" width="140" height="34" rx="17" fill="#d9edff"/>
+        <circle cx="56" cy="44" r="22" fill="#d9edff"/>
+        <circle cx="94" cy="36" r="32" fill="#d9edff"/>
+        <circle cx="132" cy="48" r="18" fill="#d9edff"/>
+        <rect x="20" y="38" width="140" height="34" rx="17" fill="#ffffff"/>
+        <circle cx="56" cy="38" r="22" fill="#ffffff"/>
+        <circle cx="94" cy="30" r="32" fill="#ffffff"/>
+        <circle cx="132" cy="42" r="18" fill="#ffffff"/>
+        <rect x="74" y="24" width="40" height="8" rx="4" fill="#f0f7ff" opacity="0.9"/>
+      </svg>
+
+      <!-- Bottom Left Cloud -->
+      <svg class="flat-cloud cloud-bottom-left" viewBox="0 0 140 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="14" y="40" width="112" height="28" rx="14" fill="#d9edff"/>
+        <circle cx="48" cy="38" r="22" fill="#d9edff"/>
+        <circle cx="86" cy="34" r="26" fill="#d9edff"/>
+        <rect x="14" y="34" width="112" height="28" rx="14" fill="#ffffff"/>
+        <circle cx="48" cy="32" r="22" fill="#ffffff"/>
+        <circle cx="86" cy="28" r="26" fill="#ffffff"/>
+        <circle cx="86" cy="22" r="10" fill="#f0f7ff" opacity="0.9"/>
+      </svg>
+
+      <!-- Bottom Right Cloud -->
+      <svg class="flat-cloud cloud-bottom-right" viewBox="0 0 180 90" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="20" y="44" width="140" height="34" rx="17" fill="#d9edff"/>
+        <circle cx="56" cy="44" r="22" fill="#d9edff"/>
+        <circle cx="94" cy="36" r="32" fill="#d9edff"/>
+        <circle cx="132" cy="48" r="18" fill="#d9edff"/>
+        <rect x="20" y="38" width="140" height="34" rx="17" fill="#ffffff"/>
+        <circle cx="56" cy="38" r="22" fill="#ffffff"/>
+        <circle cx="94" cy="30" r="32" fill="#ffffff"/>
+        <circle cx="132" cy="42" r="18" fill="#ffffff"/>
+        <rect x="74" y="24" width="40" height="8" rx="4" fill="#f0f7ff" opacity="0.9"/>
+      </svg>
+    </div>
+    
+    <!-- Floating Whimsical 3D Illustration Elements -->
+    <img src="images/hero-dog.png" alt="" class="auth-bg-art auth-bg-art-cat" style="top: 10%; width: 145px;" aria-hidden="true" />
+    <img src="images/hero-cat.png" alt="" class="auth-bg-art auth-bg-art-dog" style="bottom: 10%; width: 140px;" aria-hidden="true" />
+
+    <!-- 32px Bone White Card -->
+    <div class="auth-card" style="max-width: 490px;">
+      <div class="auth-card-top">
+        <div class="auth-badge-icon" aria-hidden="true">🐶</div>
+        <h1 class="auth-title">Create Your Account</h1>
+        <p class="auth-subtitle">Join MyPet to generate smart QR collar tags and protect your four-legged companions.</p>
+      </div>
+
+      <!-- Navigation Tabs (Sign In / Register) -->
+      <nav class="auth-tabs" aria-label="Authentication Options">
+        <a href="login.html" class="auth-tab-link">Sign In</a>
+        <button type="button" class="auth-tab-link active" aria-current="page">Register</button>
+      </nav>
+
+      <!-- Alert Banners -->
+      <div id="authErrorAlert" class="auth-alert auth-alert-error" role="alert"></div>
+      <div id="authSuccessAlert" class="auth-alert auth-alert-success" role="status"></div>
+
+      <!-- Registration Form -->
+      <form id="registerForm" onsubmit="handleRegisterSubmit(event)" novalidate>
+        
+        <div class="auth-form-group">
+          <label class="auth-label" for="regName">Your Full Name</label>
+          <div class="auth-input-wrap">
+            <input 
+              type="text" 
+              id="regName" 
+              class="auth-input" 
+              placeholder="e.g. Alex Johnson" 
+              required 
+              autocomplete="name" 
+            />
+          </div>
+        </div>
+
+        <div class="auth-form-group">
+          <label class="auth-label" for="regEmail">Email Address</label>
+          <div class="auth-input-wrap">
+            <input 
+              type="email" 
+              id="regEmail" 
+              class="auth-input" 
+              placeholder="alex@example.com" 
+              required 
+              autocomplete="email" 
+            />
+          </div>
+        </div>
+
+        <div class="auth-form-group">
+          <label class="auth-label" for="regPhone">Contact Phone Number (For Pet Tag)</label>
+          <div class="auth-input-wrap">
+            <input 
+              type="tel" 
+              id="regPhone" 
+              class="auth-input" 
+              placeholder="(555) 234-5678" 
+              autocomplete="tel" 
+            />
+          </div>
+        </div>
+
+        <div class="auth-form-group">
+          <label class="auth-label" for="regPassword">Password</label>
+          <div class="auth-input-wrap">
+            <input 
+              type="password" 
+              id="regPassword" 
+              class="auth-input" 
+              placeholder="At least 6 characters" 
+              required 
+              minlength="6"
+              autocomplete="new-password" 
+            />
+            <button type="button" class="auth-toggle-pwd" onclick="togglePasswordVisibility('regPassword', this)" aria-label="Toggle password visibility">
+              👁️
+            </button>
+          </div>
+        </div>
+
+        <div class="auth-form-group">
+          <label class="auth-label" for="regConfirmPassword">Confirm Password</label>
+          <div class="auth-input-wrap">
+            <input 
+              type="password" 
+              id="regConfirmPassword" 
+              class="auth-input" 
+              placeholder="Repeat your password" 
+              required 
+              autocomplete="new-password" 
+            />
+            <button type="button" class="auth-toggle-pwd" onclick="togglePasswordVisibility('regConfirmPassword', this)" aria-label="Toggle password visibility">
+              👁️
+            </button>
+          </div>
+        </div>
+
+        <div style="margin-bottom: 20px; font-size: 13px; color: var(--color-graphite, #535862); line-height: 1.4;">
+          By creating an account, your contact details can be safely displayed to good Samaritans when scanning your pet's tag.
+        </div>
+
+        <!-- Charcoal Pill CTA -->
+        <button type="submit" id="btnRegSubmit" class="btn-charcoal-pill">
+          Create MyPet Account &rarr;
+        </button>
+      </form>
+
+      <!-- Switch to Sign In Link -->
+      <div class="auth-switch-prompt">
+        Already have an account? 
+        <a href="login.html" class="auth-switch-link">Sign in here &rarr;</a>
+      </div>
+
+      <div class="auth-card-footer">
+        🔒 Encrypted & client-persistent. Safe digital pet identification recovery system.
+      </div>
+    </div>
+
+  </main>
+
+  <script>
+    function togglePasswordVisibility(inputId, btn) {
+      const input = document.getElementById(inputId);
+      if (input.type === 'password') {
+        input.type = 'text';
+        btn.textContent = '🔒';
+      } else {
+        input.type = 'password';
+        btn.textContent = '👁️';
+      }
+    }
+
+    function showAlert(id, message) {
+      const el = document.getElementById(id);
+      if (el) {
+        el.textContent = message;
+        el.style.display = 'block';
+      }
+    }
+
+    function hideAlert(id) {
+      const el = document.getElementById(id);
+      if (el) {
+        el.style.display = 'none';
+        el.textContent = '';
+      }
+    }
+
+    function handleRegisterSubmit(e) {
+      e.preventDefault();
+      hideAlert('authErrorAlert');
+      hideAlert('authSuccessAlert');
+
+      const name = document.getElementById('regName').value.trim();
+      const email = document.getElementById('regEmail').value.trim();
+      const phone = document.getElementById('regPhone').value.trim() || '(555) 234-5678';
+      const password = document.getElementById('regPassword').value;
+      const confirmPassword = document.getElementById('regConfirmPassword').value;
+      const btn = document.getElementById('btnRegSubmit');
+
+      if (!name) {
+        showAlert('authErrorAlert', 'Please enter your full name.');
+        return;
+      }
+
+      if (!email || !email.includes('@')) {
+        showAlert('authErrorAlert', 'Please enter a valid email address.');
+        return;
+      }
+
+      if (!password || password.length < 6) {
+        showAlert('authErrorAlert', 'Password must be at least 6 characters long.');
+        return;
+      }
+
+      if (password !== confirmPassword) {
+        showAlert('authErrorAlert', 'Passwords do not match. Please re-enter.');
+        return;
+      }
+
+      btn.disabled = true;
+      btn.innerHTML = 'Creating account...';
+
+      // Load existing users
+      let users = [];
+      try {
+        const storedUsers = localStorage.getItem('mypet_registered_users');
+        if (storedUsers) {
+          users = JSON.parse(storedUsers);
+        }
+      } catch (err) {}
+
+      // Check if email already registered
+      if (email.toLowerCase() === 'sarah@example.com' || users.some(u => u.email.toLowerCase() === email.toLowerCase())) {
+        btn.disabled = false;
+        btn.innerHTML = 'Create MyPet Account &rarr;';
+        showAlert('authErrorAlert', 'An account with this email already exists. Please sign in instead.');
+        return;
+      }
+
+      const newUser = {
+        name,
+        email,
+        phone,
+        password,
+        createdAt: new Date().toISOString()
+      };
+
+      users.push(newUser);
+
+      try {
+        localStorage.setItem('mypet_registered_users', JSON.stringify(users));
+        localStorage.setItem('mypet_auth', 'true');
+        localStorage.setItem('mypet_user', JSON.stringify({
+          name: newUser.name,
+          email: newUser.email,
+          phone: newUser.phone
+        }));
+      } catch (err) {
+        console.error("Storage error:", err);
+      }
+
+      showAlert('authSuccessAlert', `Welcome, ${newUser.name}! Your account has been created. Redirecting to dashboard...`);
+
+      setTimeout(() => {
+        window.location.href = 'index.html#dashboard';
+      }, 700);
+    }
+  </script>
+
+</body>
+</html>

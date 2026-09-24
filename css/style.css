@@ -412,6 +412,366 @@ h1, h2, h3, h4, .font-display {
 }
 
 /* ==========================================================================
+   Dashboard Top Navigation & Owner Dropdown Widget
+   Adhering to design.md (Geniestudio aesthetic):
+   - Bone White card dropdown (#fafdff) with 24px radius
+   - Mid-weight 500 typography with tight negative tracking
+   - Charcoal pill buttons and subtle tags
+   ========================================================================== */
+.nav-brand-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.nav-portal-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--font-geist, 'Geist', sans-serif);
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  padding: 4px 10px;
+  border-radius: var(--radius-tags, 9999px);
+  background-color: var(--color-bone-white, #fafdff);
+  color: var(--color-iris-blue, #0069e0);
+  border: 1px solid rgba(0, 105, 224, 0.16);
+  white-space: nowrap;
+}
+
+.nav-links-dashboard {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  list-style: none;
+}
+
+.nav-links-dashboard .nav-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: var(--radius-tags, 9999px);
+  font-size: 14.5px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: var(--color-graphite, #535862);
+  transition: all 0.18s ease;
+  border: 1px solid transparent;
+}
+
+.nav-links-dashboard .nav-link:hover {
+  color: var(--color-ink, #0a0d12);
+  background-color: rgba(255, 255, 255, 0.7);
+}
+
+.nav-links-dashboard .nav-link.active {
+  background-color: var(--color-bone-white, #fafdff);
+  color: var(--color-ink, #0a0d12);
+  border-color: rgba(10, 13, 18, 0.08);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.nav-count-badge {
+  background-color: var(--color-sky-tint, #ebf5ff);
+  color: var(--color-iris-blue, #0069e0);
+  font-size: 11px;
+  font-weight: 600;
+  padding: 1px 7px;
+  border-radius: var(--radius-tags, 9999px);
+  border: 1px solid rgba(0, 105, 224, 0.12);
+}
+
+.nav-link-external {
+  color: var(--color-fog, #93979f) !important;
+}
+
+.nav-action-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* User Account Navigation Widget & Dropdown */
+.user-nav-dropdown {
+  position: relative;
+}
+
+.user-profile-trigger {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 14px 4px 5px;
+  background-color: #ffffff;
+  border: 1px solid rgba(10, 13, 18, 0.1);
+  border-radius: var(--radius-tags, 9999px);
+  cursor: pointer;
+  outline: none;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.user-profile-trigger:hover,
+.user-nav-dropdown.open .user-profile-trigger {
+  background-color: var(--color-bone-white, #fafdff);
+  border-color: rgba(10, 13, 18, 0.2);
+  transform: translateY(-1px);
+}
+
+.user-nav-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  overflow: hidden;
+  background-color: var(--color-lavender-wash, #f1e6ff);
+  border: 1.5px solid rgba(255, 255, 255, 0.9);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.user-nav-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.user-nav-meta {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  line-height: 1.15;
+}
+
+.user-nav-name {
+  font-family: var(--font-geist, 'Geist', sans-serif);
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--color-ink, #0a0d12);
+  letter-spacing: -0.01em;
+}
+
+.user-nav-role {
+  font-family: var(--font-geist, 'Geist', sans-serif);
+  font-size: 10.5px;
+  font-weight: 500;
+  color: var(--color-fog, #93979f);
+}
+
+.user-chevron {
+  width: 14px;
+  height: 14px;
+  color: var(--color-fog, #93979f);
+  transition: transform 0.22s ease;
+  margin-left: 2px;
+}
+
+.user-nav-dropdown.open .user-chevron {
+  transform: rotate(180deg);
+  color: var(--color-ink, #0a0d12);
+}
+
+/* User Dropdown Menu Card (24px radius, Geniestudio bone white) */
+.user-dropdown-menu {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 10px);
+  width: 290px;
+  max-width: calc(100vw - 32px);
+  background-color: var(--color-bone-white, #fafdff);
+  border: 1px solid rgba(10, 13, 18, 0.08);
+  border-radius: 24px;
+  box-shadow: 0 16px 36px rgba(4, 69, 144, 0.09);
+  padding: 16px;
+  display: none;
+  flex-direction: column;
+  z-index: 1000;
+  transform-origin: top right;
+  animation: dropdownPop 0.18s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.user-nav-dropdown.open .user-dropdown-menu {
+  display: flex;
+}
+
+@keyframes dropdownPop {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.dropdown-user-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 4px 4px 12px 4px;
+}
+
+.dropdown-avatar-wrap {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  overflow: hidden;
+  background-color: var(--color-lavender-wash, #f1e6ff);
+  border: 2px solid #ffffff;
+  flex-shrink: 0;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.dropdown-avatar-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.dropdown-user-info {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.25;
+  overflow: hidden;
+}
+
+.dropdown-user-info strong {
+  font-size: 14.5px;
+  font-weight: 600;
+  color: var(--color-ink, #0a0d12);
+  letter-spacing: -0.01em;
+}
+
+.dropdown-user-info span {
+  font-size: 12px;
+  color: var(--color-graphite, #535862);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dropdown-user-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 4px;
+  font-size: 11px;
+  font-weight: 500;
+  color: #0b824a;
+}
+
+.status-dot-green {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background-color: #00c978;
+  display: inline-block;
+  box-shadow: 0 0 0 2px rgba(0, 201, 120, 0.2);
+}
+
+.dropdown-divider {
+  height: 1px;
+  background-color: rgba(10, 13, 18, 0.06);
+  margin: 6px 0;
+}
+
+.dropdown-links-list {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 12px;
+  border-radius: 12px;
+  font-family: var(--font-geist, 'Geist', sans-serif);
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--color-ink, #0a0d12);
+  letter-spacing: -0.01em;
+  text-decoration: none;
+  background: none;
+  border: none;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  box-sizing: border-box;
+}
+
+.dropdown-item .ui-icon {
+  width: 16px;
+  height: 16px;
+  color: var(--color-graphite, #535862);
+  transition: color 0.15s ease;
+}
+
+.dropdown-item:hover {
+  background-color: rgba(10, 13, 18, 0.04);
+  color: var(--color-ink, #0a0d12);
+}
+
+.dropdown-item:hover .ui-icon {
+  color: var(--color-ink, #0a0d12);
+}
+
+.dropdown-item-badge {
+  margin-left: auto;
+  background-color: var(--color-sky-tint, #ebf5ff);
+  color: var(--color-iris-blue, #0069e0);
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 7px;
+  border-radius: var(--radius-tags, 9999px);
+  border: 1px solid rgba(0, 105, 224, 0.12);
+}
+
+.dropdown-logout-btn {
+  color: #c92a2a;
+}
+
+.dropdown-logout-btn .ui-icon {
+  color: #c92a2a;
+}
+
+.dropdown-logout-btn:hover {
+  background-color: #fff2f2;
+  color: #a51818;
+}
+
+.dropdown-logout-btn:hover .ui-icon {
+  color: #a51818;
+}
+
+@media (max-width: 900px) {
+  .nav-links-dashboard {
+    gap: 10px;
+  }
+  .nav-links-dashboard .nav-link {
+    font-size: 13.5px;
+    padding: 5px 10px;
+  }
+}
+
+@media (max-width: 680px) {
+  .nav-links-dashboard {
+    display: none !important;
+  }
+  .nav-add-btn-desktop {
+    display: none !important;
+  }
+  .user-nav-role {
+    display: none;
+  }
+}
+
+/* ==========================================================================
    Buttons — Dense Charcoal CTAs (#181d27)
    ========================================================================== */
 .btn {
@@ -1448,25 +1808,7 @@ h1, h2, h3, h4, .font-display {
   max-width: 560px;
 }
 
-/* Scrub Progress Bar */
-.scrolly-progress-bar-wrap {
-  margin-top: 48px;
-  width: 100%;
-  max-width: 380px;
-  height: 8px;
-  background: rgba(10, 13, 18, 0.08);
-  border-radius: 9999px;
-  overflow: hidden;
-  position: relative;
-}
 
-.scrolly-progress-bar-fill {
-  width: 0%;
-  height: 100%;
-  background: linear-gradient(90deg, #0069e0, #10b981, #7c3aed);
-  border-radius: 9999px;
-  transition: width 0.05s linear;
-}
 
 /* Visual Stage Column (Right) */
 .scrolly-visual-stage {
@@ -3052,6 +3394,10 @@ h1, h2, h3, h4, .font-display {
   background-color: var(--color-bone-white);
   border-radius: var(--radius-cards);
   padding: 48px;
+  position: relative;
+  z-index: 2;
+  border: 1px solid var(--color-sky-tint);
+  box-shadow: var(--shadow-floating);
 }
 
 .wizard-progress {
@@ -3355,6 +3701,10 @@ h1, h2, h3, h4, .font-display {
   background-color: var(--color-bone-white);
   border-radius: var(--radius-cards);
   padding: 48px;
+  position: relative;
+  z-index: 2;
+  border: 1px solid var(--color-sky-tint);
+  box-shadow: var(--shadow-floating);
 }
 
 .physical-tag-wrapper {
@@ -4078,7 +4428,8 @@ h1, h2, h3, h4, .font-display {
     left: 20px;
     width: 100%;
   }
-  .no-print {
+  .no-print,
+  .flat-clouds-layer {
     display: none !important;
   }
 }
@@ -5225,4 +5576,1085 @@ h1, h2, h3, h4, .font-display {
     font-size: 12px;
   }
 }
+
+/* ==========================================================================
+   Geniestudio — Dedicated Authentication Pages (Login & Registration)
+   Strictly adheres to design.md tokens:
+   - Sky Tint canvas (#ebf5ff)
+   - Bone White card (#fafdff) with 32px border radius
+   - Charcoal pill CTA (#181d27) with tight shadow ring
+   - 16px input radius with Iris Blue focus ring
+   - Weight 500 typography with tight negative tracking
+   ========================================================================== */
+
+.auth-page {
+  min-height: 100vh;
+  background-color: var(--color-sky-tint, #ebf5ff);
+  display: flex;
+  flex-direction: column;
+  color: var(--color-ink, #0a0d12);
+  font-family: var(--font-geist, 'Geist', 'Inter', system-ui, sans-serif);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  position: relative;
+  overflow-x: hidden;
+}
+
+.auth-header {
+  height: 80px;
+  padding: 0 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.auth-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14.5px;
+  font-weight: 500;
+  color: var(--color-graphite, #535862);
+  text-decoration: none;
+  padding: 8px 16px;
+  border-radius: var(--radius-tags, 9999px);
+  background-color: rgba(255, 255, 255, 0.6);
+  border: 1px solid rgba(10, 13, 18, 0.08);
+  transition: all 0.2s ease;
+}
+
+.auth-back-link:hover {
+  background-color: #ffffff;
+  color: var(--color-ink, #0a0d12);
+  transform: translateX(-2px);
+}
+
+.auth-container {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px 60px;
+  position: relative;
+}
+
+/* Floating Whimsical 3D Illustration Elements */
+.auth-bg-art {
+  position: absolute;
+  pointer-events: none;
+  z-index: 0;
+  user-select: none;
+}
+
+.auth-bg-art-cat {
+  top: 12%;
+  left: max(20px, calc(50% - 480px));
+  width: 140px;
+  opacity: 0.95;
+  filter: drop-shadow(0 14px 24px rgba(4, 69, 144, 0.12));
+  animation: floatCat 6s ease-in-out infinite;
+}
+
+.auth-bg-art-dog {
+  bottom: 14%;
+  right: max(20px, calc(50% - 490px));
+  width: 150px;
+  opacity: 0.95;
+  filter: drop-shadow(0 14px 24px rgba(4, 69, 144, 0.12));
+  animation: floatDog 7s ease-in-out infinite alternate;
+}
+
+@keyframes floatCat {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-12px) rotate(-2deg); }
+}
+
+@keyframes floatDog {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-10px) rotate(2deg); }
+}
+
+/* 32px Bone White Card */
+.auth-card {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 460px;
+  background-color: var(--color-bone-white, #fafdff);
+  border-radius: var(--radius-cards, 32px);
+  padding: 44px 40px;
+  box-shadow: 0 14px 30px rgba(4, 69, 144, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+}
+
+.auth-card-top {
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+.auth-badge-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--gradient-solar-gradient, linear-gradient(rgb(255, 249, 224) 0%, rgb(255, 236, 163) 100%));
+  border: 2px solid var(--color-ink, #0a0d12);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  margin-bottom: 14px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.auth-title {
+  font-family: var(--font-aeonik, 'Aeonik', 'Plus Jakarta Sans', system-ui, sans-serif);
+  font-size: 28px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  color: var(--color-ink, #0a0d12);
+  margin: 0 0 8px;
+  line-height: 1.15;
+}
+
+.auth-subtitle {
+  font-size: 14.5px;
+  line-height: 1.45;
+  color: var(--color-graphite, #535862);
+  margin: 0;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+
+/* Nav Switch Tabs (Sign In / Register) */
+.auth-tabs {
+  display: flex;
+  background: rgba(10, 13, 18, 0.04);
+  padding: 4px;
+  border-radius: var(--radius-tags, 9999px);
+  margin-bottom: 24px;
+  border: 1px solid rgba(10, 13, 18, 0.04);
+}
+
+.auth-tab-link {
+  flex: 1;
+  text-align: center;
+  padding: 9px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: var(--color-graphite, #535862);
+  border-radius: var(--radius-tags, 9999px);
+  text-decoration: none;
+  transition: all 0.2s ease;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.auth-tab-link.active {
+  background: var(--color-paper-white, #ffffff);
+  color: var(--color-ink, #0a0d12);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+/* 1-Click Demo Fill Banner */
+.auth-demo-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background-color: var(--color-sky-tint, #ebf5ff);
+  border: 1px solid rgba(0, 105, 224, 0.18);
+  border-radius: var(--radius-inputs, 16px);
+  padding: 12px 16px;
+  margin-bottom: 22px;
+}
+
+.auth-demo-text {
+  font-size: 12.5px;
+  line-height: 1.35;
+  color: var(--color-graphite, #535862);
+}
+
+.auth-demo-text strong {
+  display: block;
+  color: var(--color-ink, #0a0d12);
+  font-weight: 600;
+}
+
+.btn-demo-fill {
+  background: #ffffff;
+  border: 1px solid rgba(0, 105, 224, 0.3);
+  color: var(--color-iris-blue, #0069e0);
+  padding: 6px 14px;
+  border-radius: var(--radius-tags, 9999px);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.15s ease;
+}
+
+.btn-demo-fill:hover {
+  background: var(--color-iris-blue, #0069e0);
+  color: #ffffff;
+}
+
+/* Alert Banners */
+.auth-alert {
+  padding: 12px 16px;
+  border-radius: 14px;
+  font-size: 13.5px;
+  margin-bottom: 18px;
+  display: none;
+  line-height: 1.4;
+  animation: fadeIn 0.25s ease-out;
+}
+
+.auth-alert-error {
+  background-color: #fff2f2;
+  border: 1px solid #ffd4d4;
+  color: #c92a2a;
+}
+
+.auth-alert-success {
+  background-color: var(--color-mint-wash, #d3f6e3);
+  border: 1px solid #9fe3be;
+  color: #1a633c;
+}
+
+/* Form Groups & Inputs (16px radius) */
+.auth-form-group {
+  margin-bottom: 18px;
+  text-align: left;
+}
+
+.auth-label {
+  display: block;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: var(--color-ink, #0a0d12);
+  margin-bottom: 7px;
+}
+
+.auth-input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.auth-input {
+  width: 100%;
+  height: 48px;
+  background-color: #ffffff;
+  border: 1px solid rgba(10, 13, 18, 0.12);
+  border-radius: var(--radius-inputs, 16px);
+  padding: 0 16px;
+  font-size: 15px;
+  font-family: inherit;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: var(--color-ink, #0a0d12);
+  transition: all 0.2s ease;
+  outline: none;
+}
+
+.auth-input::placeholder {
+  color: var(--color-fog, #93979f);
+  font-weight: 400;
+}
+
+.auth-input:focus {
+  border-color: var(--color-iris-blue, #0069e0);
+  box-shadow: 0 0 0 3px rgba(0, 105, 224, 0.15);
+}
+
+.auth-toggle-pwd {
+  position: absolute;
+  right: 14px;
+  background: none;
+  border: none;
+  color: var(--color-fog, #93979f);
+  cursor: pointer;
+  padding: 4px;
+  font-size: 14px;
+}
+
+.auth-toggle-pwd:hover {
+  color: var(--color-ink, #0a0d12);
+}
+
+/* Charcoal Pill Button (design.md primary action) */
+.btn-charcoal-pill {
+  width: 100%;
+  height: 50px;
+  background-color: var(--color-charcoal, #181d27);
+  color: #ffffff;
+  border: none;
+  border-radius: var(--radius-buttonspill, 9999px);
+  padding: 12px 32px;
+  font-family: var(--font-geist, 'Geist', 'Inter', system-ui, sans-serif);
+  font-size: 15.5px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  cursor: pointer;
+  box-shadow: 0 1px 2px rgba(10, 13, 18, 0.8), 0 0 0 1px #0a0d12;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+  margin-top: 10px;
+}
+
+.btn-charcoal-pill:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(10, 13, 18, 0.3), 0 0 0 1px #0a0d12;
+}
+
+.btn-charcoal-pill:active {
+  transform: translateY(1px);
+}
+
+.btn-charcoal-pill:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Switch Form / Footnotes */
+.auth-switch-prompt {
+  text-align: center;
+  margin-top: 22px;
+  font-size: 14px;
+  color: var(--color-graphite, #535862);
+}
+
+.auth-switch-link {
+  color: var(--color-ink, #0a0d12);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  margin-left: 4px;
+  transition: color 0.15s ease;
+}
+
+.auth-switch-link:hover {
+  color: var(--color-iris-blue, #0069e0);
+}
+
+.auth-card-footer {
+  margin-top: 26px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(10, 13, 18, 0.06);
+  text-align: center;
+  font-size: 12px;
+  color: var(--color-fog, #93979f);
+  line-height: 1.4;
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  .auth-card {
+    padding: 32px 24px;
+    border-radius: 24px;
+  }
+  .auth-bg-art {
+    display: none;
+  }
+  .auth-header {
+    padding: 0 20px;
+  }
+}
+
+/* ==========================================================================
+   2D Flat Modern Clouds (Login & Dashboard)
+   Geniestudio Daylight Notebook Aesthetic:
+   - Clean, geometric modern 2D flat vector shapes
+   - Paper White (#ffffff) body with soft daylight sky tint under-layers
+   - Floating organic drift animations
+   ========================================================================== */
+
+.flat-clouds-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 0;
+}
+
+.flat-cloud {
+  position: absolute;
+  pointer-events: none;
+  filter: drop-shadow(0 10px 24px rgba(4, 69, 144, 0.05));
+  user-select: none;
+  display: block;
+}
+
+/* Login & Auth Page Cloud Placements */
+.cloud-top-left {
+  top: 5%;
+  left: 4%;
+  width: 185px;
+  opacity: 0.95;
+  animation: cloudFloatA 12s ease-in-out infinite alternate;
+}
+
+.cloud-top-right {
+  top: 7%;
+  right: 5%;
+  width: 210px;
+  opacity: 0.95;
+  animation: cloudFloatB 14s ease-in-out infinite alternate;
+}
+
+.cloud-mid-left {
+  top: 50%;
+  left: 2%;
+  width: 155px;
+  opacity: 0.9;
+  animation: cloudFloatC 11s ease-in-out infinite alternate;
+}
+
+.cloud-mid-right {
+  top: 45%;
+  right: 3%;
+  width: 170px;
+  opacity: 0.92;
+  animation: cloudFloatA 13s ease-in-out infinite alternate;
+}
+
+.cloud-bottom-left {
+  bottom: 6%;
+  left: 8%;
+  width: 140px;
+  opacity: 0.88;
+  animation: cloudFloatB 10s ease-in-out infinite alternate;
+}
+
+.cloud-bottom-right {
+  bottom: 7%;
+  right: 9%;
+  width: 150px;
+  opacity: 0.88;
+  animation: cloudFloatC 15s ease-in-out infinite alternate;
+}
+
+/* Dashboard, In-Page Login, Add Pet, & QR Tag Views Specific Cloud Placements */
+#loginView,
+#dashboardView,
+#addPetView,
+#qrTagView {
+  position: relative;
+  overflow: hidden;
+  min-height: calc(100vh - var(--header-height));
+}
+
+#loginView > .main-wrapper,
+#dashboardView > .main-wrapper,
+#addPetView > .main-wrapper,
+#qrTagView > .main-wrapper {
+  position: relative;
+  z-index: 1;
+}
+
+.dashboard-clouds {
+  min-height: 280px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.dash-cloud-top-left {
+  top: 15px;
+  left: 3%;
+  width: 165px;
+  opacity: 0.85;
+  animation: cloudFloatA 11s ease-in-out infinite alternate;
+}
+
+.dash-cloud-top-right {
+  top: 25px;
+  right: 4%;
+  width: 195px;
+  opacity: 0.88;
+  animation: cloudFloatB 13s ease-in-out infinite alternate;
+}
+
+.dash-cloud-mid {
+  top: 180px;
+  left: 1%;
+  width: 130px;
+  opacity: 0.75;
+  animation: cloudFloatC 10s ease-in-out infinite alternate;
+}
+
+.dash-cloud-corner {
+  top: 240px;
+  right: 2%;
+  width: 145px;
+  opacity: 0.8;
+  animation: cloudFloatA 14s ease-in-out infinite alternate;
+}
+
+/* Floating Animations */
+@keyframes cloudFloatA {
+  0% { transform: translate3d(0, 0, 0); }
+  50% { transform: translate3d(10px, -12px, 0); }
+  100% { transform: translate3d(-8px, -4px, 0); }
+}
+
+@keyframes cloudFloatB {
+  0% { transform: translate3d(0, 0, 0); }
+  50% { transform: translate3d(-14px, -10px, 0); }
+  100% { transform: translate3d(10px, -6px, 0); }
+}
+
+@keyframes cloudFloatC {
+  0% { transform: translate3d(0, 0, 0); }
+  50% { transform: translate3d(8px, 12px, 0); }
+  100% { transform: translate3d(-10px, 6px, 0); }
+}
+
+@media (max-width: 900px) {
+  .cloud-mid-left, .cloud-mid-right,
+  .dash-cloud-mid, .dash-cloud-corner {
+    display: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .cloud-top-left {
+    width: 120px;
+    top: 1%;
+    left: -20px;
+    opacity: 0.7;
+  }
+  .cloud-top-right {
+    width: 130px;
+    top: 2%;
+    right: -20px;
+    opacity: 0.7;
+  }
+  .dash-cloud-top-left {
+    width: 110px;
+    top: 5px;
+    left: -15px;
+  }
+  .dash-cloud-top-right {
+    width: 120px;
+    top: 10px;
+    right: -15px;
+  }
+}
+
+/* ==========================================================================
+   PET HEALTH VAULT & VACCINATION TRACKER
+   Geniestudio Daylight Notebook Aesthetic
+   ========================================================================== */
+
+/* Vaccine Status Badges */
+.status-badge.vaccine-valid {
+  background-color: var(--color-mint-wash);
+  color: #065f46;
+}
+.status-badge.vaccine-valid::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: #10b981;
+}
+
+.status-badge.vaccine-due-soon {
+  background-color: #fef3d6;
+  color: #92400e;
+}
+.status-badge.vaccine-due-soon::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: #f59e0b;
+}
+
+.status-badge.vaccine-overdue {
+  background-color: #fee2e2;
+  color: #991b1b;
+}
+.status-badge.vaccine-overdue::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: #ef4444;
+}
+
+/* Dashboard Pet Card Health Vault Strip */
+.pet-health-vault-strip {
+  margin-top: 16px;
+  padding: 12px 16px;
+  background: #ffffff;
+  border: 1px solid var(--color-sky-tint);
+  border-radius: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  box-shadow: 0 2px 6px rgba(4, 69, 144, 0.04);
+}
+
+.pet-health-status-col {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.pet-health-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.pet-health-status-badge.status-valid {
+  color: #065f46;
+}
+.pet-health-status-badge.status-valid .health-dot {
+  background-color: #10b981;
+}
+
+.pet-health-status-badge.status-due-soon {
+  color: #92400e;
+}
+.pet-health-status-badge.status-due-soon .health-dot {
+  background-color: #f59e0b;
+}
+
+.pet-health-status-badge.status-overdue {
+  color: #991b1b;
+}
+.pet-health-status-badge.status-overdue .health-dot {
+  background-color: #ef4444;
+}
+
+.health-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.pet-health-meta-chips {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.health-chip {
+  font-size: 11px;
+  color: var(--color-fog);
+  background: rgba(4, 69, 144, 0.04);
+  padding: 2px 8px;
+  border-radius: 9999px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 170px;
+}
+
+.btn-health-vault {
+  background: var(--color-charcoal);
+  color: var(--color-paper-white);
+  border: none;
+  border-radius: 9999px;
+  padding: 7px 14px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  transition: all 0.15s ease;
+  box-shadow: 0 2px 6px rgba(10, 13, 18, 0.15);
+}
+
+.btn-health-vault:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(10, 13, 18, 0.22);
+}
+
+/* Health Vault Modal Dialog */
+.health-vault-dialog {
+  max-width: 780px;
+  width: 95%;
+  padding: 34px 34px 40px;
+  background-color: var(--color-bone-white);
+  border-radius: 32px;
+  border: 1px solid var(--color-sky-tint);
+  box-shadow: var(--shadow-floating);
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.health-vault-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.health-vault-avatar {
+  width: 60px;
+  height: 60px;
+  border-radius: 20px;
+  overflow: hidden;
+  background: var(--color-sky-tint);
+  border: 2px solid #ffffff;
+  box-shadow: 0 4px 12px rgba(4, 69, 144, 0.08);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.health-vault-avatar img,
+.health-vault-avatar svg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.health-vault-title-wrap {
+  flex: 1;
+  min-width: 0;
+}
+
+.health-vault-badges-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* Segmented Pill Navigation */
+.health-nav-tabs {
+  display: flex;
+  gap: 6px;
+  margin: 18px 0 24px;
+  padding: 5px;
+  background: rgba(4, 69, 144, 0.05);
+  border-radius: 9999px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.health-nav-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.health-tab-btn {
+  border: none;
+  background: transparent;
+  padding: 9px 18px;
+  border-radius: 9999px;
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--color-fog);
+  cursor: pointer;
+  transition: all 0.18s ease;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.health-tab-btn:hover {
+  color: var(--color-ink);
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.health-tab-btn.active {
+  background: var(--color-charcoal);
+  color: var(--color-paper-white);
+  box-shadow: 0 2px 8px rgba(10, 13, 18, 0.18);
+}
+
+/* Tab Panels */
+.health-tab-panel {
+  display: none;
+}
+
+.health-tab-panel.active {
+  display: block;
+  animation: viewFade 0.25s ease-out;
+}
+
+/* Health Vault Summary Banner */
+.health-summary-banner {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 22px;
+}
+
+.health-summary-stat {
+  background: #ffffff;
+  border: 1px solid var(--color-sky-tint);
+  border-radius: 18px;
+  padding: 16px;
+  text-align: center;
+}
+
+.health-summary-stat-val {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--color-ink);
+  font-family: var(--font-aeonik);
+}
+
+.health-summary-stat-label {
+  font-size: 12px;
+  color: var(--color-fog);
+  margin-top: 2px;
+}
+
+/* Vaccine Cards */
+.vaccine-card {
+  background: #ffffff;
+  border: 1px solid var(--color-sky-tint);
+  border-radius: 20px;
+  padding: 20px 22px;
+  margin-bottom: 14px;
+  box-shadow: 0 2px 8px rgba(4, 69, 144, 0.03);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.vaccine-card:hover {
+  box-shadow: 0 6px 16px rgba(4, 69, 144, 0.08);
+}
+
+.vaccine-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.vaccine-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-ink);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.vaccine-meta-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+  background: rgba(4, 69, 144, 0.02);
+  padding: 12px 14px;
+  border-radius: 14px;
+  margin-bottom: 14px;
+}
+
+.vaccine-meta-item {
+  font-size: 13px;
+}
+
+.vaccine-meta-label {
+  color: var(--color-fog);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  margin-bottom: 2px;
+}
+
+.vaccine-meta-val {
+  color: var(--color-ink);
+  font-weight: 500;
+}
+
+.vaccine-countdown-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 9999px;
+  margin-left: 6px;
+}
+
+.vaccine-countdown-chip.valid {
+  background: var(--color-mint-wash);
+  color: #065f46;
+}
+
+.vaccine-countdown-chip.due-soon {
+  background: #fef3d6;
+  color: #92400e;
+}
+
+.vaccine-countdown-chip.overdue {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.vaccine-card-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  border-top: 1px solid rgba(4, 69, 144, 0.06);
+  padding-top: 12px;
+}
+
+/* Microchip Presentation */
+.microchip-display-card {
+  background: #ffffff;
+  border: 1px solid var(--color-sky-tint);
+  border-radius: 24px;
+  padding: 26px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 14px rgba(4, 69, 144, 0.04);
+}
+
+.microchip-number-banner {
+  background: #f0f7ff;
+  border: 1px solid #cce3ff;
+  border-radius: 16px;
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin: 16px 0;
+}
+
+.microchip-code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--color-ink);
+  letter-spacing: 0.08em;
+}
+
+.microchip-details-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-top: 18px;
+}
+
+/* Vet Clinic Card */
+.vet-clinic-card {
+  background: #ffffff;
+  border: 1px solid var(--color-sky-tint);
+  border-radius: 24px;
+  padding: 26px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 14px rgba(4, 69, 144, 0.04);
+}
+
+.vet-actions-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 18px;
+  flex-wrap: wrap;
+}
+
+/* Allergies & Medical Warnings */
+.allergy-tags-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin: 12px 0 18px;
+}
+
+.allergy-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #fee2e2;
+  color: #991b1b;
+  padding: 5px 12px;
+  border-radius: 9999px;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.allergy-pill-remove {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: #991b1b;
+  font-weight: bold;
+  padding: 0 2px;
+  line-height: 1;
+}
+
+/* Form Styles inside Health Vault */
+.hv-form-section {
+  background: #ffffff;
+  border: 1px solid var(--color-sky-tint);
+  border-radius: 22px;
+  padding: 22px 24px;
+  margin-top: 18px;
+}
+
+.hv-form-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.hv-form-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-ink);
+  margin: 0;
+}
+
+@media (max-width: 640px) {
+  .health-vault-dialog {
+    padding: 24px 18px 28px;
+    border-radius: 24px;
+  }
+  .health-summary-banner {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  .microchip-number-banner {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .microchip-code {
+    font-size: 16px;
+  }
+}
+
+
 

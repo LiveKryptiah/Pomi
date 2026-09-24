@@ -34,6 +34,15 @@ class MyPetHandler(http.server.SimpleHTTPRequestHandler):
         if self.path in ('/', '/index.html'):
             return super().do_GET()
             
+        # Clean route aliases
+        clean_path = self.path.split('?')[0].rstrip('/')
+        if clean_path in ('/login', '/signin'):
+            self.path = '/login.html'
+            return super().do_GET()
+        if clean_path in ('/register', '/signup'):
+            self.path = '/register.html'
+            return super().do_GET()
+
         # Fallback for SPA routing (/p/..., /dashboard, etc.)
         self.path = '/index.html'
         return super().do_GET()
@@ -47,6 +56,8 @@ def run_server(port=PORT):
             print("==================================================")
             print("[MyPet] Digital Pet ID & QR Recovery Web App")
             print(f"-> Local URL:   http://localhost:{port}")
+            print(f"-> Sign In:     http://localhost:{port}/login")
+            print(f"-> Register:    http://localhost:{port}/register")
             print(f"-> Demo Scan:   http://localhost:{port}/#p/luna-7x29")
             print(f"-> Dashboard:   http://localhost:{port}/#dashboard")
             print("==================================================")

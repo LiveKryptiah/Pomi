@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign In — MyPet Digital Pet ID</title>
+  <link rel="icon" href="images/logo.png" type="image/png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body class="auth-page">
+
+  <!-- Header -->
+  <header class="auth-header">
+    <a href="index.html" class="brand-logo" aria-label="MyPet Home">
+      <img src="images/logo.png" alt="MyPet Logo" class="brand-logo-img" style="height: 38px;" />
+    </a>
+    <a href="index.html" class="auth-back-link">
+      <span>&larr;</span> Back to Home
+    </a>
+  </header>
+
+  <!-- Main Container -->
+  <main class="auth-container">
+    
+    <!-- 2D Flat Modern Clouds Floating Layer -->
+    <div class="flat-clouds-layer" aria-hidden="true">
+      <!-- Top Left Cloud -->
+      <svg class="flat-cloud cloud-top-left" viewBox="0 0 180 90" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="20" y="44" width="140" height="34" rx="17" fill="#d9edff"/>
+        <circle cx="56" cy="44" r="22" fill="#d9edff"/>
+        <circle cx="94" cy="36" r="32" fill="#d9edff"/>
+        <circle cx="132" cy="48" r="18" fill="#d9edff"/>
+        <rect x="20" y="38" width="140" height="34" rx="17" fill="#ffffff"/>
+        <circle cx="56" cy="38" r="22" fill="#ffffff"/>
+        <circle cx="94" cy="30" r="32" fill="#ffffff"/>
+        <circle cx="132" cy="42" r="18" fill="#ffffff"/>
+        <rect x="74" y="24" width="40" height="8" rx="4" fill="#f0f7ff" opacity="0.9"/>
+      </svg>
+
+      <!-- Top Right Cloud -->
+      <svg class="flat-cloud cloud-top-right" viewBox="0 0 210 95" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="18" y="48" width="174" height="36" rx="18" fill="#d9edff"/>
+        <circle cx="50" cy="48" r="22" fill="#d9edff"/>
+        <circle cx="90" cy="36" r="30" fill="#d9edff"/>
+        <circle cx="135" cy="40" r="26" fill="#d9edff"/>
+        <circle cx="168" cy="52" r="18" fill="#d9edff"/>
+        <rect x="18" y="42" width="174" height="36" rx="18" fill="#ffffff"/>
+        <circle cx="50" cy="42" r="22" fill="#ffffff"/>
+        <circle cx="90" cy="30" r="30" fill="#ffffff"/>
+        <circle cx="135" cy="34" r="26" fill="#ffffff"/>
+        <circle cx="168" cy="46" r="18" fill="#ffffff"/>
+        <rect x="75" y="22" width="48" height="7" rx="3.5" fill="#f0f7ff" opacity="0.9"/>
+      </svg>
+
+      <!-- Mid Left Cloud -->
+      <svg class="flat-cloud cloud-mid-left" viewBox="0 0 140 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="14" y="40" width="112" height="28" rx="14" fill="#d9edff"/>
+        <circle cx="48" cy="38" r="22" fill="#d9edff"/>
+        <circle cx="86" cy="34" r="26" fill="#d9edff"/>
+        <rect x="14" y="34" width="112" height="28" rx="14" fill="#ffffff"/>
+        <circle cx="48" cy="32" r="22" fill="#ffffff"/>
+        <circle cx="86" cy="28" r="26" fill="#ffffff"/>
+        <circle cx="86" cy="22" r="10" fill="#f0f7ff" opacity="0.9"/>
+      </svg>
+
+      <!-- Mid Right Cloud -->
+      <svg class="flat-cloud cloud-mid-right" viewBox="0 0 180 90" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="20" y="44" width="140" height="34" rx="17" fill="#d9edff"/>
+        <circle cx="56" cy="44" r="22" fill="#d9edff"/>
+        <circle cx="94" cy="36" r="32" fill="#d9edff"/>
+        <circle cx="132" cy="48" r="18" fill="#d9edff"/>
+        <rect x="20" y="38" width="140" height="34" rx="17" fill="#ffffff"/>
+        <circle cx="56" cy="38" r="22" fill="#ffffff"/>
+        <circle cx="94" cy="30" r="32" fill="#ffffff"/>
+        <circle cx="132" cy="42" r="18" fill="#ffffff"/>
+        <rect x="74" y="24" width="40" height="8" rx="4" fill="#f0f7ff" opacity="0.9"/>
+      </svg>
+
+      <!-- Bottom Left Cloud -->
+      <svg class="flat-cloud cloud-bottom-left" viewBox="0 0 140 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="14" y="40" width="112" height="28" rx="14" fill="#d9edff"/>
+        <circle cx="48" cy="38" r="22" fill="#d9edff"/>
+        <circle cx="86" cy="34" r="26" fill="#d9edff"/>
+        <rect x="14" y="34" width="112" height="28" rx="14" fill="#ffffff"/>
+        <circle cx="48" cy="32" r="22" fill="#ffffff"/>
+        <circle cx="86" cy="28" r="26" fill="#ffffff"/>
+        <circle cx="86" cy="22" r="10" fill="#f0f7ff" opacity="0.9"/>
+      </svg>
+
+      <!-- Bottom Right Cloud -->
+      <svg class="flat-cloud cloud-bottom-right" viewBox="0 0 180 90" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="20" y="44" width="140" height="34" rx="17" fill="#d9edff"/>
+        <circle cx="56" cy="44" r="22" fill="#d9edff"/>
+        <circle cx="94" cy="36" r="32" fill="#d9edff"/>
+        <circle cx="132" cy="48" r="18" fill="#d9edff"/>
+        <rect x="20" y="38" width="140" height="34" rx="17" fill="#ffffff"/>
+        <circle cx="56" cy="38" r="22" fill="#ffffff"/>
+        <circle cx="94" cy="30" r="32" fill="#ffffff"/>
+        <circle cx="132" cy="42" r="18" fill="#ffffff"/>
+        <rect x="74" y="24" width="40" height="8" rx="4" fill="#f0f7ff" opacity="0.9"/>
+      </svg>
+    </div>
+    
+    <!-- Floating Whimsical 3D Illustration Elements -->
+    <img src="images/hero-cat.png" alt="" class="auth-bg-art auth-bg-art-cat" aria-hidden="true" />
+    <img src="images/hero-dog.png" alt="" class="auth-bg-art auth-bg-art-dog" aria-hidden="true" />
+
+    <!-- 32px Bone White Card -->
+    <div class="auth-card">
+      <div class="auth-card-top">
+        <div class="auth-badge-icon" aria-hidden="true">🐾</div>
+        <h1 class="auth-title">Welcome to MyPet</h1>
+        <p class="auth-subtitle">Sign in to manage your pets and collar tags in your personalized dashboard.</p>
+      </div>
+
+      <!-- Navigation Tabs (Sign In / Register) -->
+      <nav class="auth-tabs" aria-label="Authentication Options">
+        <button type="button" class="auth-tab-link active" aria-current="page">Sign In</button>
+        <a href="register.html" class="auth-tab-link">Register</a>
+      </nav>
+
+      <!-- 1-Click Demo Fill Banner -->
+      <div class="auth-demo-card">
+        <div class="auth-demo-text">
+          <strong>Testing the app?</strong>
+          <span>Click to auto-fill Sarah Miller's account.</span>
+        </div>
+        <button type="button" class="btn-demo-fill" onclick="fillDemoCredentials()">
+          ✨ Fill Demo
+        </button>
+      </div>
+
+      <!-- Alert Banners -->
+      <div id="authErrorAlert" class="auth-alert auth-alert-error" role="alert"></div>
+      <div id="authSuccessAlert" class="auth-alert auth-alert-success" role="status"></div>
+
+      <!-- Sign In Form -->
+      <form id="signInForm" onsubmit="handleLoginSubmit(event)" novalidate>
+        <div class="auth-form-group">
+          <label class="auth-label" for="loginEmail">Email Address</label>
+          <div class="auth-input-wrap">
+            <input 
+              type="email" 
+              id="loginEmail" 
+              class="auth-input" 
+              placeholder="sarah@example.com" 
+              required 
+              autocomplete="email" 
+            />
+          </div>
+        </div>
+
+        <div class="auth-form-group">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 7px;">
+            <label class="auth-label" for="loginPassword" style="margin-bottom: 0;">Password</label>
+            <a href="javascript:void(0)" onclick="forgotPasswordNotice()" style="font-size: 12.5px; color: var(--color-iris-blue, #0069e0); text-decoration: none;">Forgot?</a>
+          </div>
+          <div class="auth-input-wrap">
+            <input 
+              type="password" 
+              id="loginPassword" 
+              class="auth-input" 
+              placeholder="••••••••" 
+              required 
+              autocomplete="current-password" 
+            />
+            <button type="button" class="auth-toggle-pwd" onclick="togglePasswordVisibility('loginPassword', this)" aria-label="Toggle password visibility">
+              👁️
+            </button>
+          </div>
+        </div>
+
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; font-size: 13.5px; color: var(--color-graphite, #535862);">
+          <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+            <input type="checkbox" id="rememberMe" checked style="accent-color: var(--color-charcoal, #181d27); width: 16px; height: 16px; border-radius: 4px;" />
+            <span>Remember me</span>
+          </label>
+        </div>
+
+        <!-- Charcoal Pill CTA -->
+        <button type="submit" id="btnSubmit" class="btn-charcoal-pill">
+          Sign In to Dashboard &rarr;
+        </button>
+      </form>
+
+      <!-- Switch to Register Link -->
+      <div class="auth-switch-prompt">
+        Don't have an account yet? 
+        <a href="register.html" class="auth-switch-link">Create an account &rarr;</a>
+      </div>
+
+      <div class="auth-card-footer">
+        🔒 Encrypted & client-persistent. Safe digital pet identification recovery system.
+      </div>
+    </div>
+
+  </main>
+
+  <script>
+    // Demo accounts seed
+    const DEMO_USER = {
+      name: "Sarah Miller",
+      email: "sarah@example.com",
+      phone: "(555) 234-5678",
+      password: "password123"
+    };
+
+    function fillDemoCredentials() {
+      document.getElementById('loginEmail').value = DEMO_USER.email;
+      document.getElementById('loginPassword').value = DEMO_USER.password;
+      showAlert('authSuccessAlert', 'Loaded demo account (Sarah Miller). Click "Sign In" below!');
+      hideAlert('authErrorAlert');
+    }
+
+    function togglePasswordVisibility(inputId, btn) {
+      const input = document.getElementById(inputId);
+      if (input.type === 'password') {
+        input.type = 'text';
+        btn.textContent = '🔒';
+      } else {
+        input.type = 'password';
+        btn.textContent = '👁️';
+      }
+    }
+
+    function showAlert(id, message) {
+      const el = document.getElementById(id);
+      if (el) {
+        el.textContent = message;
+        el.style.display = 'block';
+      }
+    }
+
+    function hideAlert(id) {
+      const el = document.getElementById(id);
+      if (el) {
+        el.style.display = 'none';
+        el.textContent = '';
+      }
+    }
+
+    function forgotPasswordNotice() {
+      showAlert('authSuccessAlert', 'For demo access, use sarah@example.com with password: password123');
+    }
+
+    function handleLoginSubmit(e) {
+      e.preventDefault();
+      hideAlert('authErrorAlert');
+      hideAlert('authSuccessAlert');
+
+      const email = document.getElementById('loginEmail').value.trim();
+      const password = document.getElementById('loginPassword').value;
+      const btn = document.getElementById('btnSubmit');
+
+      if (!email || !password) {
+        showAlert('authErrorAlert', 'Please enter your email and password.');
+        return;
+      }
+
+      btn.disabled = true;
+      btn.innerHTML = 'Signing in...';
+
+      // Check registered users in localStorage or demo user
+      let users = [];
+      try {
+        const storedUsers = localStorage.getItem('mypet_registered_users');
+        if (storedUsers) {
+          users = JSON.parse(storedUsers);
+        }
+      } catch (err) {}
+
+      // Sarah demo user is always valid
+      let matchedUser = null;
+      if (email.toLowerCase() === DEMO_USER.email.toLowerCase() && password === DEMO_USER.password) {
+        matchedUser = {
+          name: DEMO_USER.name,
+          email: DEMO_USER.email,
+          phone: DEMO_USER.phone
+        };
+      } else {
+        const found = users.find(u => u.email.toLowerCase() === email.toLowerCase());
+        if (found) {
+          if (found.password === password) {
+            matchedUser = {
+              name: found.name,
+              email: found.email,
+              phone: found.phone || '(555) 000-0000'
+            };
+          } else {
+            btn.disabled = false;
+            btn.innerHTML = 'Sign In to Dashboard &rarr;';
+            showAlert('authErrorAlert', 'Incorrect password. Please try again.');
+            return;
+          }
+        }
+      }
+
+      if (matchedUser) {
+        // Persist session
+        try {
+          localStorage.setItem('mypet_auth', 'true');
+          localStorage.setItem('mypet_user', JSON.stringify(matchedUser));
+        } catch (err) {}
+
+        showAlert('authSuccessAlert', `Welcome back, ${matchedUser.name}! Redirecting to your dashboard...`);
+
+        setTimeout(() => {
+          window.location.href = 'index.html#dashboard';
+        }, 700);
+      } else {
+        btn.disabled = false;
+        btn.innerHTML = 'Sign In to Dashboard &rarr;';
+        showAlert('authErrorAlert', 'No account found with this email. You can create one via the Register link!');
+      }
+    }
+
+    // Auto-fill or check active session on load
+    window.addEventListener('DOMContentLoaded', () => {
+      try {
+        const auth = localStorage.getItem('mypet_auth');
+        const userRaw = localStorage.getItem('mypet_user');
+        if (auth === 'true' && userRaw) {
+          const user = JSON.parse(userRaw);
+          showAlert('authSuccessAlert', `You are signed in as ${user.name}. Redirecting to dashboard...`);
+          setTimeout(() => {
+            window.location.href = 'index.html#dashboard';
+          }, 800);
+        }
+      } catch (e) {}
+    });
+  </script>
+
+</body>
+</html>

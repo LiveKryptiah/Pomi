@@ -17,14 +17,18 @@
 </head>
 <body>
 
-  <!-- Minimal Header Navigation -->
-  <header class="site-header no-print">
+  <!-- Top Navigation Header -->
+  <header class="site-header no-print" id="siteHeader">
     <div class="nav-container">
-      <a href="#landing" class="brand-logo" aria-label="MyPet Home">
-        <img src="images/logo.png" alt="MyPet Logo" class="brand-logo-img" />
-      </a>
+      <div class="nav-brand-wrap">
+        <a href="#landing" class="brand-logo" id="headerBrandLogo" aria-label="MyPet Home">
+          <img src="images/logo.png" alt="MyPet Logo" class="brand-logo-img" />
+        </a>
+        <span class="nav-portal-badge" id="navPortalBadge" style="display: none;">Owner Hub</span>
+      </div>
 
-      <ul class="nav-links">
+      <!-- 1. Public Visitor Nav Links (Shown on marketing views) -->
+      <ul class="nav-links" id="navLinksPublic">
         <li><a href="#benefits" class="nav-link">Benefits</a></li>
         <li><a href="#how-it-works" class="nav-link">How It Works</a></li>
         <li><a href="#features" class="nav-link">Simulator</a></li>
@@ -32,8 +36,124 @@
         <li><a href="#faq" class="nav-link">FAQ</a></li>
       </ul>
 
-      <div class="nav-actions">
-        <button id="navAuthBtn" class="btn btn-primary btn-sm" onclick="App.toggleNavAuth()">Sign In</button>
+      <!-- 2. Logged-in Dashboard Nav Links (Shown inside dashboard & owner views) -->
+      <ul class="nav-links nav-links-dashboard" id="navLinksDashboard" style="display: none;">
+        <li>
+          <a href="#dashboard" class="nav-link active" id="navLinkDashboard">
+            <span>My Pets</span>
+            <span class="nav-count-badge" id="navPetCountBadge">2</span>
+          </a>
+        </li>
+        <li>
+          <a href="javascript:void(0)" class="nav-link" onclick="App.scrollToActivity(event)">
+            <span>Activity & Scans</span>
+          </a>
+        </li>
+        <li>
+          <a href="javascript:void(0)" class="nav-link" onclick="App.openHealthVaultModal(App.getFirstPetId())">
+            <span>Health Vault</span>
+          </a>
+        </li>
+        <li>
+          <a href="javascript:void(0)" class="nav-link" onclick="App.openLostPosterModal('pet-1')">
+            <span>Lost Posters</span>
+          </a>
+        </li>
+        <li>
+          <a href="javascript:void(0)" class="nav-link" onclick="App.openFinderSimulator()">
+            <span>Camera Scanner</span>
+          </a>
+        </li>
+        <li>
+          <a href="#landing" class="nav-link nav-link-external" title="View Public Website">
+            <span>Public Site</span>
+            <svg class="ui-icon" style="width: 13px; height: 13px; margin-left: 4px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </a>
+        </li>
+      </ul>
+
+      <!-- Nav Actions (Switches between visitor buttons and owner account widget) -->
+      <div class="nav-actions" id="navActionsContainer">
+        <!-- Visitor / Logged-out Actions -->
+        <div id="navActionsPublic" class="nav-action-group">
+          <a href="login.html" class="btn btn-primary btn-sm" id="navSignInBtn">Sign In</a>
+        </div>
+
+        <!-- Logged-in Owner Actions -->
+        <div id="navActionsDashboard" class="nav-action-group" style="display: none;">
+          <!-- User Profile Dropdown Widget -->
+          <div class="user-nav-dropdown" id="userNavDropdown">
+            <button type="button" class="user-profile-trigger" id="userProfileTrigger" onclick="App.toggleUserDropdown(event)" aria-expanded="false" aria-haspopup="true">
+              <div class="user-nav-avatar">
+                <img src="images/avatar-olivia.svg" alt="User" id="userNavAvatarImg" />
+              </div>
+              <div class="user-nav-meta">
+                <span class="user-nav-name" id="userNavName">Sarah Miller</span>
+                <span class="user-nav-role">Pet Owner</span>
+              </div>
+              <svg class="ui-icon user-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+
+            <!-- User Menu Dropdown Card -->
+            <div class="user-dropdown-menu" id="userDropdownMenu">
+              <div class="dropdown-user-header">
+                <div class="dropdown-avatar-wrap">
+                  <img src="images/avatar-olivia.svg" alt="User" id="dropdownUserAvatarImg" />
+                </div>
+                <div class="dropdown-user-info">
+                  <strong id="dropdownUserName">Sarah Miller</strong>
+                  <span id="dropdownUserEmail">sarah@example.com</span>
+                  <div class="dropdown-user-status">
+                    <span class="status-dot-green"></span>
+                    <span id="dropdownPetsStatus">2 Pets Protected</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="dropdown-divider"></div>
+
+              <div class="dropdown-links-list">
+                <a href="#dashboard" class="dropdown-item" onclick="App.closeUserDropdown()">
+                  <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18z"/><circle cx="9" cy="10" r="1.5"/><circle cx="15" cy="10" r="1.5"/><path d="M9 15c1.5 1.5 4.5 1.5 6 0"/></svg>
+                  <span>My Pets</span>
+                  <span class="dropdown-item-badge" id="dropdownBadgeCount">2</span>
+                </a>
+
+                <a href="#add-pet" class="dropdown-item" onclick="App.closeUserDropdown()">
+                  <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+                  <span>Register New Pet</span>
+                </a>
+
+                <button type="button" class="dropdown-item" onclick="App.openHealthVaultModal(App.getFirstPetId()); App.closeUserDropdown();">
+                  <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+                  <span>Health & Vaccine Vault</span>
+                </button>
+
+                <button type="button" class="dropdown-item" onclick="App.openLostPosterModal('pet-1'); App.closeUserDropdown();">
+                  <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="9" x2="15" y2="9"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="11" y2="17"/></svg>
+                  <span>Lost Pet Posters & Flyers</span>
+                </button>
+
+                <button type="button" class="dropdown-item" onclick="App.openFinderSimulator(); App.closeUserDropdown();">
+                  <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+                  <span>Camera QR Scanner</span>
+                </button>
+
+                <a href="#landing" class="dropdown-item" onclick="App.closeUserDropdown()">
+                  <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                  <span>Visit Public Website</span>
+                </a>
+              </div>
+
+              <div class="dropdown-divider"></div>
+
+              <button type="button" class="dropdown-item dropdown-logout-btn" onclick="App.logout(); App.closeUserDropdown();">
+                <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                <span>Log Out</span>
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </header>
@@ -273,11 +393,6 @@
                   <h3 class="scrolly-step-title">Safe in your arms in minutes.</h3>
                   <p class="scrolly-step-desc">Direct 1-tap call connection bridges owner and finder immediately, bringing your beloved companion safely home.</p>
                 </div>
-              </div>
-
-              <!-- Scrub Progress Bar Indicator -->
-              <div class="scrolly-progress-bar-wrap">
-                <div class="scrolly-progress-bar-fill" id="scrollyProgressFill"></div>
               </div>
             </div>
 
@@ -914,6 +1029,53 @@
          VIEW: LOGIN / SIGN IN FORM (When creating a pet tag)
          ==================================================================== -->
     <div id="loginView" class="view-panel">
+      <!-- 2D Flat Modern Clouds Floating Layer -->
+      <div class="flat-clouds-layer" aria-hidden="true">
+        <svg class="flat-cloud cloud-top-left" viewBox="0 0 180 90" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="20" y="44" width="140" height="34" rx="17" fill="#d9edff"/>
+          <circle cx="56" cy="44" r="22" fill="#d9edff"/>
+          <circle cx="94" cy="36" r="32" fill="#d9edff"/>
+          <circle cx="132" cy="48" r="18" fill="#d9edff"/>
+          <rect x="20" y="38" width="140" height="34" rx="17" fill="#ffffff"/>
+          <circle cx="56" cy="38" r="22" fill="#ffffff"/>
+          <circle cx="94" cy="30" r="32" fill="#ffffff"/>
+          <circle cx="132" cy="42" r="18" fill="#ffffff"/>
+          <rect x="74" y="24" width="40" height="8" rx="4" fill="#f0f7ff" opacity="0.9"/>
+        </svg>
+        <svg class="flat-cloud cloud-top-right" viewBox="0 0 210 95" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="18" y="48" width="174" height="36" rx="18" fill="#d9edff"/>
+          <circle cx="50" cy="48" r="22" fill="#d9edff"/>
+          <circle cx="90" cy="36" r="30" fill="#d9edff"/>
+          <circle cx="135" cy="40" r="26" fill="#d9edff"/>
+          <circle cx="168" cy="52" r="18" fill="#d9edff"/>
+          <rect x="18" y="42" width="174" height="36" rx="18" fill="#ffffff"/>
+          <circle cx="50" cy="42" r="22" fill="#ffffff"/>
+          <circle cx="90" cy="30" r="30" fill="#ffffff"/>
+          <circle cx="135" cy="34" r="26" fill="#ffffff"/>
+          <circle cx="168" cy="46" r="18" fill="#ffffff"/>
+          <rect x="75" y="22" width="48" height="7" rx="3.5" fill="#f0f7ff" opacity="0.9"/>
+        </svg>
+        <svg class="flat-cloud cloud-bottom-left" viewBox="0 0 140 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="14" y="40" width="112" height="28" rx="14" fill="#d9edff"/>
+          <circle cx="48" cy="38" r="22" fill="#d9edff"/>
+          <circle cx="86" cy="34" r="26" fill="#d9edff"/>
+          <rect x="14" y="34" width="112" height="28" rx="14" fill="#ffffff"/>
+          <circle cx="48" cy="32" r="22" fill="#ffffff"/>
+          <circle cx="86" cy="28" r="26" fill="#ffffff"/>
+          <circle cx="86" cy="22" r="10" fill="#f0f7ff" opacity="0.9"/>
+        </svg>
+        <svg class="flat-cloud cloud-bottom-right" viewBox="0 0 180 90" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="20" y="44" width="140" height="34" rx="17" fill="#d9edff"/>
+          <circle cx="56" cy="44" r="22" fill="#d9edff"/>
+          <circle cx="94" cy="36" r="32" fill="#d9edff"/>
+          <circle cx="132" cy="48" r="18" fill="#d9edff"/>
+          <rect x="20" y="38" width="140" height="34" rx="17" fill="#ffffff"/>
+          <circle cx="56" cy="38" r="22" fill="#ffffff"/>
+          <circle cx="94" cy="30" r="32" fill="#ffffff"/>
+          <circle cx="132" cy="42" r="18" fill="#ffffff"/>
+          <rect x="74" y="24" width="40" height="8" rx="4" fill="#f0f7ff" opacity="0.9"/>
+        </svg>
+      </div>
       <div class="main-wrapper">
         <div class="login-container">
           <div class="login-header">
@@ -962,6 +1124,60 @@
          VIEW 2: OWNER DASHBOARD
          ==================================================================== -->
     <div id="dashboardView" class="view-panel">
+      <!-- 2D Flat Modern Clouds Floating Layer -->
+      <div class="flat-clouds-layer dashboard-clouds" aria-hidden="true">
+        <!-- Top Left Cloud -->
+        <svg class="flat-cloud dash-cloud-top-left" viewBox="0 0 180 90" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="20" y="44" width="140" height="34" rx="17" fill="#d9edff"/>
+          <circle cx="56" cy="44" r="22" fill="#d9edff"/>
+          <circle cx="94" cy="36" r="32" fill="#d9edff"/>
+          <circle cx="132" cy="48" r="18" fill="#d9edff"/>
+          <rect x="20" y="38" width="140" height="34" rx="17" fill="#ffffff"/>
+          <circle cx="56" cy="38" r="22" fill="#ffffff"/>
+          <circle cx="94" cy="30" r="32" fill="#ffffff"/>
+          <circle cx="132" cy="42" r="18" fill="#ffffff"/>
+          <rect x="74" y="24" width="40" height="8" rx="4" fill="#f0f7ff" opacity="0.9"/>
+        </svg>
+
+        <!-- Top Right Cloud -->
+        <svg class="flat-cloud dash-cloud-top-right" viewBox="0 0 210 95" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="18" y="48" width="174" height="36" rx="18" fill="#d9edff"/>
+          <circle cx="50" cy="48" r="22" fill="#d9edff"/>
+          <circle cx="90" cy="36" r="30" fill="#d9edff"/>
+          <circle cx="135" cy="40" r="26" fill="#d9edff"/>
+          <circle cx="168" cy="52" r="18" fill="#d9edff"/>
+          <rect x="18" y="42" width="174" height="36" rx="18" fill="#ffffff"/>
+          <circle cx="50" cy="42" r="22" fill="#ffffff"/>
+          <circle cx="90" cy="30" r="30" fill="#ffffff"/>
+          <circle cx="135" cy="34" r="26" fill="#ffffff"/>
+          <circle cx="168" cy="46" r="18" fill="#ffffff"/>
+          <rect x="75" y="22" width="48" height="7" rx="3.5" fill="#f0f7ff" opacity="0.9"/>
+        </svg>
+
+        <!-- Mid Left Floating Accent Cloud -->
+        <svg class="flat-cloud dash-cloud-mid" viewBox="0 0 140 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="14" y="40" width="112" height="28" rx="14" fill="#d9edff"/>
+          <circle cx="48" cy="38" r="22" fill="#d9edff"/>
+          <circle cx="86" cy="34" r="26" fill="#d9edff"/>
+          <rect x="14" y="34" width="112" height="28" rx="14" fill="#ffffff"/>
+          <circle cx="48" cy="32" r="22" fill="#ffffff"/>
+          <circle cx="86" cy="28" r="26" fill="#ffffff"/>
+          <circle cx="86" cy="22" r="10" fill="#f0f7ff" opacity="0.9"/>
+        </svg>
+
+        <!-- Right Side Floating Accent Cloud -->
+        <svg class="flat-cloud dash-cloud-corner" viewBox="0 0 180 90" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="20" y="44" width="140" height="34" rx="17" fill="#d9edff"/>
+          <circle cx="56" cy="44" r="22" fill="#d9edff"/>
+          <circle cx="94" cy="36" r="32" fill="#d9edff"/>
+          <circle cx="132" cy="48" r="18" fill="#d9edff"/>
+          <rect x="20" y="38" width="140" height="34" rx="17" fill="#ffffff"/>
+          <circle cx="56" cy="38" r="22" fill="#ffffff"/>
+          <circle cx="94" cy="30" r="32" fill="#ffffff"/>
+          <circle cx="132" cy="42" r="18" fill="#ffffff"/>
+          <rect x="74" y="24" width="40" height="8" rx="4" fill="#f0f7ff" opacity="0.9"/>
+        </svg>
+      </div>
       <div class="main-wrapper">
         <div class="dashboard-header-bar">
           <div class="dashboard-title-group">
@@ -997,6 +1213,73 @@
          VIEW 3: ADD PET MULTI-STEP FLOW (5 STEPS)
          ==================================================================== -->
     <div id="addPetView" class="view-panel">
+      <!-- 2D Flat Modern Clouds Floating Layer -->
+      <div class="flat-clouds-layer" aria-hidden="true">
+        <svg class="flat-cloud cloud-top-left" viewBox="0 0 180 90" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="20" y="44" width="140" height="34" rx="17" fill="#d9edff"/>
+          <circle cx="56" cy="44" r="22" fill="#d9edff"/>
+          <circle cx="94" cy="36" r="32" fill="#d9edff"/>
+          <circle cx="132" cy="48" r="18" fill="#d9edff"/>
+          <rect x="20" y="38" width="140" height="34" rx="17" fill="#ffffff"/>
+          <circle cx="56" cy="38" r="22" fill="#ffffff"/>
+          <circle cx="94" cy="30" r="32" fill="#ffffff"/>
+          <circle cx="132" cy="42" r="18" fill="#ffffff"/>
+          <rect x="74" y="24" width="40" height="8" rx="4" fill="#f0f7ff" opacity="0.9"/>
+        </svg>
+        <svg class="flat-cloud cloud-top-right" viewBox="0 0 210 95" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="18" y="48" width="174" height="36" rx="18" fill="#d9edff"/>
+          <circle cx="50" cy="48" r="22" fill="#d9edff"/>
+          <circle cx="90" cy="36" r="30" fill="#d9edff"/>
+          <circle cx="135" cy="40" r="26" fill="#d9edff"/>
+          <circle cx="168" cy="52" r="18" fill="#d9edff"/>
+          <rect x="18" y="42" width="174" height="36" rx="18" fill="#ffffff"/>
+          <circle cx="50" cy="42" r="22" fill="#ffffff"/>
+          <circle cx="90" cy="30" r="30" fill="#ffffff"/>
+          <circle cx="135" cy="34" r="26" fill="#ffffff"/>
+          <circle cx="168" cy="46" r="18" fill="#ffffff"/>
+          <rect x="75" y="22" width="48" height="7" rx="3.5" fill="#f0f7ff" opacity="0.9"/>
+        </svg>
+        <svg class="flat-cloud cloud-mid-left" viewBox="0 0 140 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="14" y="40" width="112" height="28" rx="14" fill="#d9edff"/>
+          <circle cx="48" cy="38" r="22" fill="#d9edff"/>
+          <circle cx="86" cy="34" r="26" fill="#d9edff"/>
+          <rect x="14" y="34" width="112" height="28" rx="14" fill="#ffffff"/>
+          <circle cx="48" cy="32" r="22" fill="#ffffff"/>
+          <circle cx="86" cy="28" r="26" fill="#ffffff"/>
+          <circle cx="86" cy="22" r="10" fill="#f0f7ff" opacity="0.9"/>
+        </svg>
+        <svg class="flat-cloud cloud-mid-right" viewBox="0 0 180 90" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="20" y="44" width="140" height="34" rx="17" fill="#d9edff"/>
+          <circle cx="56" cy="44" r="22" fill="#d9edff"/>
+          <circle cx="94" cy="36" r="32" fill="#d9edff"/>
+          <circle cx="132" cy="48" r="18" fill="#d9edff"/>
+          <rect x="20" y="38" width="140" height="34" rx="17" fill="#ffffff"/>
+          <circle cx="56" cy="38" r="22" fill="#ffffff"/>
+          <circle cx="94" cy="30" r="32" fill="#ffffff"/>
+          <circle cx="132" cy="42" r="18" fill="#ffffff"/>
+          <rect x="74" y="24" width="40" height="8" rx="4" fill="#f0f7ff" opacity="0.9"/>
+        </svg>
+        <svg class="flat-cloud cloud-bottom-left" viewBox="0 0 140 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="14" y="40" width="112" height="28" rx="14" fill="#d9edff"/>
+          <circle cx="48" cy="38" r="22" fill="#d9edff"/>
+          <circle cx="86" cy="34" r="26" fill="#d9edff"/>
+          <rect x="14" y="34" width="112" height="28" rx="14" fill="#ffffff"/>
+          <circle cx="48" cy="32" r="22" fill="#ffffff"/>
+          <circle cx="86" cy="28" r="26" fill="#ffffff"/>
+          <circle cx="86" cy="22" r="10" fill="#f0f7ff" opacity="0.9"/>
+        </svg>
+        <svg class="flat-cloud cloud-bottom-right" viewBox="0 0 180 90" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="20" y="44" width="140" height="34" rx="17" fill="#d9edff"/>
+          <circle cx="56" cy="44" r="22" fill="#d9edff"/>
+          <circle cx="94" cy="36" r="32" fill="#d9edff"/>
+          <circle cx="132" cy="48" r="18" fill="#d9edff"/>
+          <rect x="20" y="38" width="140" height="34" rx="17" fill="#ffffff"/>
+          <circle cx="56" cy="38" r="22" fill="#ffffff"/>
+          <circle cx="94" cy="30" r="32" fill="#ffffff"/>
+          <circle cx="132" cy="42" r="18" fill="#ffffff"/>
+          <rect x="74" y="24" width="40" height="8" rx="4" fill="#f0f7ff" opacity="0.9"/>
+        </svg>
+      </div>
       <div class="main-wrapper">
         <div class="wizard-container">
           
@@ -1183,6 +1466,73 @@
          VIEW 4: QR TAG GENERATION SCREEN
          ==================================================================== -->
     <div id="qrTagView" class="view-panel printable-tag-area">
+      <!-- 2D Flat Modern Clouds Floating Layer -->
+      <div class="flat-clouds-layer no-print" aria-hidden="true">
+        <svg class="flat-cloud cloud-top-left" viewBox="0 0 180 90" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="20" y="44" width="140" height="34" rx="17" fill="#d9edff"/>
+          <circle cx="56" cy="44" r="22" fill="#d9edff"/>
+          <circle cx="94" cy="36" r="32" fill="#d9edff"/>
+          <circle cx="132" cy="48" r="18" fill="#d9edff"/>
+          <rect x="20" y="38" width="140" height="34" rx="17" fill="#ffffff"/>
+          <circle cx="56" cy="38" r="22" fill="#ffffff"/>
+          <circle cx="94" cy="30" r="32" fill="#ffffff"/>
+          <circle cx="132" cy="42" r="18" fill="#ffffff"/>
+          <rect x="74" y="24" width="40" height="8" rx="4" fill="#f0f7ff" opacity="0.9"/>
+        </svg>
+        <svg class="flat-cloud cloud-top-right" viewBox="0 0 210 95" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="18" y="48" width="174" height="36" rx="18" fill="#d9edff"/>
+          <circle cx="50" cy="48" r="22" fill="#d9edff"/>
+          <circle cx="90" cy="36" r="30" fill="#d9edff"/>
+          <circle cx="135" cy="40" r="26" fill="#d9edff"/>
+          <circle cx="168" cy="52" r="18" fill="#d9edff"/>
+          <rect x="18" y="42" width="174" height="36" rx="18" fill="#ffffff"/>
+          <circle cx="50" cy="42" r="22" fill="#ffffff"/>
+          <circle cx="90" cy="30" r="30" fill="#ffffff"/>
+          <circle cx="135" cy="34" r="26" fill="#ffffff"/>
+          <circle cx="168" cy="46" r="18" fill="#ffffff"/>
+          <rect x="75" y="22" width="48" height="7" rx="3.5" fill="#f0f7ff" opacity="0.9"/>
+        </svg>
+        <svg class="flat-cloud cloud-mid-left" viewBox="0 0 140 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="14" y="40" width="112" height="28" rx="14" fill="#d9edff"/>
+          <circle cx="48" cy="38" r="22" fill="#d9edff"/>
+          <circle cx="86" cy="34" r="26" fill="#d9edff"/>
+          <rect x="14" y="34" width="112" height="28" rx="14" fill="#ffffff"/>
+          <circle cx="48" cy="32" r="22" fill="#ffffff"/>
+          <circle cx="86" cy="28" r="26" fill="#ffffff"/>
+          <circle cx="86" cy="22" r="10" fill="#f0f7ff" opacity="0.9"/>
+        </svg>
+        <svg class="flat-cloud cloud-mid-right" viewBox="0 0 180 90" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="20" y="44" width="140" height="34" rx="17" fill="#d9edff"/>
+          <circle cx="56" cy="44" r="22" fill="#d9edff"/>
+          <circle cx="94" cy="36" r="32" fill="#d9edff"/>
+          <circle cx="132" cy="48" r="18" fill="#d9edff"/>
+          <rect x="20" y="38" width="140" height="34" rx="17" fill="#ffffff"/>
+          <circle cx="56" cy="38" r="22" fill="#ffffff"/>
+          <circle cx="94" cy="30" r="32" fill="#ffffff"/>
+          <circle cx="132" cy="42" r="18" fill="#ffffff"/>
+          <rect x="74" y="24" width="40" height="8" rx="4" fill="#f0f7ff" opacity="0.9"/>
+        </svg>
+        <svg class="flat-cloud cloud-bottom-left" viewBox="0 0 140 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="14" y="40" width="112" height="28" rx="14" fill="#d9edff"/>
+          <circle cx="48" cy="38" r="22" fill="#d9edff"/>
+          <circle cx="86" cy="34" r="26" fill="#d9edff"/>
+          <rect x="14" y="34" width="112" height="28" rx="14" fill="#ffffff"/>
+          <circle cx="48" cy="32" r="22" fill="#ffffff"/>
+          <circle cx="86" cy="28" r="26" fill="#ffffff"/>
+          <circle cx="86" cy="22" r="10" fill="#f0f7ff" opacity="0.9"/>
+        </svg>
+        <svg class="flat-cloud cloud-bottom-right" viewBox="0 0 180 90" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="20" y="44" width="140" height="34" rx="17" fill="#d9edff"/>
+          <circle cx="56" cy="44" r="22" fill="#d9edff"/>
+          <circle cx="94" cy="36" r="32" fill="#d9edff"/>
+          <circle cx="132" cy="48" r="18" fill="#d9edff"/>
+          <rect x="20" y="38" width="140" height="34" rx="17" fill="#ffffff"/>
+          <circle cx="56" cy="38" r="22" fill="#ffffff"/>
+          <circle cx="94" cy="30" r="32" fill="#ffffff"/>
+          <circle cx="132" cy="42" r="18" fill="#ffffff"/>
+          <rect x="74" y="24" width="40" height="8" rx="4" fill="#f0f7ff" opacity="0.9"/>
+        </svg>
+      </div>
       <div class="main-wrapper">
         <div class="qr-tag-view-container">
           <span class="eyebrow">TAG CREATED & ACTIVE</span>
@@ -1454,6 +1804,339 @@
             <!-- Rendered by MyPetPoster -->
           </div>
         </div>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- ====================================================================
+       MODAL 5: PET HEALTH VAULT & VACCINATION TRACKER
+       ==================================================================== -->
+  <div id="healthVaultModal" class="modal-backdrop">
+    <div class="modal-dialog health-vault-dialog">
+      <button class="modal-close-btn" onclick="App.closeModal('healthVaultModal')" aria-label="Close Health Vault">
+        <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+
+      <!-- Pet Health Header -->
+      <div class="health-vault-header">
+        <div class="health-vault-avatar" id="hvPetAvatar">
+          <!-- Injected dynamically -->
+        </div>
+        <div class="health-vault-title-wrap">
+          <div class="health-vault-badges-row">
+            <span class="eyebrow" style="color: var(--color-iris-blue); margin-bottom: 0;">HEALTH & VACCINE VAULT</span>
+            <span id="hvOverallBadge" class="status-badge vaccine-valid">Up to Date</span>
+            <!-- Pet Selector if user has multiple pets -->
+            <select id="hvPetSelector" class="form-input" style="width: auto; padding: 4px 12px; font-size: 12px; height: auto; border-radius: 9999px; margin-left: auto; background: #ffffff;" onchange="App.openHealthVaultModal(this.value, App.activeHealthVaultTab)">
+              <!-- Options populated dynamically -->
+            </select>
+          </div>
+          <h2 id="hvPetTitle" style="font-size: 22px; color: var(--color-ink); margin: 6px 0 2px;">Luna's Health Vault</h2>
+          <p id="hvPetSubtitle" style="font-size: 13px; color: var(--color-fog); margin: 0;">Verified vaccinations, microchip ID & veterinary care</p>
+        </div>
+      </div>
+
+      <!-- Segmented Navigation Pills -->
+      <div class="health-nav-tabs" role="tablist">
+        <button type="button" class="health-tab-btn active" id="btnTabVaccines" data-tab="vaccines" onclick="App.switchHealthVaultTab('vaccines')">
+          💉 Vaccinations (<span id="hvVaccineCount">0</span>)
+        </button>
+        <button type="button" class="health-tab-btn" id="btnTabMicrochip" data-tab="microchip" onclick="App.switchHealthVaultTab('microchip')">
+          🔍 Microchip & Registry
+        </button>
+        <button type="button" class="health-tab-btn" id="btnTabVet" data-tab="vet" onclick="App.switchHealthVaultTab('vet')">
+          🏥 Vet & Clinic
+        </button>
+        <button type="button" class="health-tab-btn" id="btnTabAllergies" data-tab="allergies" onclick="App.switchHealthVaultTab('allergies')">
+          ⚠️ Allergies & Care
+        </button>
+      </div>
+
+      <!-- TAB 1: VACCINATIONS -->
+      <div id="hvTabVaccines" class="health-tab-panel active">
+        <!-- Summary Stats Banner -->
+        <div class="health-summary-banner">
+          <div class="health-summary-stat">
+            <div class="health-summary-stat-val" id="hvStatValid" style="color: #065f46;">0</div>
+            <div class="health-summary-stat-label">Up to Date</div>
+          </div>
+          <div class="health-summary-stat">
+            <div class="health-summary-stat-val" id="hvStatDueSoon" style="color: #92400e;">0</div>
+            <div class="health-summary-stat-label">Due Soon (<30 Days)</div>
+          </div>
+          <div class="health-summary-stat">
+            <div class="health-summary-stat-val" id="hvStatOverdue" style="color: #991b1b;">0</div>
+            <div class="health-summary-stat-label">Overdue / Action Needed</div>
+          </div>
+        </div>
+
+        <!-- Add Vaccine Toggle Button -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+          <h3 style="font-size: 15px; color: var(--color-ink); margin: 0; font-weight: 600;">Vaccination History & Records</h3>
+          <button type="button" class="btn btn-secondary btn-sm" onclick="App.toggleAddVaccineForm()">
+            <span id="hvAddVacBtnText">+ Log Vaccination Record</span>
+          </button>
+        </div>
+
+        <!-- Collapsible Add/Edit Vaccine Form -->
+        <div id="hvNewVaccineForm" class="hv-form-section" style="display: none; margin-bottom: 20px;">
+          <div class="hv-form-header">
+            <h4 class="hv-form-title" id="hvVaccineFormHeading">Log New Vaccination Record</h4>
+            <button type="button" class="modal-close-btn" style="position: static; width: 24px; height: 24px; font-size: 12px;" onclick="App.toggleAddVaccineForm(false)">✕</button>
+          </div>
+          <form onsubmit="App.handleSaveVaccine(event)">
+            <input type="hidden" id="hvVacEditId" />
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+              <div class="form-group">
+                <label class="form-label" for="hvVacName">Vaccine Name</label>
+                <input type="text" id="hvVacName" class="form-input" list="vaccinePresets" placeholder="e.g. Rabies (1-Year)" required />
+                <datalist id="vaccinePresets">
+                  <option value="Rabies (1-Year Core)"></option>
+                  <option value="Rabies (3-Year Core)"></option>
+                  <option value="FVRCP (Feline Viral Rhinotracheitis)"></option>
+                  <option value="DHPP (Distemper, Parvo, Hepatitis)"></option>
+                  <option value="Bordetella (Kennel Cough)"></option>
+                  <option value="FeLV (Feline Leukemia)"></option>
+                  <option value="Lyme Disease"></option>
+                  <option value="Leptospirosis (4-Way)"></option>
+                  <option value="Canine Influenza (H3N2/H3N8)"></option>
+                  <option value="Deworming / Heartworm Prevention"></option>
+                </datalist>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="hvVacLot">Batch / Lot Number</label>
+                <input type="text" id="hvVacLot" class="form-input" placeholder="e.g. RB-84920" />
+              </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+              <div class="form-group">
+                <label class="form-label" for="hvVacDateAdmin">Date Given</label>
+                <input type="date" id="hvVacDateAdmin" class="form-input" required />
+              </div>
+              <div class="form-group">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                  <label class="form-label" for="hvVacDueDate" style="margin-bottom: 0;">Next Due Date</label>
+                  <div style="display: flex; gap: 4px;">
+                    <button type="button" class="btn btn-outline" style="padding: 1px 6px; font-size: 10px; border-radius: 4px;" onclick="App.setVaccineDueOffset(1)">+1 Yr</button>
+                    <button type="button" class="btn btn-outline" style="padding: 1px 6px; font-size: 10px; border-radius: 4px;" onclick="App.setVaccineDueOffset(3)">+3 Yrs</button>
+                  </div>
+                </div>
+                <input type="date" id="hvVacDueDate" class="form-input" required />
+              </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+              <div class="form-group">
+                <label class="form-label" for="hvVacClinic">Administering Clinic / Vet</label>
+                <input type="text" id="hvVacClinic" class="form-input" placeholder="e.g. Oakland Pet Hospital" />
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="hvVacDoctor">Doctor Name</label>
+                <input type="text" id="hvVacDoctor" class="form-input" placeholder="e.g. Dr. Emily Hayes" />
+              </div>
+            </div>
+
+            <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 10px;">
+              <button type="button" class="btn btn-secondary btn-sm" onclick="App.toggleAddVaccineForm(false)">Cancel</button>
+              <button type="submit" class="btn btn-primary btn-sm">Save Vaccination Record</button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Vaccines List Container -->
+        <div id="hvVaccinesListContainer">
+          <!-- Populated by App.renderVaccinesList() -->
+        </div>
+      </div>
+
+      <!-- TAB 2: MICROCHIP -->
+      <div id="hvTabMicrochip" class="health-tab-panel">
+        <div class="microchip-display-card">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span class="eyebrow" style="color: var(--color-iris-blue); margin-bottom: 0;">ELECTRONIC IDENTIFIER</span>
+            <span id="hvChipVerifiedBadge" class="status-badge vaccine-valid">Active in Registry</span>
+          </div>
+
+          <div class="microchip-number-banner">
+            <div>
+              <div style="font-size: 11px; text-transform: uppercase; color: var(--color-fog); font-weight: 600;">15-Digit ISO Microchip ID</div>
+              <div class="microchip-code" id="hvMicrochipCodeDisplay">985 · 141 · 002 · 384 · 912</div>
+            </div>
+            <button type="button" class="btn btn-secondary btn-sm" id="btnCopyMicrochip" onclick="App.copyMicrochipNumber()">
+              <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 14px; height: 14px;"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy Number
+            </button>
+          </div>
+
+          <div class="microchip-details-grid">
+            <div class="vaccine-meta-item">
+              <div class="vaccine-meta-label">Registry Database</div>
+              <div class="vaccine-meta-val" id="hvChipRegistryDisplay">HomeAgain Pet Recovery</div>
+            </div>
+            <div class="vaccine-meta-item">
+              <div class="vaccine-meta-label">Implant Date</div>
+              <div class="vaccine-meta-val" id="hvChipDateDisplay">April 15, 2024</div>
+            </div>
+            <div class="vaccine-meta-item">
+              <div class="vaccine-meta-label">National Database Status</div>
+              <div class="vaccine-meta-val" style="color: #065f46; font-weight: 600;">Verified Active</div>
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 10px; margin-top: 20px; flex-wrap: wrap;">
+            <a href="https://www.petmicrochiplookup.org/" target="_blank" rel="noopener noreferrer" class="btn btn-outline btn-sm">
+              <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 14px; height: 14px;"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg> AAHA Universal Microchip Lookup ↗
+            </a>
+            <button type="button" class="btn btn-secondary btn-sm" onclick="App.toggleEditMicrochipForm()">
+              Edit Microchip Details
+            </button>
+          </div>
+        </div>
+
+        <!-- Edit Microchip Form -->
+        <div id="hvEditMicrochipForm" class="hv-form-section" style="display: none;">
+          <div class="hv-form-header">
+            <h4 class="hv-form-title">Update Microchip Information</h4>
+            <button type="button" class="modal-close-btn" style="position: static; width: 24px; height: 24px; font-size: 12px;" onclick="App.toggleEditMicrochipForm(false)">✕</button>
+          </div>
+          <form onsubmit="App.handleSaveMicrochip(event)">
+            <div class="form-group">
+              <label class="form-label" for="hvChipInput">15-Digit Microchip Number</label>
+              <input type="text" id="hvChipInput" class="form-input" placeholder="e.g. 985141002384912" maxlength="20" required />
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+              <div class="form-group">
+                <label class="form-label" for="hvRegistryInput">Registry Organization</label>
+                <input type="text" id="hvRegistryInput" class="form-input" placeholder="e.g. HomeAgain, AKC Reunite, 24Petwatch" />
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="hvImplantDateInput">Implant Date</label>
+                <input type="date" id="hvImplantDateInput" class="form-input" />
+              </div>
+            </div>
+            <div style="display: flex; justify-content: flex-end; gap: 8px;">
+              <button type="button" class="btn btn-secondary btn-sm" onclick="App.toggleEditMicrochipForm(false)">Cancel</button>
+              <button type="submit" class="btn btn-primary btn-sm">Save Microchip</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- TAB 3: VET CLINIC -->
+      <div id="hvTabVet" class="health-tab-panel">
+        <div class="vet-clinic-card">
+          <span class="eyebrow" style="color: var(--color-iris-blue);">PRIMARY VETERINARY CARE</span>
+          <h3 id="hvVetNameDisplay" style="font-size: 20px; color: var(--color-ink); margin: 6px 0 2px;">Oakland Pet Hospital & Urgent Care</h3>
+          <div id="hvVetDoctorDisplay" style="font-size: 14px; color: var(--color-fog); margin-bottom: 16px;">Dr. Emily Hayes, DVM</div>
+
+          <div class="microchip-details-grid">
+            <div class="vaccine-meta-item">
+              <div class="vaccine-meta-label">Phone Number</div>
+              <div class="vaccine-meta-val" id="hvVetPhoneDisplay">(555) 892-3401</div>
+            </div>
+            <div class="vaccine-meta-item">
+              <div class="vaccine-meta-label">Clinic Address</div>
+              <div class="vaccine-meta-val" id="hvVetAddressDisplay">742 Evergreen Blvd, Oakland, CA 94611</div>
+            </div>
+            <div class="vaccine-meta-item">
+              <div class="vaccine-meta-label">Emergency Care</div>
+              <div class="vaccine-meta-val" id="hvVetEmergencyDisplay" style="color: #065f46; font-weight: 500;">24/7 Urgent Care Available</div>
+            </div>
+          </div>
+
+          <div class="vet-actions-row">
+            <a id="hvVetCallLink" href="tel:5558923401" class="btn btn-primary btn-sm">
+              <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 14px; height: 14px;"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg> Call Vet Clinic
+            </a>
+            <a id="hvVetMapLink" href="https://maps.google.com/?q=Oakland+Pet+Hospital" target="_blank" rel="noopener noreferrer" class="btn btn-secondary btn-sm">
+              <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 14px; height: 14px;"><polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/><line x1="9" y1="3" x2="9" y2="18"/><line x1="15" y1="6" x2="15" y2="21"/></svg> Get Directions
+            </a>
+            <button type="button" class="btn btn-outline btn-sm" onclick="App.toggleEditVetForm()">
+              Edit Vet Info
+            </button>
+          </div>
+        </div>
+
+        <!-- Edit Vet Form -->
+        <div id="hvEditVetForm" class="hv-form-section" style="display: none;">
+          <div class="hv-form-header">
+            <h4 class="hv-form-title">Update Veterinary Clinic</h4>
+            <button type="button" class="modal-close-btn" style="position: static; width: 24px; height: 24px; font-size: 12px;" onclick="App.toggleEditVetForm(false)">✕</button>
+          </div>
+          <form onsubmit="App.handleSaveVetClinic(event)">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+              <div class="form-group">
+                <label class="form-label" for="hvVetClinicName">Clinic Name</label>
+                <input type="text" id="hvVetClinicName" class="form-input" required />
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="hvVetDoctorName">Attending Vet Doctor</label>
+                <input type="text" id="hvVetDoctorName" class="form-input" />
+              </div>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+              <div class="form-group">
+                <label class="form-label" for="hvVetPhone">Phone Number</label>
+                <input type="tel" id="hvVetPhone" class="form-input" required />
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="hvVetEmergency">Emergency / Hours Note</label>
+                <input type="text" id="hvVetEmergency" class="form-input" placeholder="e.g. 24/7 Emergency Care" />
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="hvVetAddress">Clinic Address</label>
+              <input type="text" id="hvVetAddress" class="form-input" />
+            </div>
+            <div style="display: flex; justify-content: flex-end; gap: 8px;">
+              <button type="button" class="btn btn-secondary btn-sm" onclick="App.toggleEditVetForm(false)">Cancel</button>
+              <button type="submit" class="btn btn-primary btn-sm">Save Clinic Details</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- TAB 4: ALLERGIES & CARE -->
+      <div id="hvTabAllergies" class="health-tab-panel">
+        <form onsubmit="App.handleSaveAllergiesCare(event)">
+          <div class="hv-form-section" style="margin-top: 0;">
+            <h4 class="hv-form-title" style="margin-bottom: 8px;">Known Allergies & Sensitivities</h4>
+            <p style="font-size: 13px; color: var(--color-fog); margin-bottom: 12px;">Alerts anyone who finds your pet not to feed harmful ingredients.</p>
+
+            <div class="allergy-tags-container" id="hvAllergyTags">
+              <!-- Dynamically populated tags -->
+            </div>
+
+            <div style="display: flex; gap: 8px; margin-bottom: 18px;">
+              <input type="text" id="hvNewAllergyInput" class="form-input" placeholder="Add an allergy (e.g. Chicken, Flea bites, Penicillin)" style="flex: 1;" />
+              <button type="button" class="btn btn-secondary btn-sm" onclick="App.addAllergyTag()">+ Add</button>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="hvMedicationsInput">Current Daily Medications & Schedule</label>
+              <input type="text" id="hvMedicationsInput" class="form-input" placeholder="e.g. Thyroid pill 0.1mg daily at 8am, Heartgard on 1st" />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="hvDietInput">Dietary Notes & Feeding Preferences</label>
+              <textarea id="hvDietInput" class="form-input" rows="2" placeholder="e.g. Sensitive Stomach & Skin kibble only. Do not feed poultry."></textarea>
+            </div>
+
+            <div class="privacy-toggle-card" style="margin: 18px 0 6px;">
+              <div class="privacy-toggle-info">
+                <strong>Show Medical Warnings on Public QR Tag Scan</strong>
+                <span>Allows finders and shelters to immediately see vital dietary alerts</span>
+              </div>
+              <input type="checkbox" id="hvShowPublicMedical" class="switch-input" checked />
+            </div>
+
+            <div style="display: flex; justify-content: flex-end; margin-top: 16px;">
+              <button type="submit" class="btn btn-primary btn-sm">Save Health Profile</button>
+            </div>
+          </div>
+        </form>
       </div>
 
     </div>
