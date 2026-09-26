@@ -199,6 +199,7 @@
 
   </main>
 
+  <script src="js/api.js?v=47"></script>
   <script>
     // Demo accounts seed
     const DEMO_USER = {
@@ -246,7 +247,7 @@
       showAlert('authSuccessAlert', 'For demo access, use sarah@example.com with password: password123');
     }
 
-    function handleLoginSubmit(e) {
+    async function handleLoginSubmit(e) {
       e.preventDefault();
       hideAlert('authErrorAlert');
       hideAlert('authSuccessAlert');
@@ -261,18 +262,33 @@
       }
 
       btn.disabled = true;
-      btn.innerHTML = 'Signing in...';
+      btn.innerHTML = 'Signing in to SQLite...';
 
-      // Check registered users in localStorage or demo user
-      let users = [];
-      try {
-        const storedUsers = localStorage.getItem('mypet_registered_users');
-        if (storedUsers) {
-          users = JSON.parse(storedUsers);
+      // 1. Try real SQLite backend authentication
+      if (window.ApiClient) {
+        try {
+          const res = await window.ApiClient.login(email, password);
+          if (res && res.success) {
+            localStorage.setItem('mypet_auth', 'true');
+            localStorage.setItem('mypet_user', JSON.stringify(res.user));
+            showAlert('authSuccessAlert', `Welcome back, ${res.user.name}! Connected to SQLite database.`);
+            setTimeout(() => {
+              window.location.href = 'index.html#dashboard';
+            }, 600);
+            return;
+          }
+        } catch (apiErr) {
+          // If server returned an authentication error, show it directly
+          if (apiErr.message && !apiErr.message.includes('Failed to fetch')) {
+            btn.disabled = false;
+            btn.innerHTML = 'Sign In to Dashboard &rarr;';
+            showAlert('authErrorAlert', apiErr.message);
+            return;
+          }
         }
-      } catch (err) {}
+      }
 
-      // Sarah demo user is always valid
+      // 2. Offline fallback if server not running
       let matchedUser = null;
       if (email.toLowerCase() === DEMO_USER.email.toLowerCase() && password === DEMO_USER.password) {
         matchedUser = {
@@ -280,40 +296,19 @@
           email: DEMO_USER.email,
           phone: DEMO_USER.phone
         };
-      } else {
-        const found = users.find(u => u.email.toLowerCase() === email.toLowerCase());
-        if (found) {
-          if (found.password === password) {
-            matchedUser = {
-              name: found.name,
-              email: found.email,
-              phone: found.phone || '(555) 000-0000'
-            };
-          } else {
-            btn.disabled = false;
-            btn.innerHTML = 'Sign In to Dashboard &rarr;';
-            showAlert('authErrorAlert', 'Incorrect password. Please try again.');
-            return;
-          }
-        }
       }
 
       if (matchedUser) {
-        // Persist session
-        try {
-          localStorage.setItem('mypet_auth', 'true');
-          localStorage.setItem('mypet_user', JSON.stringify(matchedUser));
-        } catch (err) {}
-
-        showAlert('authSuccessAlert', `Welcome back, ${matchedUser.name}! Redirecting to your dashboard...`);
-
+        localStorage.setItem('mypet_auth', 'true');
+        localStorage.setItem('mypet_user', JSON.stringify(matchedUser));
+        showAlert('authSuccessAlert', `Welcome back, ${matchedUser.name}! (Offline mode)`);
         setTimeout(() => {
           window.location.href = 'index.html#dashboard';
-        }, 700);
+        }, 600);
       } else {
         btn.disabled = false;
         btn.innerHTML = 'Sign In to Dashboard &rarr;';
-        showAlert('authErrorAlert', 'No account found with this email. You can create one via the Register link!');
+        showAlert('authErrorAlert', 'Invalid credentials. Demo: sarah@example.com / password123');
       }
     }
 

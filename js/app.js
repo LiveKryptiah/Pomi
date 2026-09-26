@@ -174,96 +174,131 @@
     }
   ];
 
-  // State Store
+  // State Store (Synchronized with Python SQLite Backend)
   const Store = {
+    _cachedPets: null,
+    _cachedActivities: null,
+
+    syncWithBackend: async function() {
+      if (!window.ApiClient) return;
+      try {
+        const pets = await window.ApiClient.getPets();
+        if (Array.isArray(pets) && pets.length > 0) {
+          Store._cachedPets = pets;
+          localStorage.setItem('mypet_pets', JSON.stringify(pets));
+        }
+        const acts = await window.ApiClient.getActivities();
+        if (Array.isArray(acts)) {
+          Store._cachedActivities = acts;
+          localStorage.setItem('mypet_activities', JSON.stringify(acts));
+        }
+        if (typeof App !== 'undefined' && App.checkDatabaseHealth) {
+          App.checkDatabaseHealth();
+        }
+      } catch (e) {
+        console.warn("[Store] SQLite backend sync error, using local storage:", e);
+      }
+    },
+
     getPets: function() {
+      if (Store._cachedPets && Store._cachedPets.length > 0) {
+        return Store._cachedPets;
+      }
       try {
         const stored = localStorage.getItem('mypet_pets');
         if (stored) {
-          const pets = JSON.parse(stored);
-          let changed = false;
-          const luna = pets.find(p => p.id === 'pet-1' || p.code === 'luna-7x29' || p.name === 'Luna');
-          if (luna && luna.avatarCustom !== 'images/pet-luna.png') {
-            luna.avatarCustom = 'images/pet-luna.png';
-            changed = true;
-          }
-          // Ensure every pet has a healthVault
-          pets.forEach(pet => {
-            if (!pet.healthVault) {
-              if (pet.id === 'pet-1' || pet.code === 'luna-7x29' || pet.name === 'Luna') {
-                pet.healthVault = JSON.parse(JSON.stringify(DEFAULT_PETS[0].healthVault));
-              } else if (pet.id === 'pet-2' || pet.code === 'milo-9k42' || pet.name === 'Milo') {
-                pet.healthVault = JSON.parse(JSON.stringify(DEFAULT_PETS[1].healthVault));
-              } else {
-                pet.healthVault = {
-                  showPublicMedical: true,
-                  microchip: { number: '985141009823104', registry: 'HomeAgain', implantedDate: '2025-01-10', verified: true },
-                  vetClinic: { name: 'Local Veterinary Clinic', doctor: 'Dr. Smith', phone: '(555) 123-4567', address: '123 Main St', emergencyHours: 'Regular Hours' },
-                  allergies: [],
-                  medications: '',
-                  dietNotes: '',
-                  vaccines: []
-                };
-              }
-              changed = true;
-            }
-          });
-          if (changed) {
-            Store.savePets(pets);
-          }
-          return pets;
+          Store._cachedPets = JSON.parse(stored);
+          return Store._cachedPets;
         }
-        return DEFAULT_PETS;
-      } catch (e) {
-        return DEFAULT_PETS;
-      }
+      } catch (e) {}
+      return DEFAULT_PETS;
     },
+
     savePets: function(pets) {
+      Store._cachedPets = pets;
       try {
         localStorage.setItem('mypet_pets', JSON.stringify(pets));
       } catch (e) {
         console.error("Storage error:", e);
       }
     },
+
     getActivities: function() {
+      if (Store._cachedActivities && Store._cachedActivities.length > 0) {
+        return Store._cachedActivities;
+      }
       try {
         const stored = localStorage.getItem('mypet_activities');
-        return stored ? JSON.parse(stored) : DEFAULT_ACTIVITIES;
-      } catch (e) {
-        return DEFAULT_ACTIVITIES;
-      }
+        if (stored) {
+          Store._cachedActivities = JSON.parse(stored);
+          return Store._cachedActivities;
+        }
+      } catch (e) {}
+      return DEFAULT_ACTIVITIES;
     },
+
     addActivity: function(activity) {
       const list = Store.getActivities();
       list.unshift(activity);
+      Store._cachedActivities = list;
       try {
         localStorage.setItem('mypet_activities', JSON.stringify(list));
       } catch (e) {}
     },
+
     getPetByCode: function(code) {
       const pets = Store.getPets();
       return pets.find(p => p.code.toLowerCase() === code.toLowerCase()) || null;
     },
+
     getPetById: function(id) {
       const pets = Store.getPets();
       return pets.find(p => p.id === id) || null;
     },
+
     updatePet: function(id, patch) {
       const pets = Store.getPets();
       const idx = pets.findIndex(p => p.id === id);
       if (idx !== -1) {
         pets[idx] = Object.assign({}, pets[idx], patch);
         Store.savePets(pets);
+
+        // Synchronize to Python SQLite Backend
+        if (window.ApiClient) {
+          window.ApiClient.updatePet(id, patch).then(() => {
+            if (typeof App !== 'undefined' && App.checkDatabaseHealth) App.checkDatabaseHealth();
+          }).catch(err => {
+            console.warn("[Store] Failed to sync pet update to SQLite:", err);
+          });
+        }
         return pets[idx];
       }
       return null;
     },
+
+    addPet: function(pet) {
+      const pets = Store.getPets();
+      pets.push(pet);
+      Store.savePets(pets);
+
+      // Synchronize to Python SQLite Backend
+      if (window.ApiClient) {
+        window.ApiClient.createPet(pet).then(() => {
+          if (typeof App !== 'undefined' && App.checkDatabaseHealth) App.checkDatabaseHealth();
+        }).catch(err => {
+          console.warn("[Store] Failed to save pet to SQLite:", err);
+        });
+      }
+    },
+
     isLoggedIn: function() {
       return localStorage.getItem('mypet_auth') === 'true';
     },
+
     setLoggedIn: function(status) {
       localStorage.setItem('mypet_auth', status ? 'true' : 'false');
     },
+
     getCurrentUser: function() {
       try {
         const u = localStorage.getItem('mypet_user');
@@ -272,6 +307,7 @@
         return { name: "Sarah Miller", email: "sarah@example.com", phone: "(555) 234-5678" };
       }
     },
+
     setCurrentUser: function(user) {
       try {
         localStorage.setItem('mypet_user', JSON.stringify(user));
@@ -301,13 +337,13 @@
     currentRoute: '',
     
     init: function() {
-      // Ensure initial seed in storage
-      if (!localStorage.getItem('mypet_pets')) {
-        Store.savePets(DEFAULT_PETS);
-      }
-      if (!localStorage.getItem('mypet_activities')) {
-        Store.savePets(DEFAULT_PETS);
-      }
+      // Connect to SQLite backend and sync
+      App.checkDatabaseHealth();
+      Store.syncWithBackend().then(() => {
+        if (App.currentRoute === 'dashboard' || window.location.hash === '#dashboard') {
+          App.renderDashboard();
+        }
+      });
 
       // Inject SVGs into hero and how-it-works
       App.renderStaticIllustrations();
@@ -321,6 +357,36 @@
 
       // Setup event delegates
       App.bindGlobalEvents();
+    },
+
+    checkDatabaseHealth: async function() {
+      const pill = document.getElementById('dbStatusPill');
+      const text = document.getElementById('dbStatusPillText');
+      if (!window.ApiClient) return;
+      try {
+        const health = await window.ApiClient.checkDatabaseHealth();
+        if (health && health.connected) {
+          if (pill) {
+            pill.className = 'db-live-pill';
+            pill.title = `Connected to ${health.database} (${health.counts.pets} Pets, ${health.counts.orders} Orders, ${health.counts.activities} Activities in SQLite)`;
+          }
+          if (text) {
+            text.textContent = `SQLite Live DB · ${health.counts.pets} Pets`;
+          }
+          if (window.MyPetChat && window.MyPetChat.updateUnreadBadges) {
+            window.MyPetChat.updateUnreadBadges();
+          }
+        } else {
+          if (pill) {
+            pill.className = 'db-live-pill offline';
+            pill.title = 'Database unreachable, operating in offline fallback';
+          }
+          if (text) text.textContent = 'Local Offline Mode';
+        }
+      } catch (e) {
+        if (pill) pill.className = 'db-live-pill offline';
+        if (text) text.textContent = 'Local Offline Mode';
+      }
     },
 
     renderStaticIllustrations: function() {
@@ -414,6 +480,12 @@
         App.showView('publicProfileView');
         App.renderPublicProfile(petCode);
         window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else if (hash.startsWith('passport/')) {
+        const petCode = hash.split('/')[1];
+        App.showView('landingView');
+        setTimeout(() => {
+          App.openPassportModal(petCode);
+        }, 120);
       } else {
         App.showView('landingView');
       }
@@ -688,6 +760,18 @@
               <button class="btn btn-secondary btn-sm" onclick="App.openHealthVaultModal('${pet.id}')" title="Health & Vaccine Vault">
                 ${window.AppIcons.get('paw')} Health Vault
               </button>
+              <button class="btn btn-secondary btn-sm" onclick="App.openPassportModal('${pet.id}')" title="Official Pet Passport & Health Cert">
+                🛂 Passport
+              </button>
+              <button class="btn btn-secondary btn-sm" onclick="App.openTagStudio('${pet.id}')" title="Physical Tag Studio">
+                ✨ Custom Tag
+              </button>
+              <button class="btn btn-secondary btn-sm" onclick="App.openRadarModal('${pet.id}')" title="Live GPS Radar & Search Map">
+                🗺️ GPS Radar
+              </button>
+              <button class="btn btn-secondary btn-sm" onclick="MyPetChat.openOwnerModal('${pet.id}')" title="Direct messages for ${pet.name}">
+                💬 Chat
+              </button>
               <button class="btn btn-outline btn-sm" onclick="App.openLostPosterModal('${pet.id}')">
                 ${window.AppIcons.get('poster')} Lost Poster
               </button>
@@ -706,6 +790,9 @@
 
       // Render Dashboard Activity Log
       App.renderActivityFeed();
+
+      // Render Physical Tag Orders Tracker
+      App.renderOrdersTracker();
     },
 
     renderActivityFeed: function() {
@@ -737,12 +824,94 @@
       }).join('');
     },
 
+    renderOrdersTracker: function() {
+      const container = document.getElementById('dashboardOrdersSection');
+      if (!container) return;
+      if (!window.MyPetTagStudio) return;
+
+      const orders = window.MyPetTagStudio.getOrders();
+      if (!orders || orders.length === 0) {
+        container.innerHTML = `
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div>
+              <h3 style="font-size: 20px; color: var(--color-ink); margin: 0;">Physical Tag Orders</h3>
+              <p style="font-size: 13.5px; color: var(--color-fog); margin: 4px 0 0;">No active physical tag orders placed yet.</p>
+            </div>
+            <button type="button" class="btn btn-primary btn-sm" onclick="App.openTagStudio('pet-1')">✨ Create a Custom Tag</button>
+          </div>
+        `;
+        return;
+      }
+
+      const ordersMarkup = orders.map(ord => {
+        const isShipped = ord.status === 'shipped';
+        const isQuality = ord.status === 'quality_check' || isShipped;
+        const isProd = true;
+
+        const statusPill = isShipped
+          ? `<span class="status-badge vaccine-valid">📦 Shipped (${ord.trackingNumber})</span>`
+          : `<span class="status-badge active">⚙️ In Production</span>`;
+
+        return `
+          <div class="order-card-item">
+            <div class="order-header-row">
+              <div class="order-meta-info">
+                <span style="font-size: 22px;">🏷️</span>
+                <div>
+                  <strong style="font-size: 16px; color: var(--color-ink);">${ord.petName}'s ${window.MyPetTagStudio.capitalize(ord.shape)} Tag</strong>
+                  <div style="font-size: 12.5px; color: var(--color-fog);">
+                    ${window.MyPetTagStudio.capitalize(ord.material)} Finish · ${ord.hardware.toUpperCase()} Hardware · Ordered on ${ord.orderDate}
+                  </div>
+                </div>
+              </div>
+              <div style="text-align: right;">
+                ${statusPill}
+                <div style="font-size: 12px; color: var(--color-fog); margin-top: 4px;">Est. Delivery: <strong>${ord.estimatedDelivery}</strong></div>
+              </div>
+            </div>
+
+            <div class="order-progress-steps">
+              <div>
+                <div class="order-step-bar ${isProd ? (isQuality ? 'done' : 'active') : ''}"></div>
+                <span class="order-step-label">1. Precision Laser Engraving</span>
+              </div>
+              <div>
+                <div class="order-step-bar ${isQuality ? (isShipped ? 'done' : 'active') : ''}"></div>
+                <span class="order-step-label">2. QR Verification &amp; Assembly</span>
+              </div>
+              <div>
+                <div class="order-step-bar ${isShipped ? 'done' : ''}"></div>
+                <span class="order-step-label">3. USPS Tracking Dispatched</span>
+              </div>
+            </div>
+
+            <div style="font-size: 12px; color: var(--color-fog); display: flex; justify-content: space-between; align-items: center; border-top: 1px dashed var(--border); padding-top: 10px; margin-top: 4px;">
+              <span>Delivering to: <strong>${ord.shippingAddress}</strong></span>
+              <span>Total: <strong>${ord.totalPrice}</strong> (Paid)</span>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      container.innerHTML = `
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+          <div>
+            <h3 style="font-size: 20px; color: var(--color-ink); margin: 0;">Physical Tag Orders &amp; Shipping Tracker</h3>
+            <p style="font-size: 13.5px; color: var(--color-fog); margin: 4px 0 0;">Live status of laser engraving and dispatch from our Oregon studio</p>
+          </div>
+          <button type="button" class="btn btn-outline btn-sm" onclick="App.openTagStudio(Store.getPets()[0].id)">+ Order Another Tag</button>
+        </div>
+        ${ordersMarkup}
+      `;
+    },
+
     // =========================================================================
     // QR TAG GENERATION VIEW
     // =========================================================================
     renderQrTagView: function(petId) {
       const pet = Store.getPetById(petId) || Store.getPets()[0];
       if (!pet) return;
+      App.currentQrPetId = pet.id;
 
       const titleEl = document.getElementById('qrPetTitle');
       const containerEl = document.getElementById('qrDisplayMedallion');
@@ -812,6 +981,13 @@
       const container = document.getElementById('publicProfileCard');
       if (!container || !pet) return;
 
+      // Log tag scan in SQLite backend
+      if (window.ApiClient && pet.code) {
+        window.ApiClient.recordScan(pet.code, 'Mobile Browser QR Scan').then(() => {
+          Store.syncWithBackend();
+        }).catch(() => {});
+      }
+
       const isLost = pet.isLost;
       const avatarMarkup = App.getPetAvatarMarkup(pet);
 
@@ -877,6 +1053,22 @@
           ${phoneAction}
           <button class="btn btn-secondary btn-lg" style="width: 100%;" onclick="App.openFoundModal('${pet.id}')">
             ${window.AppIcons.get('pin')} I Found This Pet
+          </button>
+        </div>
+
+        <div class="finder-chat-prompt-card">
+          <div style="font-weight: 700; font-size: 14px; color: #065f46;">💬 Private Direct Message Relay</div>
+          <p style="font-size: 12.5px; color: #047857; margin: 0;">Connect instantly with ${pet.name}'s family without exchanging personal phone numbers or email addresses.</p>
+          <button type="button" class="finder-chat-prompt-btn" onclick="MyPetChat.openFinderChat('${pet.code}')">
+            <span>💬 Open Anonymous Chat with Family &rarr;</span>
+          </button>
+        </div>
+
+        <div class="finder-gps-prompt-card">
+          <div style="font-weight: 700; font-size: 13.5px; color: #065f46;">📍 Help Family Locate ${pet.name}</div>
+          <p style="font-size: 12px; color: #047857; margin: 4px 0 10px 0;">Tap below to share your current coordinates securely with the owner's live GPS radar.</p>
+          <button type="button" class="finder-gps-prompt-btn" onclick="MyPetRadar.shareFinderLocation('${pet.code}')">
+            <span id="finderGpsStatusText">📍 Share Exact Location with Family</span>
           </button>
         </div>
 
@@ -982,6 +1174,17 @@
         time: 'Just now'
       });
 
+      // Synchronize location ping to SQLite database
+      if (pet.code && window.ApiClient) {
+        window.ApiClient.sendLocation(pet.code, {
+          lat: 37.8094,
+          lng: -122.2536,
+          accuracy: 10,
+          address: finderLocation || "Finder Reported Location",
+          deviceInfo: `Finder: ${finderName} (${finderPhone})`
+        }).catch(() => {});
+      }
+
       App.closeModal('foundPetModal');
       showToast(`Alert sent to ${pet.name}'s owner! Thank you!`);
 
@@ -992,23 +1195,45 @@
     // Geolocation helper for finder
     useCurrentLocation: function() {
       const locInput = document.getElementById('finderLocationInput');
+      const petId = document.getElementById('foundPetIdInput') ? document.getElementById('foundPetIdInput').value : null;
+      const pet = petId ? Store.getPetById(petId) : null;
       if (!locInput) return;
       locInput.value = "Detecting location...";
       
       if ("geolocation" in navigator) {
         navigator.geolocation.getCurrentPosition(
-          pos => {
-            const lat = pos.coords.latitude.toFixed(4);
-            const lng = pos.coords.longitude.toFixed(4);
-            locInput.value = `GPS: ${lat}, ${lng} (Near current spot)`;
+          async pos => {
+            const lat = pos.coords.latitude;
+            const lng = pos.coords.longitude;
+            const accuracy = pos.coords.accuracy || 12;
+            locInput.value = `GPS: ${lat.toFixed(4)}, ${lng.toFixed(4)} (±${Math.round(accuracy)}m)`;
+
+            if (pet && pet.code && window.ApiClient) {
+              await window.ApiClient.sendLocation(pet.code, {
+                lat: lat,
+                lng: lng,
+                accuracy: accuracy,
+                address: `GPS Pinpoint (${lat.toFixed(4)}, ${lng.toFixed(4)})`,
+                deviceInfo: "Finder Geolocation Simulator"
+              }).catch(() => {});
+            }
           },
-          err => {
-            locInput.value = "Corner of Market St & 5th (Manual)";
+          async err => {
+            locInput.value = "Grand Ave & Perkins St, Oakland (Simulated GPS)";
+            if (pet && pet.code && window.ApiClient) {
+              await window.ApiClient.sendLocation(pet.code, {
+                lat: 37.8094,
+                lng: -122.2536,
+                accuracy: 10,
+                address: "Grand Ave & Perkins St, Oakland, CA",
+                deviceInfo: "Finder Simulator"
+              }).catch(() => {});
+            }
           },
-          { timeout: 5000 }
+          { enableHighAccuracy: true, timeout: 5000 }
         );
       } else {
-        locInput.value = "Market St & 5th (Manual)";
+        locInput.value = "Grand Ave & Perkins St, Oakland (Manual)";
       }
     },
 
@@ -1148,6 +1373,52 @@
       App.closeModal('editPetModal');
       showToast("Pet profile updated!");
       App.renderDashboard();
+    },
+
+    closeModal: function(modalId) {
+      const m = document.getElementById(modalId);
+      if (m) m.classList.remove('active');
+    },
+
+    openTagStudio: function(petId) {
+      const pet = Store.getPetById(petId) || Store.getPets()[0];
+      if (!pet) return;
+      if (window.MyPetTagStudio) {
+        window.MyPetTagStudio.init(pet);
+      }
+      const modal = document.getElementById('tagStudioModal');
+      if (modal) modal.classList.add('active');
+    },
+
+    openRadarModal: function(petId) {
+      const pet = Store.getPetById(petId) || Store.getPets()[0];
+      if (!pet) return;
+      if (window.MyPetRadar) {
+        window.MyPetRadar.init(pet.id);
+      } else {
+        const modal = document.getElementById('radarModal');
+        if (modal) modal.classList.add('active');
+      }
+    },
+
+    openOwnerChatModal: function(petId) {
+      if (window.MyPetChat) {
+        window.MyPetChat.openOwnerModal(petId);
+      } else {
+        const modal = document.getElementById('ownerChatModal');
+        if (modal) modal.classList.add('active');
+      }
+    },
+
+    openPassportModal: function(petId, defaultDocType = 'passport') {
+      const pet = Store.getPetById(petId) || Store.getPetByCode(petId) || Store.getPets()[0];
+      if (!pet) return;
+      if (window.MyPetPassport) {
+        window.MyPetPassport.init(pet.id, defaultDocType);
+      } else {
+        const modal = document.getElementById('passportModal');
+        if (modal) modal.classList.add('active');
+      }
     },
 
     // =========================================================================
@@ -1933,10 +2204,9 @@
         createdAt: new Date().toISOString().split('T')[0]
       };
 
-      pets.push(newPet);
-      Store.savePets(pets);
+      Store.addPet(newPet);
 
-      showToast(`Created QR tag for ${newPet.name}!`);
+      showToast(`Created QR tag for ${newPet.name}! Saved to SQLite database.`);
       // Route immediately to the newly generated QR Tag page
       window.location.hash = `#pets/${newPet.id}/qr`;
     },

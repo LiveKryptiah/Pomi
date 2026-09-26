@@ -12,6 +12,7 @@
   
   <!-- Geniestudio Stylesheet -->
   <link rel="stylesheet" href="css/style.css?v=46">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
   <link rel="icon" type="image/png" href="images/logo.png">
   <script src="js/icons.js"></script>
 </head>
@@ -42,6 +43,12 @@
           <a href="#dashboard" class="nav-link active" id="navLinkDashboard">
             <span>My Pets</span>
             <span class="nav-count-badge" id="navPetCountBadge">2</span>
+          </a>
+        </li>
+        <li>
+          <a href="javascript:void(0)" class="nav-link" onclick="MyPetChat.openOwnerModal()" title="Direct messages from pet finders">
+            <span>💬 Messages</span>
+            <span class="chat-unread-badge-counter" style="display: none;">0</span>
           </a>
         </li>
         <li>
@@ -1181,10 +1188,24 @@
       <div class="main-wrapper">
         <div class="dashboard-header-bar">
           <div class="dashboard-title-group">
-            <h1>Your pets</h1>
+            <div style="display: flex; align-items: center; gap: 14px; flex-wrap: wrap;">
+              <h1>Your pets</h1>
+              <div class="db-live-pill" id="dbStatusPill" title="Connected to SQLite Database (mypet.db)">
+                <span class="db-pulse-dot"></span>
+                <span id="dbStatusPillText">SQLite Live DB</span>
+              </div>
+            </div>
             <p>Keep your companions' identities, tags, and scan records in one place.</p>
           </div>
-          <a href="#add-pet" class="btn btn-primary">+ Add Pet</a>
+          <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+            <button type="button" class="btn btn-secondary" onclick="MyPetChat.openOwnerModal()" title="Direct messages from pet finders">
+              💬 Messages <span class="chat-unread-badge-counter" style="display: none;">0</span>
+            </button>
+            <button type="button" class="btn btn-secondary" onclick="App.openRadarModal(App.getFirstPetId ? App.getFirstPetId() : 'pet-1')" title="Open Interactive Neighborhood GPS Radar">
+              🗺️ Neighborhood Radar
+            </button>
+            <a href="#add-pet" class="btn btn-primary">+ Add Pet</a>
+          </div>
         </div>
 
         <!-- Pets List Grid -->
@@ -1204,6 +1225,11 @@
           <ul class="activity-list" id="dashboardActivityList">
             <!-- Injected dynamically -->
           </ul>
+        </div>
+
+        <!-- Physical Tag Orders & Tracking Feed -->
+        <div class="orders-tracker-section" id="dashboardOrdersSection">
+          <!-- Dynamically populated by App.renderOrdersTracker() -->
         </div>
       </div>
     </div>
@@ -1546,7 +1572,8 @@
 
           <!-- Action Buttons -->
           <div class="qr-actions-row no-print">
-            <button class="btn btn-primary" id="btnDownloadQr"><svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Download QR</button>
+            <button type="button" class="btn btn-primary" onclick="App.openTagStudio(App.currentQrPetId || 'pet-1')">✨ Customize &amp; Order Physical Tag</button>
+            <button class="btn btn-secondary" id="btnDownloadQr"><svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Download QR</button>
             <button class="btn btn-secondary" id="btnPrintTag"><svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg> Print Tag</button>
             <button class="btn btn-secondary" id="btnShareProfile"><svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg> Share Profile</button>
             <a href="#" class="btn btn-outline" id="btnTestFinderView"><svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg> Test Finder View</a>
@@ -1851,6 +1878,9 @@
         </button>
         <button type="button" class="health-tab-btn" id="btnTabAllergies" data-tab="allergies" onclick="App.switchHealthVaultTab('allergies')">
           ⚠️ Allergies & Care
+        </button>
+        <button type="button" class="health-tab-btn" style="margin-left: auto; background: #059669; color: #ffffff; border-color: #059669;" onclick="App.openPassportModal(App.activeHealthVaultPetId, 'vaccine')">
+          🛂 Export Official Passport / Cert &rarr;
         </button>
       </div>
 
@@ -2273,15 +2303,482 @@
     </div>
   </div>
 
+  <!-- ====================================================================
+       MODAL 6: PHYSICAL TAG CUSTOMIZER & 3D STUDIO
+       ==================================================================== -->
+  <div id="tagStudioModal" class="modal-backdrop">
+    <div class="modal-dialog tag-studio-dialog">
+      <button class="modal-close-btn" onclick="App.closeModal('tagStudioModal')" aria-label="Close Tag Studio">
+        <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+
+      <!-- Studio Header -->
+      <div style="margin-bottom: 20px;">
+        <span class="eyebrow" style="color: var(--color-iris-blue); margin-bottom: 4px;">PHYSICAL ENGRAVED TAG STUDIO</span>
+        <h2 style="font-size: 26px; color: var(--color-ink); margin: 0 0 6px;">Precision QR Collar Medallion</h2>
+        <p style="font-size: 14px; color: var(--color-fog); margin: 0;">Waterproof, aerospace-grade metal with high-contrast QR front and permanent laser-engraved details on back.</p>
+      </div>
+
+      <div class="tag-studio-layout">
+        <!-- 3D Stage & Collar Preview Column -->
+        <div class="tag-stage-col">
+          <div class="tag-stage-wrap">
+            <div class="collar-strap strap-pink" id="collarStrapPreview">
+              <div class="collar-strap-dring"></div>
+            </div>
+            <div class="tag-split-ring ring-brass" id="tagSplitRingPreview"></div>
+            <div class="tag-3d-scene" onclick="MyPetTagStudio.toggleFlip()" title="Click medallion to flip front/back">
+              <div class="tag-3d-card shape-round material-enamel" id="tag3dCard">
+                <div class="tag-face tag-face-front" id="tagFaceFront">
+                  <!-- Injected dynamically -->
+                </div>
+                <div class="tag-face tag-face-back" id="tagFaceBack">
+                  <!-- Injected dynamically -->
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="tag-flip-hint">👆 Click medallion to flip front &amp; back</div>
+          <button type="button" class="btn btn-secondary btn-sm" id="btnTagFlip" onclick="MyPetTagStudio.toggleFlip()" style="margin-top: 12px; width: 100%; justify-content: center;">
+            🔄 Flip to Back (Engraving)
+          </button>
+        </div>
+
+        <!-- Customizer Controls Column -->
+        <div class="tag-controls-col">
+          <!-- 1. Tag Shape -->
+          <div>
+            <div class="studio-section-title">
+              <span>1. Medallion Shape</span>
+              <span class="badge-opt">4 Form Factors</span>
+            </div>
+            <div class="shape-options-grid">
+              <button type="button" class="shape-opt-btn active" data-shape="round" onclick="MyPetTagStudio.setShape('round')">
+                <span class="shape-opt-icon">⚪</span>
+                <span class="shape-opt-name">Round</span>
+              </button>
+              <button type="button" class="shape-opt-btn" data-shape="shield" onclick="MyPetTagStudio.setShape('shield')">
+                <span class="shape-opt-icon">🛡️</span>
+                <span class="shape-opt-name">Shield</span>
+              </button>
+              <button type="button" class="shape-opt-btn" data-shape="hexagon" onclick="MyPetTagStudio.setShape('hexagon')">
+                <span class="shape-opt-icon">⬡</span>
+                <span class="shape-opt-name">Hexagon</span>
+              </button>
+              <button type="button" class="shape-opt-btn" data-shape="bone" onclick="MyPetTagStudio.setShape('bone')">
+                <span class="shape-opt-icon">🦴</span>
+                <span class="shape-opt-name">Bone</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- 2. Materials & Finishes -->
+          <div>
+            <div class="studio-section-title">
+              <span>2. Material &amp; Surface Finish</span>
+              <span class="badge-opt">5 Finishes</span>
+            </div>
+            <div class="material-options-grid">
+              <button type="button" class="material-opt-btn active" data-material="enamel" onclick="MyPetTagStudio.setMaterial('enamel')">
+                <span class="material-swatch swatch-enamel"></span>
+                <span class="material-opt-name">Matte Enamel</span>
+              </button>
+              <button type="button" class="material-opt-btn" data-material="brass" onclick="MyPetTagStudio.setMaterial('brass')">
+                <span class="material-swatch swatch-brass"></span>
+                <span class="material-opt-name">Brushed Brass</span>
+              </button>
+              <button type="button" class="material-opt-btn" data-material="obsidian" onclick="MyPetTagStudio.setMaterial('obsidian')">
+                <span class="material-swatch swatch-obsidian"></span>
+                <span class="material-opt-name">Obsidian</span>
+              </button>
+              <button type="button" class="material-opt-btn" data-material="rosegold" onclick="MyPetTagStudio.setMaterial('rosegold')">
+                <span class="material-swatch swatch-rosegold"></span>
+                <span class="material-opt-name">Rose Gold</span>
+              </button>
+              <button type="button" class="material-opt-btn" data-material="glow" onclick="MyPetTagStudio.setMaterial('glow')">
+                <span class="material-swatch swatch-glow"></span>
+                <span class="material-opt-name">Glow Lume</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- 3. Hardware Split Ring -->
+          <div>
+            <div class="studio-section-title">
+              <span>3. Split Ring Finish</span>
+              <span class="badge-opt">Stainless Steel</span>
+            </div>
+            <div class="hardware-palette-row">
+              <button type="button" class="hardware-opt-btn" data-hardware="silver" onclick="MyPetTagStudio.setHardware('silver')">
+                <span class="hardware-dot dot-silver"></span>
+                <span>Silver Chrome</span>
+              </button>
+              <button type="button" class="hardware-opt-btn active" data-hardware="brass" onclick="MyPetTagStudio.setHardware('brass')">
+                <span class="hardware-dot dot-brass"></span>
+                <span>Solid Brass</span>
+              </button>
+              <button type="button" class="hardware-opt-btn" data-hardware="black" onclick="MyPetTagStudio.setHardware('black')">
+                <span class="hardware-dot dot-black"></span>
+                <span>Matte Black</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- 4. Collar Matcher -->
+          <div>
+            <div class="studio-section-title">
+              <span>4. Collar Matcher Preview</span>
+              <span class="badge-opt">Live Preview Only</span>
+            </div>
+            <div class="collar-palette-row">
+              <button type="button" class="collar-opt-btn active" data-collar="pink" onclick="MyPetTagStudio.setCollar('pink')">
+                <span class="collar-dot dot-pink"></span>
+                <span>Pastel Pink</span>
+              </button>
+              <button type="button" class="collar-opt-btn" data-collar="leather" onclick="MyPetTagStudio.setCollar('leather')">
+                <span class="collar-dot dot-leather"></span>
+                <span>Tan Leather</span>
+              </button>
+              <button type="button" class="collar-opt-btn" data-collar="olive" onclick="MyPetTagStudio.setCollar('olive')">
+                <span class="collar-dot dot-olive"></span>
+                <span>Forest Olive</span>
+              </button>
+              <button type="button" class="collar-opt-btn" data-collar="navy" onclick="MyPetTagStudio.setCollar('navy')">
+                <span class="collar-dot dot-navy"></span>
+                <span>Midnight Navy</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- 5. Laser Engraving -->
+          <div>
+            <div class="studio-section-title">
+              <span>5. Laser Engraving (Back Face)</span>
+              <span class="badge-opt">Deep Fiber Laser</span>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
+              <div class="form-group" style="margin-bottom: 0;">
+                <label class="form-label" for="engraveLine1Input">Pet Name</label>
+                <input type="text" id="engraveLine1Input" class="form-input" maxlength="16" placeholder="Pet Name" oninput="MyPetTagStudio.updateEngraving('engravingLine1', this.value.toUpperCase())" />
+              </div>
+              <div class="form-group" style="margin-bottom: 0;">
+                <label class="form-label" for="engraveLine2Input">Primary Contact Phone</label>
+                <input type="text" id="engraveLine2Input" class="form-input" maxlength="20" placeholder="(555) 234-5678" oninput="MyPetTagStudio.updateEngraving('engravingLine2', this.value)" />
+              </div>
+            </div>
+            <div class="form-group" style="margin-bottom: 0;">
+              <label class="form-label" for="engravePhraseInput">Custom Protective Phrase</label>
+              <input type="text" id="engravePhraseInput" class="form-input" maxlength="36" placeholder="e.g. I'm microchipped &amp; loved" oninput="MyPetTagStudio.updateEngraving('engravingPhrase', this.value)" />
+            </div>
+          </div>
+
+          <!-- Checkout Bar -->
+          <div class="studio-checkout-bar">
+            <div class="studio-price-tag">
+              <span class="studio-price-amount">$16.00</span>
+              <span class="studio-price-sub">✓ Free Worldwide Shipping · Lifetime Guarantee</span>
+            </div>
+            <button type="button" class="btn btn-primary" onclick="MyPetTagStudio.openCheckoutModal()">
+              Order Physical Tag →
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ====================================================================
+       MODAL 7: TAG CHECKOUT MODAL
+       ==================================================================== -->
+  <div id="tagCheckoutModal" class="modal-backdrop">
+    <div class="modal-dialog" style="max-width: 500px; border-radius: 28px; padding: 32px;">
+      <button class="modal-close-btn" onclick="App.closeModal('tagCheckoutModal')" aria-label="Close Checkout">
+        <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+
+      <div style="text-align: center; margin-bottom: 22px;">
+        <span class="eyebrow" style="color: var(--color-iris-blue);">FAST CHECKOUT</span>
+        <h2 style="font-size: 22px; color: var(--color-ink); margin: 6px 0 4px;">Order <span id="checkoutPetName">Luna</span>'s Tag</h2>
+        <p id="checkoutSummaryText" style="font-size: 13.5px; color: var(--color-fog); margin: 0;">Custom Engraved Medallion</p>
+        <div id="checkoutPriceText" style="display: inline-block; margin-top: 10px; background: #ecfdf5; color: #065f46; font-weight: 700; font-size: 13px; padding: 4px 14px; border-radius: 9999px;">$16.00 USD (Free Shipping)</div>
+      </div>
+
+      <form onsubmit="MyPetTagStudio.submitOrder(event)">
+        <div class="form-group">
+          <label class="form-label" for="shipNameInput">Recipient Full Name</label>
+          <input type="text" id="shipNameInput" class="form-input" placeholder="Sarah Miller" required />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="shipAddressInput">Street Address</label>
+          <input type="text" id="shipAddressInput" class="form-input" placeholder="742 Evergreen Terrace" required />
+        </div>
+        <div style="display: grid; grid-template-columns: 1.4fr 1fr; gap: 12px;">
+          <div class="form-group">
+            <label class="form-label" for="shipCityInput">City / Region</label>
+            <input type="text" id="shipCityInput" class="form-input" placeholder="Portland, OR" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="shipPostalInput">Postal Code</label>
+            <input type="text" id="shipPostalInput" class="form-input" placeholder="97201" required />
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Payment Method (Simulated Test Mode)</label>
+          <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 12px;">
+            <div style="display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 13px;">
+              <span>💳</span>
+              <span>•••• •••• •••• 4242</span>
+            </div>
+            <span style="font-size: 11px; color: var(--color-fog); font-weight: 600;">Test Card</span>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary" style="margin-top: 18px; width: 100%; justify-content: center; font-size: 15px; padding: 13px;">
+          Confirm Order · $16.00
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ====================================================================
+       MODAL 8: INTERACTIVE GPS SCAN MAP & LOST PET NEIGHBORHOOD RADAR
+       ==================================================================== -->
+  <div id="radarModal" class="modal-backdrop">
+    <div class="modal-dialog radar-dialog">
+      <button class="modal-close-btn" onclick="App.closeModal('radarModal')" aria-label="Close Radar">
+        <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+
+      <!-- Radar Header -->
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+        <div>
+          <span class="eyebrow" style="color: var(--color-iris-blue); margin-bottom: 2px;">LIVE GEOLOCATION TRACKER</span>
+          <h2 id="radarPetName" style="font-size: 24px; color: var(--color-ink); margin: 0 0 4px;">Luna's GPS Radar</h2>
+          <p style="font-size: 13.5px; color: var(--color-fog); margin: 0;">Real-time collar scan pinpoints, species search zones &amp; emergency shelters</p>
+        </div>
+        <span id="radarStatusBadge" class="status-badge active">🐾 ACTIVE COLLAR SCAN</span>
+      </div>
+
+      <!-- Main Layout -->
+      <div class="radar-layout">
+        <!-- Map Column -->
+        <div class="radar-map-col">
+          <!-- Zone Filter Pills -->
+          <div class="radar-zones-bar" id="radarZonesList">
+            <!-- Dynamically populated zone pills -->
+          </div>
+
+          <!-- Interactive Leaflet Canvas Wrap -->
+          <div class="radar-map-wrap">
+            <div id="radarMapContainer"></div>
+          </div>
+        </div>
+
+        <!-- Details & Actions Side Column -->
+        <div class="radar-side-col">
+          <!-- Latest Scan Card -->
+          <div class="radar-scan-card">
+            <div class="radar-scan-card-header">
+              <span class="status-badge vaccine-valid" style="font-size: 11px;">📍 Last Known Pin</span>
+              <span id="radarScanTime" style="font-size: 12px; color: var(--color-fog); font-weight: 600;">12 mins ago</span>
+            </div>
+            <div class="radar-scan-address" id="radarScanAddress">Grand Ave &amp; Perkins St, Oakland, CA</div>
+            <div class="radar-scan-meta" id="radarScanCoords">37.8094° N, 122.2536° W (Accuracy: ±8.5m)</div>
+            <div class="radar-scan-meta" style="font-size: 11.5px;">Scanner: <strong id="radarScanDevice">iPhone 15 · Safari</strong></div>
+          </div>
+
+          <!-- Nearby Emergency Shelters & Clinics -->
+          <div class="radar-emergency-box">
+            <h4>🏥 Nearby Clinics &amp; Shelters</h4>
+            <div id="radarEmergencyList">
+              <!-- Dynamically populated emergency POIs -->
+            </div>
+          </div>
+
+          <!-- Community Broadcast Alert Button -->
+          <button type="button" class="btn-broadcast-alert" id="btnBroadcastAlert" onclick="MyPetRadar.broadcastAlert()">
+            <span>📢 Broadcast Neighborhood Alert</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====================================================================
+       MODAL: ANONYMOUS FINDER DIRECT CHAT MODAL
+       ==================================================================== -->
+  <div id="finderChatModal" class="modal-backdrop">
+    <div class="finder-chat-dialog">
+      <div class="finder-chat-header">
+        <div class="finder-chat-header-info">
+          <div class="finder-chat-pet-thumb" id="finderChatPetAvatar">
+            <img src="images/pet-luna.png" alt="Pet Avatar" />
+          </div>
+          <div class="finder-chat-title-group">
+            <h4 id="finderChatPetTitle">Chatting with Luna's Family</h4>
+            <div class="finder-chat-sub">
+              <span class="finder-chat-online-dot"></span>
+              <span id="finderChatStatus">Active private relay · Online</span>
+            </div>
+          </div>
+        </div>
+        <button type="button" class="modal-close-btn" onclick="MyPetChat.closeModal('finderChatModal')">
+          <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+
+      <!-- Messages Stream -->
+      <div class="chat-messages-stream" id="finderMessagesList">
+        <!-- Rendered dynamically by MyPetChat.renderMessages -->
+      </div>
+
+      <!-- Photo Preview Tray -->
+      <div id="finderPhotoPreview" style="display: none;"></div>
+
+      <!-- Quick Canned Replies -->
+      <div class="chat-canned-replies">
+        <button type="button" class="chat-canned-chip" onclick="MyPetChat.sendCannedResponse('I have your pet safe &amp; secure!', 'finderChatInput', 'finder')">🐾 I have your pet safe</button>
+        <button type="button" class="chat-canned-chip" onclick="MyPetChat.sendCannedResponse('Can we meet near where I found her?', 'finderChatInput', 'finder')">📍 Where can we meet?</button>
+        <button type="button" class="chat-canned-chip" onclick="MyPetChat.sendCannedResponse('She seems hungry/thirsty. Any food allergies?', 'finderChatInput', 'finder')">💧 Needs water/food</button>
+        <button type="button" class="chat-canned-chip" onclick="MyPetChat.sendCannedResponse('I attached a photo so you can see where she is resting.', 'finderChatInput', 'finder')">📸 Sending photo</button>
+      </div>
+
+      <!-- Input Bar -->
+      <div class="chat-input-bar">
+        <label for="finderPhotoInput" class="chat-photo-btn" title="Attach photo of pet">
+          <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+        </label>
+        <input type="file" id="finderPhotoInput" accept="image/*" style="display:none;" onchange="MyPetChat.handlePhotoSelect(event, 'finderPhotoPreview', 'finder')" />
+
+        <input type="text" id="finderChatInput" class="chat-text-input" placeholder="Type a message to the owner..." onkeydown="if(event.key==='Enter') MyPetChat.sendMessage('finderChatInput', 'finder')" />
+
+        <button type="button" class="chat-send-btn" onclick="MyPetChat.sendMessage('finderChatInput', 'finder')" title="Send Message">
+          <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====================================================================
+       MODAL: OWNER MESSAGE CENTER (DASHBOARD)
+       ==================================================================== -->
+  <div id="ownerChatModal" class="modal-backdrop">
+    <div class="owner-chat-dialog">
+      <!-- Left Column: Threads List -->
+      <div class="owner-chat-sidebar">
+        <div class="owner-chat-sidebar-header">
+          <h3>💬 Message Center</h3>
+          <span class="status-badge active" style="font-size: 11px;">Encrypted Relay</span>
+        </div>
+        <div class="owner-chat-threads-scroll" id="ownerChatThreadsList">
+          <!-- Rendered dynamically by MyPetChat.renderOwnerThreadsList -->
+        </div>
+      </div>
+
+      <!-- Right Column: Active Conversation -->
+      <div class="owner-chat-main-pane">
+        <div class="owner-chat-main-header">
+          <div id="ownerChatActiveHeader">
+            <strong>Select a conversation</strong>
+          </div>
+          <button type="button" class="modal-close-btn" onclick="MyPetChat.closeModal('ownerChatModal')">
+            <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+
+        <!-- Messages Stream -->
+        <div class="chat-messages-stream" id="ownerMessagesList">
+          <!-- Rendered dynamically -->
+        </div>
+
+        <!-- Photo Preview Tray -->
+        <div id="ownerPhotoPreview" style="display: none;"></div>
+
+        <!-- Owner Quick Canned Replies -->
+        <div class="chat-canned-replies">
+          <button type="button" class="chat-canned-chip" onclick="MyPetChat.sendCannedResponse('Thank you so much! What is your exact address or cross street?', 'ownerChatInput', 'owner')">🙏 What's your location?</button>
+          <button type="button" class="chat-canned-chip" onclick="MyPetChat.sendCannedResponse('I am jumping in my car right now and heading over!', 'ownerChatInput', 'owner')">🚗 On my way now!</button>
+          <button type="button" class="chat-canned-chip" onclick="MyPetChat.sendCannedResponse('Is she frightened or hurt? She loves gentle head scratches.', 'ownerChatInput', 'owner')">❤️ Is she okay?</button>
+          <button type="button" class="chat-canned-chip" onclick="MyPetChat.sendCannedResponse('I should arrive in about 15 minutes. Thank you for keeping her safe!', 'ownerChatInput', 'owner')">⏱️ Arriving in 15 mins</button>
+        </div>
+
+        <!-- Input Bar -->
+        <div class="chat-input-bar">
+          <label for="ownerPhotoInput" class="chat-photo-btn" title="Attach photo">
+            <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+          </label>
+          <input type="file" id="ownerPhotoInput" accept="image/*" style="display:none;" onchange="MyPetChat.handlePhotoSelect(event, 'ownerPhotoPreview', 'owner')" />
+
+          <input type="text" id="ownerChatInput" class="chat-text-input" placeholder="Reply to finder..." onkeydown="if(event.key==='Enter') MyPetChat.sendMessage('ownerChatInput', 'owner')" />
+
+          <button type="button" class="chat-send-btn" onclick="MyPetChat.sendMessage('ownerChatInput', 'owner')" title="Send Reply">
+            <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====================================================================
+       MODAL: OFFICIAL PET PASSPORT & VACCINE CERTIFICATE EXPORTER
+       ==================================================================== -->
+  <div id="passportModal" class="modal-backdrop">
+    <div class="passport-dialog">
+      <!-- Modal Control Bar -->
+      <div class="passport-dialog-header">
+        <div class="passport-dialog-title-group">
+          <h3 id="passportModalTitle">🛂 Official Pet Passport &amp; Documents</h3>
+        </div>
+
+        <!-- Document Type Selector Tabs -->
+        <div class="passport-tabs-tray">
+          <button type="button" class="passport-tab-pill active" data-type="passport" onclick="MyPetPassport.switchDocType('passport')">
+            📘 Official Passport
+          </button>
+          <button type="button" class="passport-tab-pill" data-type="vaccine" onclick="MyPetPassport.switchDocType('vaccine')">
+            💉 Health &amp; Vaccine Cert
+          </button>
+          <button type="button" class="passport-tab-pill" data-type="boarding" onclick="MyPetPassport.switchDocType('boarding')">
+            ✈️ Kennel &amp; Boarding Pass
+          </button>
+        </div>
+
+        <!-- Actions -->
+        <div class="passport-actions-group">
+          <button type="button" class="btn-print-passport" onclick="MyPetPassport.printDocument()" title="Print document or save as PDF">
+            <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+            Print / Save as PDF
+          </button>
+          <button type="button" class="modal-close-btn" onclick="MyPetPassport.closeModal()">
+            <svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Scrollable Preview Canvas -->
+      <div class="passport-canvas-wrap">
+        <div id="passportDocCanvas">
+          <!-- Rendered dynamically by MyPetPassport.renderDocument -->
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Toast Notification Container -->
   <div id="toastNotice" class="toast-notice"></div>
 
   <!-- Scripts -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
   <script src="js/qr.js"></script>
   <script src="js/illustrations.js?v=46"></script>
   <script src="js/poster.js"></script>
+  <script src="js/api.js?v=47"></script>
+  <script src="js/tag-studio.js?v=46"></script>
+  <script src="js/radar.js?v=48"></script>
+  <script src="js/chat.js?v=49"></script>
+  <script src="js/passport.js?v=50"></script>
   <script src="js/scrolly.js?v=46"></script>
   <script src="js/finder-simulator.js?v=46"></script>
-  <script src="js/app.js?v=46"></script>
+  <script src="js/app.js?v=48"></script>
 </body>
 </html>

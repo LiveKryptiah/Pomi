@@ -228,6 +228,7 @@
 
   </main>
 
+  <script src="js/api.js?v=47"></script>
   <script>
     function togglePasswordVisibility(inputId, btn) {
       const input = document.getElementById(inputId);
@@ -256,7 +257,7 @@
       }
     }
 
-    function handleRegisterSubmit(e) {
+    async function handleRegisterSubmit(e) {
       e.preventDefault();
       hideAlert('authErrorAlert');
       hideAlert('authSuccessAlert');
@@ -289,52 +290,46 @@
       }
 
       btn.disabled = true;
-      btn.innerHTML = 'Creating account...';
+      btn.innerHTML = 'Creating account in SQLite...';
 
-      // Load existing users
-      let users = [];
-      try {
-        const storedUsers = localStorage.getItem('mypet_registered_users');
-        if (storedUsers) {
-          users = JSON.parse(storedUsers);
+      // 1. Try real SQLite backend registration
+      if (window.ApiClient) {
+        try {
+          const res = await window.ApiClient.register(name, email, password, phone);
+          if (res && res.success) {
+            localStorage.setItem('mypet_auth', 'true');
+            localStorage.setItem('mypet_user', JSON.stringify(res.user));
+            showAlert('authSuccessAlert', `Welcome, ${res.user.name}! Your account is saved in SQLite. Redirecting...`);
+            setTimeout(() => {
+              window.location.href = 'index.html#dashboard';
+            }, 600);
+            return;
+          }
+        } catch (apiErr) {
+          if (apiErr.message && !apiErr.message.includes('Failed to fetch')) {
+            btn.disabled = false;
+            btn.innerHTML = 'Create MyPet Account &rarr;';
+            showAlert('authErrorAlert', apiErr.message);
+            return;
+          }
         }
-      } catch (err) {}
-
-      // Check if email already registered
-      if (email.toLowerCase() === 'sarah@example.com' || users.some(u => u.email.toLowerCase() === email.toLowerCase())) {
-        btn.disabled = false;
-        btn.innerHTML = 'Create MyPet Account &rarr;';
-        showAlert('authErrorAlert', 'An account with this email already exists. Please sign in instead.');
-        return;
       }
 
+      // 2. Offline fallback
       const newUser = {
         name,
         email,
         phone,
-        password,
         createdAt: new Date().toISOString()
       };
 
-      users.push(newUser);
-
-      try {
-        localStorage.setItem('mypet_registered_users', JSON.stringify(users));
-        localStorage.setItem('mypet_auth', 'true');
-        localStorage.setItem('mypet_user', JSON.stringify({
-          name: newUser.name,
-          email: newUser.email,
-          phone: newUser.phone
-        }));
-      } catch (err) {
-        console.error("Storage error:", err);
-      }
-
-      showAlert('authSuccessAlert', `Welcome, ${newUser.name}! Your account has been created. Redirecting to dashboard...`);
+      localStorage.setItem('mypet_auth', 'true');
+      localStorage.setItem('mypet_user', JSON.stringify(newUser));
+      showAlert('authSuccessAlert', `Welcome, ${newUser.name}! Account created (offline mode). Redirecting...`);
 
       setTimeout(() => {
         window.location.href = 'index.html#dashboard';
-      }, 700);
+      }, 600);
     }
   </script>
 
